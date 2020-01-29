@@ -102,3 +102,19 @@ body {
 .next:active {
   transform: scale(.8);
 }
+
+#dots{
+  padding:0;
+  li{
+    font-size: 0;
+    width:15px;
+    height:15px;
+    background-color:#ababab;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0 5px;
+    &.active{
+      background-color: #fff;
+    }
+  }
+}

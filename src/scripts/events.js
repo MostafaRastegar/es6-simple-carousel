@@ -1,24 +1,27 @@
 import config from "./config";
 import {
-	caroueslTouchStart,
-	caroueslDragAction,
-	carouselPositionLeft,
-	dragActionTouchmovePosX1,
-	dragActionTouchmovePosX2,
-	dragActionMousemovePosX1,
-	dragActionMousemove,
-	dragActionCalcPosition,
-	dragEndCalcPosition,
-	mouseEventNull,
-	sliderItemsAddClass,
-	sliderItemsRemoveClass,
-	shiftSlideIsDir,
-	shiftSlideNonDir,
-	checkIndexEnd,
-	checkIndexFinish
-} from './utils';
+  caroueslTouchStart,
+  caroueslDragAction,
+  carouselPositionLeft,
+  dragActionTouchmovePosX1,
+  dragActionTouchmovePosX2,
+  dragActionMousemovePosX1,
+  dragActionMousemove,
+  dragActionCalcPosition,
+  dragEndCalcPosition,
+  mouseEventNull,
+  sliderItemsAddClass,
+  sliderItemsRemoveClass,
+  shiftSlideIsDir,
+  shiftSlideNonDir,
+  checkIndexEnd,
+  checkIndexFinish,
+  setActiveclassToCurrent,
+  dotsItemsGenerator,
+  dotsItemsClick
+} from "./utils";
 
-let { slider, sliderItems, prev, next, threshold } = config;
+let { slider, sliderItems, prev, next, threshold, dots } = config;
 let posX1 = 0,
   posX2 = 0,
   posInitial,
@@ -41,28 +44,28 @@ export const dragStart = e => {
   if (e.type == "touchstart") {
     posX1 = caroueslTouchStart(e);
   } else {
-		const dragActionParams = {
-			e,
-			dragEnd,
-			dragAction
-		};
-		posX1 = caroueslDragAction(dragActionParams);
+    const dragActionParams = {
+      e,
+      dragEnd,
+      dragAction
+    };
+    posX1 = caroueslDragAction(dragActionParams);
   }
 };
 
 export const dragAction = e => {
-	e = e || window.event;
+  e = e || window.event;
   if (e.type == "touchmove") {
-		const dragActionTouchmovePosX2Params = {e,posX1};
+    const dragActionTouchmovePosX2Params = { e, posX1 };
     posX2 = dragActionTouchmovePosX2(dragActionTouchmovePosX2Params);
     posX1 = dragActionTouchmovePosX1(e);
   } else {
-		const dragActionMousemoveParams = {e,posX1};
+    const dragActionMousemoveParams = { e, posX1 };
     posX2 = dragActionMousemove(dragActionMousemoveParams);
     posX1 = dragActionMousemovePosX1(e);
-	}
-	const dragActionCalcPositionParams = {sliderItems,posX2};
-	dragActionCalcPosition(dragActionCalcPositionParams);
+  }
+  const dragActionCalcPositionParams = { sliderItems, posX2 };
+  dragActionCalcPosition(dragActionCalcPositionParams);
 };
 
 export const dragEnd = e => {
@@ -72,37 +75,41 @@ export const dragEnd = e => {
   } else if (posFinal - posInitial > threshold) {
     shiftSlide(-1, "drag");
   } else {
-		const dragEndCalcPositionParams = {sliderItems,posInitial};
-		dragEndCalcPosition(dragEndCalcPositionParams);
+    const dragEndCalcPositionParams = { sliderItems, posInitial };
+    dragEndCalcPosition(dragEndCalcPositionParams);
   }
-	mouseEventNull();
+  mouseEventNull();
 };
 
 export const shiftSlide = (dir, action) => {
-	if (allowShift) {
-		if (!action) {
-			posInitial = carouselPositionLeft(sliderItems);
-		}
-		let shiftSlideParams = {sliderItems,posInitial,slideSize,index};
+  if (allowShift) {
+    if (!action) {
+      posInitial = carouselPositionLeft(sliderItems);
+    }
+    let shiftSlideParams = { sliderItems, posInitial, slideSize, index };
     if (dir == 1) {
-			index = shiftSlideIsDir(shiftSlideParams);
+      index = shiftSlideIsDir(shiftSlideParams);
     } else if (dir == -1) {
-			index = shiftSlideNonDir(shiftSlideParams);
+      index = shiftSlideNonDir(shiftSlideParams);
     }
   }
-	allowShift = sliderItemsAddClass(sliderItems);
+  allowShift = sliderItemsAddClass(sliderItems);
 };
 
 export const checkIndex = () => {
-	if (index == -1) {
-		const checkIndexEndParams = {sliderItems,slidesLength,slideSize};
+  if (index == -1) {
+    const checkIndexEndParams = { sliderItems, slidesLength, slideSize };
     index = checkIndexEnd(checkIndexEndParams);
   }
+
   if (index == slidesLength) {
-		const checkIndexFinishParams = {sliderItems,slideSize};
+    const checkIndexFinishParams = { sliderItems, slideSize };
     index = checkIndexFinish(checkIndexFinishParams);
   }
-  allowShift = 	sliderItemsRemoveClass(sliderItems);
+
+  const setActiveclassToCurrentParams = { index, sliderItems, dots };
+  setActiveclassToCurrent(setActiveclassToCurrentParams);
+  allowShift = sliderItemsRemoveClass(sliderItems);
 };
 
 export const slide = () => {
@@ -112,6 +119,22 @@ export const slide = () => {
   // Clone first and last slide
   sliderItems.appendChild(cloneFirst);
   sliderItems.insertBefore(cloneLast, firstSlide);
+
+  // generate dots items
+  const dotsItemsParams = { slidesLength, dots };
+  dotsItemsGenerator(dotsItemsParams);
+
+  // dots item click for transition on active index
+  dots.children.forEach((item, dotIndex) => {
+    item.addEventListener("click", () => {
+      const dotsItemsClickParams = { sliderItems, dots, dotIndex, index };
+      const dotsItemsClickConst = dotsItemsClick(dotsItemsClickParams);
+      index = dotsItemsClickConst.index;
+      allowShift = dotsItemsClickConst.allowShift;
+      posInitial = dotsItemsClickConst.posInitial;
+    });
+  });
+
   slider.classList.add("loaded");
 
   // Touch events
