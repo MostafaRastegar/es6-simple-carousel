@@ -53,8 +53,34 @@ export const mouseEventNull = () => {
 
 export const sliderItemsAddClass = (sliderItems) => {
   sliderItems.classList.add("shifting");
+  return false;
 };
 
 export const sliderItemsRemoveClass = (sliderItems) => {
   sliderItems.classList.remove("shifting");
+  return true;
+};
+
+export const shiftSlideIsDir = (params) => {
+  let {sliderItems,posInitial,slideSize,index} = params;
+  sliderItems.style["left"] = posInitial - slideSize + "px";
+  return index + 1;
+};
+
+export const shiftSlideNonDir = (params) => {
+  let {sliderItems,posInitial,slideSize,index} = params;
+  sliderItems.style["left"] = posInitial + slideSize + "px";
+  return index - 1;
+};
+
+export const checkIndexEnd = (params) => {
+  const {sliderItems,slidesLength,slideSize} = params;
+  sliderItems.style["left"] = -(slidesLength * slideSize) + "px";
+  return slidesLength - 1;
+};
+
+export const checkIndexFinish = (params) => {
+  const {sliderItems,slideSize} = params;
+  sliderItems.style["left"] = -(1 * slideSize) + "px";
+  return 0;
 };

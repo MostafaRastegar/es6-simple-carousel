@@ -11,7 +11,11 @@ import {
 	dragEndCalcPosition,
 	mouseEventNull,
 	sliderItemsAddClass,
-	sliderItemsRemoveClass
+	sliderItemsRemoveClass,
+	shiftSlideIsDir,
+	shiftSlideNonDir,
+	checkIndexEnd,
+	checkIndexFinish
 } from './utils';
 
 let { slider, sliderItems, prev, next, threshold } = config;
@@ -68,41 +72,37 @@ export const dragEnd = e => {
   } else if (posFinal - posInitial > threshold) {
     shiftSlide(-1, "drag");
   } else {
-		const dragEndCalcPositionParams = {sliderItems,posInitial}
+		const dragEndCalcPositionParams = {sliderItems,posInitial};
 		dragEndCalcPosition(dragEndCalcPositionParams);
   }
 	mouseEventNull();
 };
 
 export const shiftSlide = (dir, action) => {
-	sliderItemsAddClass(sliderItems);
-  if (allowShift) {
-    if (!action) {
-      posInitial = carouselPositionLeft(sliderItems);
-    }
-
+	if (allowShift) {
+		if (!action) {
+			posInitial = carouselPositionLeft(sliderItems);
+		}
+		let shiftSlideParams = {sliderItems,posInitial,slideSize,index};
     if (dir == 1) {
-      sliderItems.style["left"] = posInitial - slideSize + "px";
-      index++;
+			index = shiftSlideIsDir(shiftSlideParams);
     } else if (dir == -1) {
-      sliderItems.style["left"] = posInitial + slideSize + "px";
-      index--;
+			index = shiftSlideNonDir(shiftSlideParams);
     }
   }
-  allowShift = false;
+	allowShift = sliderItemsAddClass(sliderItems);
 };
 
 export const checkIndex = () => {
-	sliderItemsRemoveClass(sliderItems);
-  if (index == -1) {
-    sliderItems.style["left"] = -(slidesLength * slideSize) + "px";
-    index = slidesLength - 1;
+	if (index == -1) {
+		const checkIndexEndParams = {sliderItems,slidesLength,slideSize};
+    index = checkIndexEnd(checkIndexEndParams);
   }
   if (index == slidesLength) {
-    sliderItems.style["left"] = -(1 * slideSize) + "px";
-    index = 0;
+		const checkIndexFinishParams = {sliderItems,slideSize};
+    index = checkIndexFinish(checkIndexFinishParams);
   }
-  allowShift = true;
+  allowShift = 	sliderItemsRemoveClass(sliderItems);
 };
 
 export const slide = () => {
