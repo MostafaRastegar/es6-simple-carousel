@@ -30,6 +30,7 @@ let posX1 = 0,
   slidesLength = slides.length,
   slideSize = sliderItems.getElementsByClassName("slide")[0].offsetWidth,
   firstSlide = slides[0],
+  sliderItemWidth = firstSlide.clientWidth,
   lastSlide = slides[slidesLength - 1],
   cloneFirst = firstSlide.cloneNode(true),
   cloneLast = lastSlide.cloneNode(true),
@@ -127,7 +128,13 @@ export const slide = () => {
   // dots item click for transition on active index
   dots.children.forEach((item, dotIndex) => {
     item.addEventListener("click", () => {
-      const dotsItemsClickParams = { sliderItems, dots, dotIndex, index };
+      const dotsItemsClickParams = {
+        sliderItems,
+        dots,
+        dotIndex,
+        index,
+        sliderItemWidth
+      };
       const dotsItemsClickConst = dotsItemsClick(dotsItemsClickParams);
       index = dotsItemsClickConst.index;
       allowShift = dotsItemsClickConst.allowShift;

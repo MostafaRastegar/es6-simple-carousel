@@ -1,9 +1,7 @@
 // import config from "./config";
 export const carouselPositionLeft = sliderItems => sliderItems.offsetLeft;
 
-export const caroueslTouchStart = e => {
-  return e.touches[0].clientX;
-};
+export const caroueslTouchStart = e => e.touches[0].clientX;
 
 export const caroueslDragAction = params => {
   const { e, dragEnd, dragAction } = params;
@@ -17,18 +15,14 @@ export const dragActionTouchmovePosX2 = params => {
   return posX1 - e.touches[0].clientX;
 };
 
-export const dragActionTouchmovePosX1 = e => {
-  return e.touches[0].clientX;
-};
+export const dragActionTouchmovePosX1 = e => e.touches[0].clientX;
 
 export const dragActionMousemove = params => {
   const { posX1, e } = params;
   return posX1 - e.clientX;
 };
 
-export const dragActionMousemovePosX1 = e => {
-  return e.clientX;
-};
+export const dragActionMousemovePosX1 = e => e.clientX;
 
 export const dragActionCalcPosition = params => {
   const { sliderItems, posX2 } = params;
@@ -99,9 +93,9 @@ export const setActiveclassToCurrent = params => {
 };
 
 export const dotsItemsClick = params => {
-  const { sliderItems, dots, dotIndex, index } = params;
+  const { sliderItems, dots, dotIndex, index, sliderItemWidth } = params;
   const setActiveParams = { index, sliderItems, dots };
-  sliderItems.style["left"] = (dotIndex + 1) * -400 + "px";
+  sliderItems.style["left"] = (dotIndex + 1) * -sliderItemWidth + "px";
   setActiveclassToCurrent(setActiveParams);
   return {
     index: dotIndex,
