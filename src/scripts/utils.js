@@ -1,4 +1,4 @@
-// import config from "./config";
+import config from "./config";
 export const carouselPositionLeft = sliderItems => sliderItems.offsetLeft;
 
 export const caroueslTouchStart = e => e.touches[0].clientX;
@@ -95,7 +95,11 @@ export const setActiveclassToCurrent = params => {
 export const dotsItemsClick = params => {
   const { sliderItems, dots, dotIndex, index, sliderItemWidth } = params;
   const setActiveParams = { index, sliderItems, dots };
-  sliderItems.style["left"] = (dotIndex + 1) * -sliderItemWidth + "px";
+  setSliderItemsPosition({
+    indexItem: dotIndex,
+    sliderItemWidth
+  });
+  // sliderItems.style["left"] = (dotIndex + 1) * -sliderItemWidth + "px";
   setActiveclassToCurrent(setActiveParams);
   return {
     index: dotIndex,
@@ -110,4 +114,15 @@ export const dotsItemsGenerator = params => {
     dots.innerHTML += `<li class="dots-item" data-dot-index="${i}">${i +
       1}</li>`;
   }
+};
+
+export const sliderClientWidth = () => config.slider.clientWidth;
+
+export const setSliderItemsChildWidth = () => {
+  config.sliderItems.children.forEach(child => child.style.width = sliderClientWidth() + 'px');
+};
+
+export const setSliderItemsPosition = (params) => {
+  const { indexItem, sliderItemWidth } = params;
+  config.sliderItems.style["left"] = (indexItem + 1) * -sliderItemWidth + "px";
 };

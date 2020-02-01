@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
-$slider-width: 400px;
+$slider-width: 100%;
 $slider-height: 300px;
 
 * { box-sizing: border-box; }
@@ -14,12 +14,13 @@ body {
   letter-spacing: 0.15em;
   font-size: 22px;
 }
+.container{
+  width:90%;
+  margin: 0 auto;
+  position: relative;
+}
 
 .slider {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   width: $slider-width;
   height: $slider-height;
   box-shadow: 3px 3px 10px rgba(0,0,0,.2);
@@ -46,7 +47,6 @@ body {
 }
 
 .slide {
-  width: $slider-width;
   height: $slider-height;
   cursor: pointer;
   display: flex;

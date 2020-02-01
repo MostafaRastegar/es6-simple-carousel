@@ -18,7 +18,10 @@ import {
   checkIndexFinish,
   setActiveclassToCurrent,
   dotsItemsGenerator,
-  dotsItemsClick
+  dotsItemsClick,
+  sliderClientWidth,
+  setSliderItemsChildWidth,
+  setSliderItemsPosition
 } from "./utils";
 
 let { slider, sliderItems, prev, next, threshold, dots } = config;
@@ -28,9 +31,10 @@ let posX1 = 0,
   posFinal,
   slides = sliderItems.getElementsByClassName("slide"),
   slidesLength = slides.length,
-  slideSize = sliderItems.getElementsByClassName("slide")[0].offsetWidth,
+  // slideSize = sliderItems.getElementsByClassName("slide")[0].offsetWidth,
+  slideSize = sliderClientWidth(),
   firstSlide = slides[0],
-  sliderItemWidth = firstSlide.clientWidth,
+  sliderItemWidth = sliderClientWidth(),
   lastSlide = slides[slidesLength - 1],
   cloneFirst = firstSlide.cloneNode(true),
   cloneLast = lastSlide.cloneNode(true),
@@ -150,15 +154,52 @@ export const slide = () => {
   sliderItems.addEventListener("touchmove", dragAction);
 
   // Click events
-  prev.addEventListener("click", function() {
+  prev.addEventListener("click", function () {
     shiftSlide(-1);
   });
-  next.addEventListener("click", function() {
+  next.addEventListener("click", function () {
     shiftSlide(1);
   });
 
   // Transition events
   sliderItems.addEventListener("transitionend", checkIndex);
+
+  sliderItemWidth = sliderClientWidth();
+
+  setSliderItemsChildWidth();
+
+  window.onresize = () => {
+    sliderItemWidth = slideSize = sliderClientWidth();
+    setSliderItemsChildWidth();
+    const setSliderItemsPositionParams = {
+      indexItem: index,
+      sliderItemWidth
+    };
+    setSliderItemsPosition(setSliderItemsPositionParams);
+  };
+
+  // resize check
+  // const responsive = {
+  //   700:{
+  //     size:700,
+  //   },
+  //   600:{
+  //     size:700,
+  //   },
+  //   300:{
+  //     size:700,
+  //   }
+  // };
+
+  // if (700) {
+  //   const mq = window.matchMedia(`(max-width: ${responsive[700].size}px)`);
+  //   mq.addListener(WidthChange);
+  //   function WidthChange(){
+  //     console.log('==========responsive[700].size==========================');
+  //     console.log(responsive[700].size);
+  //     console.log('====================================');
+  //   }
+  // }
 };
 
 export default slide;
