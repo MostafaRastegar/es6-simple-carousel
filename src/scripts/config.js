@@ -4,5 +4,5 @@ export default {
   dots: document.getElementById('dots'),
   prev: document.getElementById('prev'),
   next: document.getElementById('next'),
-  threshold: 100,
+  threshold: 50,
 };

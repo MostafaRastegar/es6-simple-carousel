@@ -2,13 +2,11 @@ import config from "./config";
 import {
   caroueslTouchStart,
   caroueslDragAction,
-  carouselPositionLeft,
   dragActionTouchmovePosX1,
   dragActionTouchmovePosX2,
   dragActionMousemovePosX1,
   dragActionMousemove,
   dragActionCalcPosition,
-  dragEndCalcPosition,
   mouseEventNull,
   sliderItemsAddClass,
   sliderItemsRemoveClass,
@@ -21,7 +19,8 @@ import {
   dotsItemsClick,
   sliderClientWidth,
   setSliderItemsChildWidth,
-  setSliderItemsPosition
+  setSliderItemsPosition,
+  getTranslate3d,
 } from "./utils";
 
 let { slider, sliderItems, prev, next, threshold, dots } = config;
@@ -44,7 +43,7 @@ let posX1 = 0,
 export const dragStart = e => {
   e = e || window.event;
   e.preventDefault();
-  posInitial = carouselPositionLeft(sliderItems);
+  posInitial = getTranslate3d(sliderItems);
 
   if (e.type == "touchstart") {
     posX1 = caroueslTouchStart(e);
@@ -74,14 +73,14 @@ export const dragAction = e => {
 };
 
 export const dragEnd = e => {
-  posFinal = carouselPositionLeft(sliderItems);
+  posFinal = getTranslate3d(sliderItems);
   if (posFinal - posInitial < -threshold) {
     shiftSlide(1, "drag");
   } else if (posFinal - posInitial > threshold) {
     shiftSlide(-1, "drag");
   } else {
-    const dragEndCalcPositionParams = { sliderItems, posInitial };
-    dragEndCalcPosition(dragEndCalcPositionParams);
+    const dragEndCalcPositionParams = { sliderItemWidth, indexItem:index };
+    setSliderItemsPosition(dragEndCalcPositionParams);
   }
   mouseEventNull();
 };
@@ -89,7 +88,7 @@ export const dragEnd = e => {
 export const shiftSlide = (dir, action) => {
   if (allowShift) {
     if (!action) {
-      posInitial = carouselPositionLeft(sliderItems);
+      posInitial = getTranslate3d(sliderItems);
     }
     let shiftSlideParams = { sliderItems, posInitial, slideSize, index };
     if (dir == 1) {
@@ -118,6 +117,11 @@ export const checkIndex = () => {
 };
 
 export const slide = () => {
+  setSliderItemsPosition({
+    indexItem:0,
+    sliderItemWidth
+  });
+  
   // Mouse events
   sliderItems.onmousedown = dragStart;
 

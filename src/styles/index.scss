@@ -37,13 +37,13 @@ body {
 .slides {
   display: flex;
   position: relative;
-  top: 0;
-  left: -$slider-width;
+  // top: 0;
+  // left: -$slider-width;
   width: 10000px;
 }
 
 .slides.shifting {
-  transition: left .2s ease-out;
+  transition: all .2s ease-out;
 }
 
 .slide {

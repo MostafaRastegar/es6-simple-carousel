@@ -1,5 +1,4 @@
 import config from "./config";
-export const carouselPositionLeft = sliderItems => sliderItems.offsetLeft;
 
 export const caroueslTouchStart = e => e.touches[0].clientX;
 
@@ -26,12 +25,7 @@ export const dragActionMousemovePosX1 = e => e.clientX;
 
 export const dragActionCalcPosition = params => {
   const { sliderItems, posX2 } = params;
-  sliderItems.style["left"] = carouselPositionLeft(sliderItems) - posX2 + "px";
-};
-
-export const dragEndCalcPosition = params => {
-  const { sliderItems, posInitial } = params;
-  sliderItems.style["left"] = posInitial + "px";
+  sliderItems.style["transform"] = setTranslate3d(getTranslate3d(sliderItems) - posX2);
 };
 
 export const mouseEventNull = () => {
@@ -51,25 +45,25 @@ export const sliderItemsRemoveClass = sliderItems => {
 
 export const shiftSlideIsDir = params => {
   let { sliderItems, posInitial, slideSize, index } = params;
-  sliderItems.style["left"] = posInitial - slideSize + "px";
+  sliderItems.style["transform"] = setTranslate3d(posInitial - slideSize);
   return index + 1;
 };
 
 export const shiftSlideNonDir = params => {
   let { sliderItems, posInitial, slideSize, index } = params;
-  sliderItems.style["left"] = posInitial + slideSize + "px";
+  sliderItems.style["transform"] = setTranslate3d(posInitial + slideSize);
   return index - 1;
 };
 
 export const checkIndexEnd = params => {
   const { sliderItems, slidesLength, slideSize } = params;
-  sliderItems.style["left"] = -(slidesLength * slideSize) + "px";
+  sliderItems.style["transform"] = setTranslate3d(-(slidesLength * slideSize));
   return slidesLength - 1;
 };
 
 export const checkIndexFinish = params => {
   const { sliderItems, slideSize } = params;
-  sliderItems.style["left"] = -(1 * slideSize) + "px";
+  sliderItems.style["transform"] = setTranslate3d(-slideSize);
   return 0;
 };
 
@@ -99,19 +93,18 @@ export const dotsItemsClick = params => {
     indexItem: dotIndex,
     sliderItemWidth
   });
-  // sliderItems.style["left"] = (dotIndex + 1) * -sliderItemWidth + "px";
   setActiveclassToCurrent(setActiveParams);
   return {
     index: dotIndex,
     allowShift: sliderItemsAddClass(sliderItems),
-    posInitial: carouselPositionLeft(sliderItems)
+    posInitial: getTranslate3d(sliderItems)
   };
 };
 
 export const dotsItemsGenerator = params => {
   const { slidesLength, dots } = params;
   for (let i = 0; i < slidesLength; i++) {
-    dots.innerHTML += `<li class="dots-item" data-dot-index="${i}">${i +
+    dots.innerHTML += `<li class="dots-item ${i === 0 && ' active'}" data-dot-index="${i}">${i +
       1}</li>`;
   }
 };
@@ -124,5 +117,15 @@ export const setSliderItemsChildWidth = () => {
 
 export const setSliderItemsPosition = (params) => {
   const { indexItem, sliderItemWidth } = params;
-  config.sliderItems.style["left"] = (indexItem + 1) * -sliderItemWidth + "px";
+  config.sliderItems.style["transform"] = setTranslate3d((indexItem + 1) * -sliderItemWidth);
+};
+
+export const setTranslate3d = (getValue) => `translate3d(${getValue}px,0px,0px)`;
+
+export const getTranslate3d = (sliderItems) => {
+  const values = sliderItems.style.transform.match(/translate3d\((.*)px\, (.*)px\, (.*)px\)/);
+  if (!values[1] || !values[1].length) {
+      return 0;
+  };
+  return parseInt(values[1]);
 };
