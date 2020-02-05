@@ -24,7 +24,9 @@ import {
   getTranslate3d,
   arrGenerator,
   slideItemGenerator,
-  responsiveItemSize
+  responsiveItemSize,
+  cloneNodeGenerator,
+  truncResponsiveItemSize
 } from "./utils";
 
 let { slider, sliderItems, prev, next, threshold, dots, responsive } = config;
@@ -77,21 +79,22 @@ export const dragAction = e => {
 };
 
 export const dragEnd = e => {
+  // sliderItems.style["transform"] = setTranslate3d(-slidesLength * sliderItemWidth);
   posFinal = getTranslate3d(sliderItems);
   if (posFinal - posInitial < -threshold) {
-    // console.log('====================================');
-    // console.log(1);
-    // console.log('====================================');
-    shiftSlide(1, "drag");
+    console.log('===============۱=====================');
+    console.log(posFinal,posInitial,threshold,index);
+    console.log('====================================');
+    // shiftSlide(1, "drag");
   } else if (posFinal - posInitial > threshold) {
-    // console.log('====================================');
-    // console.log(posFinal,posInitial,threshold,index);
-    // console.log('====================================');
-    shiftSlide(-1, "drag");
+    console.log('==============۲======================');
+    console.log(posFinal,posInitial,threshold,index);
+    console.log('====================================');
+    // shiftSlide(-1, "drag");
   } else {
     const dragEndCalcPositionParams = { 
       sliderItemWidth:calcSliderMainWidth(responsiveItemSize(responsive)),
-      indexItem: index,
+      indexItem: 2,
       sliderItems,
       slidesLength
     };
@@ -126,7 +129,7 @@ export const checkIndex = () => {
     index = checkIndexFinish(checkIndexFinishParams);
   }
 
-  const setActiveclassToCurrentParams = { index, sliderItems, dots };
+  const setActiveclassToCurrentParams = { index, sliderItems, dots,countItem:truncResponsiveItemSize(config.responsive) };
   setActiveclassToCurrent(setActiveclassToCurrentParams);
   allowShift = sliderItemsRemoveClass(sliderItems);
 };
@@ -135,34 +138,28 @@ export const slide = () => {
 
   //store main slider before init
   orginSlider = sliderItems.cloneNode(true);
-
-  // init slider for start
-  // sliderItems.innerHTML = slideItemGenerator(sliderItems);
-  // sliderItems.innerHTML = sliderItems;
-  // const orgSlides = orginSlider.children;
-  const slides = sliderItems.children;
-  // let orgSlidesLength = sliderItems.children;
-  slidesLength = slides.length;
-  const firstSlide = slides[0];
-  const lastSlide = slides[slidesLength - 1];
-  const cloneFirst = firstSlide.cloneNode(true);
-  const cloneLast = lastSlide.cloneNode(true);
-
   setSliderItemsPosition({
-    indexItem: 0,
+    indexItem: 2,
     sliderItemWidth,
     sliderItems,
-    slidesLength
   });
+
+  // init slider for start
+  const slides = sliderItems.children;
+  slidesLength = slides.length;
 
   // Mouse events
   sliderItems.onmousedown = dragStart;
 
 
   // Clone first and last slide
-  sliderItems.appendChild(cloneFirst);
-  sliderItems.insertBefore(cloneLast, firstSlide);
-
+  const cloneNodeGeneratorParams = {
+    countItem:truncResponsiveItemSize(config.responsive),
+    sliderItems
+  };
+  cloneNodeGenerator(cloneNodeGeneratorParams);
+  index = truncResponsiveItemSize(config.responsive);
+  
   // generate dots items
   const dotsItemsParams = { slidesLength, dots };
   dotsItemsGenerator(dotsItemsParams);
@@ -186,7 +183,7 @@ export const slide = () => {
   });
 
   setActiveclassToCurrent({
-    index, sliderItems, dots
+    index, sliderItems, dots, countItem:truncResponsiveItemSize(config.responsive)
   });
 
   slider.classList.add("loaded");
