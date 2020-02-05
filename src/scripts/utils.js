@@ -58,6 +58,9 @@ export const sliderItemsRemoveClass = sliderItems => {
 
 export const shiftSlideIsDir = params => {
   let { sliderItems, posInitial, slideSize, index, slidesLength } = params;
+  // console.log('==================params==================');
+  // console.log(params);
+  // console.log('====================================');
   // if(index + 1 === slidesLength-1){
   //   const configResponsive = config.responsive;
   //   sliderItems.style["transform"] = setTranslate3d(posInitial-slideSize + getTruncChildItems(responsiveItemSize(configResponsive)));
@@ -77,15 +80,15 @@ export const checkIndexEnd = params => {
   const { sliderItems, slidesLength, slideSize } = params;
   sliderItems.style["transform"] = setTranslate3d(-(slidesLength * slideSize));
   console.log('============checkIndexEnd========================');
-  console.log(slidesLength - 1);
+  console.log(slidesLength);
   console.log('====================================');
-  return slidesLength - 1;
+  return slidesLength;
 };
 
 export const checkIndexFinish = params => {
-  const { sliderItems, slideSize } = params;
-  sliderItems.style["transform"] = setTranslate3d(-slideSize);
-  return 2;
+  const { sliderItems, slideSize,countItem } = params;
+  sliderItems.style["transform"] = setTranslate3d(-slideSize * countItem);
+  return countItem;
 };
 
 export const calcCurrentIndex = sliderItems => {
@@ -93,16 +96,16 @@ export const calcCurrentIndex = sliderItems => {
 };
 
 export const setActiveclassToCurrent = params => {
-  const { index, sliderItems, dots,countItem } = params;
+  const { sliderItems,countItem } = params;
   // console.log('===========index2=========================');
   // console.log(index);
   // console.log('====================================');
   const activeIndex = calcCurrentIndex(sliderItems);
-  const configCount = countItem + 1;
-  const sliderWidth = calcSliderMainWidth(responsiveItemSize(config.responsive)) * countItem;
-  const translate3d = getTranslate3d(sliderItems);
+  const configCount = countItem;
+  // const sliderWidth = calcSliderMainWidth(responsiveItemSize(config.responsive)) * countItem;
+  // const translate3d = getTranslate3d(sliderItems);
   const activeItems = [];
-  const activeDots = [];
+  // const activeDots = [];
   [...Array(configCount).keys()].forEach(
     item => activeItems.push(item + activeIndex)
   );
@@ -146,30 +149,30 @@ export const setActiveclassToCurrent = params => {
   // });
 };
 
-export const dotsItemsClick = params => {
-  const { sliderItems, dots, dotIndex, index, sliderItemWidth, slidesLength } = params;
-  const configResponsive = config.responsive;
-  const newDotIndex = (dotIndex + 1) * truncResponsiveItemSize(configResponsive);
-  setSliderItemsPosition({
-    indexItem: newDotIndex,
-    sliderItemWidth,
-    sliderItems,
-  });
-  return {
-    index: newDotIndex,
-    allowShift: sliderItemsAddClass(sliderItems),
-    posInitial: getTranslate3d(sliderItems)
-  };
-};
+// export const dotsItemsClick = params => {
+//   const { sliderItems, dots, dotIndex, index, sliderItemWidth, slidesLength } = params;
+//   const configResponsive = config.responsive;
+//   const newDotIndex = (dotIndex + 1) * truncResponsiveItemSize(configResponsive);
+//   setSliderItemsPosition({
+//     indexItem: newDotIndex,
+//     sliderItemWidth,
+//     sliderItems,
+//   });
+//   return {
+//     index: newDotIndex,
+//     allowShift: sliderItemsAddClass(sliderItems),
+//     posInitial: getTranslate3d(sliderItems)
+//   };
+// };
 
-export const dotsItemsGenerator = params => {
-  const { slidesLength, dots } = params;
-  const configResponsive = config.responsive;
-  for (let i = 0; i < slidesLength / truncResponsiveItemSize(configResponsive); i++) {
-    dots.innerHTML += `<li class="dots-item" data-dot-index="${i}">${i +
-      1}</li>`;
-  }
-};
+// export const dotsItemsGenerator = params => {
+//   const { slidesLength, dots } = params;
+//   const configResponsive = config.responsive;
+//   for (let i = 0; i < slidesLength / truncResponsiveItemSize(configResponsive); i++) {
+//     dots.innerHTML += `<li class="dots-item" data-dot-index="${i}">${i +
+//       1}</li>`;
+//   }
+// };
 
 export const sliderClientWidth = () => config.slider.clientWidth;
 
@@ -203,7 +206,7 @@ export const setSliderItemsChildWidth = (sliderItems) => {
 
 export const setSliderItemsPosition = (params) => {
   const { indexItem, sliderItemWidth, sliderItems } = params;
-  sliderItems.style["transform"] = setTranslate3d((indexItem) * -sliderItemWidth);
+  sliderItems.style["transform"] = setTranslate3d(indexItem * -sliderItemWidth);
 };
 
 export const setTranslate3d = (getValue) => `translate3d(${getValue}px,0px,0px)`;

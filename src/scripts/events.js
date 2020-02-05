@@ -26,7 +26,8 @@ import {
   slideItemGenerator,
   responsiveItemSize,
   cloneNodeGenerator,
-  truncResponsiveItemSize
+  truncResponsiveItemSize,
+  getTruncChildItems
 } from "./utils";
 
 let { slider, sliderItems, prev, next, threshold, dots, responsive } = config;
@@ -108,7 +109,7 @@ export const shiftSlide = (dir, action) => {
     if (!action) {
       posInitial = getTranslate3d(sliderItems);
     }
-    let shiftSlideParams = { sliderItems, posInitial, slideSize, index,slidesLength };
+    let shiftSlideParams = { sliderItems, posInitial, slideSize, index,slidesLength,dir };
     if (dir == 1) {
       index = shiftSlideIsDir(shiftSlideParams);
     } else if (dir == -1) {
@@ -119,17 +120,30 @@ export const shiftSlide = (dir, action) => {
 };
 
 export const checkIndex = () => {
+  const countItem = truncResponsiveItemSize(config.responsive);
+  console.log('==============checkIndex======================');
+  console.log(index,slidesLength + countItem);
+  console.log('====================================');
+
+  // shift to end from start item
   if (index == -1) {
     const checkIndexEndParams = { sliderItems, slidesLength, slideSize };
     index = checkIndexEnd(checkIndexEndParams);
-  }
+  };
 
-  if (index == slidesLength) {
-    const checkIndexFinishParams = { sliderItems, slideSize };
+  // shift after finish items
+  if (index === slidesLength + countItem) {
+    const checkIndexFinishParams = { sliderItems, slideSize, countItem };
     index = checkIndexFinish(checkIndexFinishParams);
   }
 
-  const setActiveclassToCurrentParams = { index, sliderItems, dots,countItem:truncResponsiveItemSize(config.responsive) };
+  //action on index end
+  if(index === 0){
+    const checkIndexFinishParams = { sliderItems, slidesLength, slideSize };
+    index = checkIndexEnd(checkIndexFinishParams);
+  }
+
+  const setActiveclassToCurrentParams = { index, sliderItems, dots,countItem };
   setActiveclassToCurrent(setActiveclassToCurrentParams);
   allowShift = sliderItemsRemoveClass(sliderItems);
 };
@@ -139,7 +153,7 @@ export const slide = () => {
   //store main slider before init
   orginSlider = sliderItems.cloneNode(true);
   setSliderItemsPosition({
-    indexItem: 2,
+    indexItem: truncResponsiveItemSize(config.responsive),
     sliderItemWidth,
     sliderItems,
   });
@@ -158,32 +172,35 @@ export const slide = () => {
     sliderItems
   };
   cloneNodeGenerator(cloneNodeGeneratorParams);
+
+
+  // init index for start
   index = truncResponsiveItemSize(config.responsive);
   
   // generate dots items
-  const dotsItemsParams = { slidesLength, dots };
-  dotsItemsGenerator(dotsItemsParams);
+  // const dotsItemsParams = { slidesLength, dots };
+  // dotsItemsGenerator(dotsItemsParams);
 
   // dots item click for transition on active index
-  dots.children.forEach((item, dotIndex) => {
-    item.addEventListener("click", () => {
-      const dotsItemsClickParams = {
-        sliderItems,
-        dots,
-        dotIndex,
-        index,
-        sliderItemWidth: calcSliderMainWidth(responsiveItemSize(responsive)),
-        slidesLength
-      };
-      const dotsItemsClickConst = dotsItemsClick(dotsItemsClickParams);
-      index = dotsItemsClickConst.index;
-      allowShift = dotsItemsClickConst.allowShift;
-      posInitial = dotsItemsClickConst.posInitial;
-    });
-  });
+  // dots.children.forEach((item, dotIndex) => {
+  //   item.addEventListener("click", () => {
+  //     const dotsItemsClickParams = {
+  //       sliderItems,
+  //       dots,
+  //       dotIndex,
+  //       index,
+  //       sliderItemWidth: calcSliderMainWidth(responsiveItemSize(responsive)),
+  //       slidesLength
+  //     };
+  //     const dotsItemsClickConst = dotsItemsClick(dotsItemsClickParams);
+  //     index = dotsItemsClickConst.index;
+  //     allowShift = dotsItemsClickConst.allowShift;
+  //     posInitial = dotsItemsClickConst.posInitial;
+  //   });
+  // });
 
   setActiveclassToCurrent({
-    index, sliderItems, dots, countItem:truncResponsiveItemSize(config.responsive)
+    sliderItems, countItem:truncResponsiveItemSize(config.responsive)
   });
 
   slider.classList.add("loaded");
