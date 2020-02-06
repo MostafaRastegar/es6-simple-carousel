@@ -84,18 +84,30 @@ export const dragAction = e => {
 export const dragEnd = e => {
   // checkIndex();
   // sliderItems.style["transform"] = setTranslate3d(-slidesLength * sliderItemWidth);
+  const countItem = truncResponsiveItemSize(config.responsive);
   posFinal = getTranslate3d(sliderItems);
   const calcIndex  = calcCurrentIndex(sliderItems);
   const setActiveclassToCurrentParams = {
     sliderItems,
-    countItem:truncResponsiveItemSize(config.responsive),
+    countItem
   };
   setActiveclassToCurrent(setActiveclassToCurrentParams);
   console.log('==================posFinal==================');
-  console.log(calcIndex);
+  console.log(calcIndex,slidesLength);
   console.log('====================================');
   index = calcIndex;
 
+  if(calcIndex === slidesLength || calcIndex === countItem){
+    // revert final item when drag
+    const dragEndCalcPositionParams = { 
+      sliderItemWidth:calcSliderMainWidth(responsiveItemSize(responsive)),
+      indexItem: index,
+      sliderItems,
+      slidesLength
+    };
+    setSliderItemsPosition(dragEndCalcPositionParams);
+  
+  }
   if (!(posFinal - posInitial < -threshold) && !(posFinal - posInitial > threshold)) {
     console.log('====================================');
     console.log('final');
