@@ -79,7 +79,6 @@ export const dragAction = e => {
      sliderItemWidth:calcSliderMainWidth(responsiveItemSize(responsive)),
     };
   dragActionCalcPosition(dragActionCalcPositionParams);
-
 };
 
 export const dragEnd = e => {
@@ -122,7 +121,7 @@ export const shiftSlide = (dir, action) => {
     if (!action) {
       posInitial = getTranslate3d(sliderItems);
     }
-    let shiftSlideParams = { sliderItems, index };
+    let shiftSlideParams = { sliderItems, posInitial, slideSize, index,slidesLength,dir };
     if (dir == 1) {
       index = shiftSlideIsDir(shiftSlideParams);
     } else if (dir == -1) {
@@ -135,7 +134,7 @@ export const shiftSlide = (dir, action) => {
 export const checkIndex = () => {
   const countItem = truncResponsiveItemSize(config.responsive);
   console.log('==============checkIndex======================');
-  console.log(index,slidesLength + countItem);
+  console.log(index,slidesLength,countItem);
   console.log('====================================');
 
   // shift to end from start item
@@ -145,7 +144,7 @@ export const checkIndex = () => {
   };
 
   // shift after finish items
-  if (index === slidesLength + countItem) {
+  if (index === slidesLength + countItem){
     const checkIndexFinishParams = { sliderItems, slideSize, countItem };
     index = checkIndexFinish(checkIndexFinishParams);
   }

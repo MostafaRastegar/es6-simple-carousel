@@ -56,20 +56,25 @@ export const sliderItemsRemoveClass = sliderItems => {
 };
 
 export const shiftSlideIsDir = params => {
-  let { sliderItems,index } = params;
-  // if(index > sliderItems.children.length){
-  //   return index;
-  // }
-  const calcTraslate3d = (index + 1) * -getTruncChildItems(responsiveItemSize(config.responsive));
-  sliderItems.style["transform"] = setTranslate3d(calcTraslate3d);
+  let { sliderItems,index,countItem,posInitial,slideSize } = params;
+  // // if(index > sliderItems.children.length){
+  // //   return index;
+  // // }
+  // const calcTraslate3d = (index + 1) * -getTruncChildItems(responsiveItemSize(config.responsive));
+  // sliderItems.style["transform"] = setTranslate3d(calcTraslate3d);
+  // return index + 1;
+  sliderItems.style["transform"] = setTranslate3d(posInitial - slideSize);
   return index + 1;
 };
 
 export const shiftSlideNonDir = params => {
-  let { sliderItems, index } = params;
-  const calcTraslate3d = (index - 1) * -getTruncChildItems(responsiveItemSize(config.responsive));
+  // let { sliderItems, index } = params;
+  // const calcTraslate3d = (index - 1) * -getTruncChildItems(responsiveItemSize(config.responsive));
 
-  sliderItems.style["transform"] = setTranslate3d(calcTraslate3d);
+  // sliderItems.style["transform"] = setTranslate3d(calcTraslate3d);
+  // return index - 1;
+  let { sliderItems, posInitial, slideSize, index } = params;
+  sliderItems.style["transform"] = setTranslate3d(posInitial + slideSize);
   return index - 1;
 };
 
