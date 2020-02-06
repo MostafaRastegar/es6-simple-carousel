@@ -27,7 +27,9 @@ import {
   responsiveItemSize,
   cloneNodeGenerator,
   truncResponsiveItemSize,
-  getTruncChildItems
+  getTruncChildItems,
+  setTranslate3d,
+  calcCurrentIndex
 } from "./utils";
 
 let { slider, sliderItems, prev, next, threshold, dots, responsive } = config;
@@ -72,35 +74,46 @@ export const dragAction = e => {
     posX1 = dragActionMousemovePosX1(e);
   }
   const dragActionCalcPositionParams = {
-     sliderItems, posX2,index,posInitial ,slidesLength,
+    sliderItems, posX2, slidesLength,
+    countItem:truncResponsiveItemSize(config.responsive),
      sliderItemWidth:calcSliderMainWidth(responsiveItemSize(responsive)),
-     posX1
     };
   dragActionCalcPosition(dragActionCalcPositionParams);
+
 };
 
 export const dragEnd = e => {
+  // checkIndex();
   // sliderItems.style["transform"] = setTranslate3d(-slidesLength * sliderItemWidth);
   posFinal = getTranslate3d(sliderItems);
-  if (posFinal - posInitial < -threshold) {
-    console.log('===============۱=====================');
-    console.log(posFinal,posInitial,threshold,index);
+  const calcIndex  = calcCurrentIndex(sliderItems);
+  const setActiveclassToCurrentParams = {
+    sliderItems,
+    countItem:truncResponsiveItemSize(config.responsive),
+  };
+  setActiveclassToCurrent(setActiveclassToCurrentParams);
+  console.log('==================posFinal==================');
+  console.log(calcIndex);
+  console.log('====================================');
+  index = calcIndex;
+
+  if (!(posFinal - posInitial < -threshold) && !(posFinal - posInitial > threshold)) {
     console.log('====================================');
-    // shiftSlide(1, "drag");
-  } else if (posFinal - posInitial > threshold) {
-    console.log('==============۲======================');
-    console.log(posFinal,posInitial,threshold,index);
+    console.log('final');
     console.log('====================================');
-    // shiftSlide(-1, "drag");
-  } else {
+    // console.log('========dragEnd============================');
+    // console.log(posInitial);
+    // console.log('====================================');
+    // sliderItems.style["transform"] = setTranslate3d(posInitial);
     const dragEndCalcPositionParams = { 
       sliderItemWidth:calcSliderMainWidth(responsiveItemSize(responsive)),
-      indexItem: 2,
+      indexItem: index,
       sliderItems,
       slidesLength
     };
     setSliderItemsPosition(dragEndCalcPositionParams);
   }
+  // if()
   mouseEventNull();
 };
 
@@ -109,7 +122,7 @@ export const shiftSlide = (dir, action) => {
     if (!action) {
       posInitial = getTranslate3d(sliderItems);
     }
-    let shiftSlideParams = { sliderItems, posInitial, slideSize, index,slidesLength,dir };
+    let shiftSlideParams = { sliderItems, index };
     if (dir == 1) {
       index = shiftSlideIsDir(shiftSlideParams);
     } else if (dir == -1) {
@@ -143,6 +156,7 @@ export const checkIndex = () => {
     index = checkIndexEnd(checkIndexFinishParams);
   }
 
+  // run for set active class
   const setActiveclassToCurrentParams = { index, sliderItems, dots,countItem };
   setActiveclassToCurrent(setActiveclassToCurrentParams);
   allowShift = sliderItemsRemoveClass(sliderItems);
