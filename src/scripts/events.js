@@ -18,7 +18,7 @@ import {
   dotsItemsGenerator,
   dotsItemsClick,
   sliderClientWidth,
-  calcSliderMainWidth,
+  calcSliderChildWidth,
   setSliderItemsChildWidth,
   setSliderItemsPosition,
   getTranslate3d,
@@ -26,10 +26,13 @@ import {
   slideItemGenerator,
   responsiveItemSize,
   cloneNodeGenerator,
-  truncResponsiveItemSize,
+  truncResponsiveItemCount,
+  calcFinalItemPosition,
   getTruncChildItems,
   setTranslate3d,
-  calcCurrentIndex
+  calcCurrentIndex,
+  calcSliderGroupCount,
+  calcTruncSlideItemSize,
 } from "./utils";
 
 let { slider, sliderItems, prev, next, threshold, dots, responsive } = config;
@@ -38,10 +41,11 @@ let posX1 = 0,
   posInitial,
   posFinal,
   slidesLength = 0,
+  sliderMainWidth = slider.clientWidth,
   // slideSize = sliderItems.getElementsByClassName("slide")[0].offsetWidth,
   orginSlider = [],
-  slideSize = calcSliderMainWidth(responsiveItemSize(responsive)),
-  sliderItemWidth = calcSliderMainWidth(responsiveItemSize(responsive)),
+  slideSize = calcSliderChildWidth(responsiveItemSize(responsive)),
+  sliderItemWidth = calcSliderChildWidth(responsiveItemSize(responsive)),
   index = 0,
   allowShift = true;
 
@@ -74,66 +78,66 @@ export const dragAction = e => {
     posX1 = dragActionMousemovePosX1(e);
   }
   const dragActionCalcPositionParams = {
-    sliderItems, posX2, slidesLength,
-    countItem:truncResponsiveItemSize(config.responsive),
-     sliderItemWidth:calcSliderMainWidth(responsiveItemSize(responsive)),
-    };
+    sliderItems,
+    posX2,
+    slidesLength,
+    countItem: truncResponsiveItemCount(config.responsive),
+    sliderItemWidth: calcSliderChildWidth(responsiveItemSize(responsive))
+  };
   dragActionCalcPosition(dragActionCalcPositionParams);
 };
 
 export const dragEnd = e => {
-  // checkIndex();
-  // sliderItems.style["transform"] = setTranslate3d(-slidesLength * sliderItemWidth);
-  const countItem = truncResponsiveItemSize(config.responsive);
+  const countItem = truncResponsiveItemCount(config.responsive);
   posFinal = getTranslate3d(sliderItems);
-  const calcIndex  = calcCurrentIndex(sliderItems);
+  const calcIndex = calcCurrentIndex(sliderItems);
   const setActiveclassToCurrentParams = {
     sliderItems,
     countItem
   };
   setActiveclassToCurrent(setActiveclassToCurrentParams);
-  console.log('==================posFinal==================');
-  console.log(calcIndex,slidesLength);
-  console.log('====================================');
   index = calcIndex;
-
-  if(calcIndex === slidesLength || calcIndex === countItem){
+  if (calcIndex > slidesLength && calcIndex < slidesLength + countItem) {
     // revert final item when drag
-    const dragEndCalcPositionParams = { 
-      sliderItemWidth:calcSliderMainWidth(responsiveItemSize(responsive)),
-      indexItem: index,
-      sliderItems,
-      slidesLength
-    };
-    setSliderItemsPosition(dragEndCalcPositionParams);
-  
+    sliderItems.style["transform"] = setTranslate3d(
+      posFinal - sliderItems.children[0].clientWidth
+    );
   }
-  if (!(posFinal - posInitial < -threshold) && !(posFinal - posInitial > threshold)) {
-    console.log('====================================');
-    console.log('final');
-    console.log('====================================');
-    // console.log('========dragEnd============================');
-    // console.log(posInitial);
-    // console.log('====================================');
-    // sliderItems.style["transform"] = setTranslate3d(posInitial);
-    const dragEndCalcPositionParams = { 
-      sliderItemWidth:calcSliderMainWidth(responsiveItemSize(responsive)),
+  if (calcIndex === slidesLength + countItem) {
+    sliderItems.style["transform"] = setTranslate3d(
+      posFinal - sliderItems.children[0].clientWidth
+    );
+  }
+  if (calcIndex === slidesLength || calcIndex === countItem) {
+    // revert final item when drag
+    const dragEndCalcPositionParams = {
+      sliderItemWidth: calcSliderChildWidth(responsiveItemSize(responsive)),
       indexItem: index,
       sliderItems,
       slidesLength
     };
     setSliderItemsPosition(dragEndCalcPositionParams);
   }
-  // if()
   mouseEventNull();
+  checkIndex();
 };
 
 export const shiftSlide = (dir, action) => {
+  const countItem = truncResponsiveItemCount(config.responsive);
   if (allowShift) {
     if (!action) {
       posInitial = getTranslate3d(sliderItems);
     }
-    let shiftSlideParams = { sliderItems, posInitial, slideSize, index,slidesLength,dir };
+    let shiftSlideParams = {
+      sliderItems,
+      posInitial,
+      slideSize,
+      index,
+      slidesLength,
+      countItem,
+      dir,
+      sliderMainWidth
+    };
     if (dir == 1) {
       index = shiftSlideIsDir(shiftSlideParams);
     } else if (dir == -1) {
@@ -144,43 +148,60 @@ export const shiftSlide = (dir, action) => {
 };
 
 export const checkIndex = () => {
-  const countItem = truncResponsiveItemSize(config.responsive);
-  console.log('==============checkIndex======================');
-  console.log(index,slidesLength,countItem);
   console.log('====================================');
+  console.log(index,slideSize,getTranslate3d(sliderItems));
+  console.log('====================================');
+  const countItem = truncResponsiveItemCount(config.responsive);
+  // const truncChild = getTruncChildItems(responsiveItemSize(config.responsive));
+  // const calcSliderGroupCountParams = {slidesLength, configResponsive:config.responsive};
+  // const truncChild = calcSliderGroupCount(calcSliderGroupCountParams);
+  // getTruncChildItems(2.5)
+  // console.log('=============================truncChild=======');
+  // console.log(slideSize * slidesLength);
+  // console.log('====================================');
+  if(index === countItem){
+    config.prev.style.display = "none";
+  }else{
+    config.prev.style.display = "block";
+  }
+
+  if(index >= slidesLength){
+    config.next.style.display = "none";
+  }else{
+    config.next.style.display = "block";
+  }
 
   // shift to end from start item
-  if (index == -1) {
-    const checkIndexEndParams = { sliderItems, slidesLength, slideSize };
-    index = checkIndexEnd(checkIndexEndParams);
-  };
+  // if (index == -1) {
+  //   const checkIndexEndParams = { sliderItems, slidesLength, slideSize };
+  //   index = checkIndexEnd(checkIndexEndParams);
+  // }
 
   // shift after finish items
-  if (index === slidesLength + countItem){
+  if (index === slidesLength + countItem) {
     const checkIndexFinishParams = { sliderItems, slideSize, countItem };
     index = checkIndexFinish(checkIndexFinishParams);
   }
 
   //action on index end
-  if(index === 0){
+  if (index === 0) {
     const checkIndexFinishParams = { sliderItems, slidesLength, slideSize };
     index = checkIndexEnd(checkIndexFinishParams);
   }
 
   // run for set active class
-  const setActiveclassToCurrentParams = { index, sliderItems, dots,countItem };
+  const setActiveclassToCurrentParams = { index, sliderItems, dots, countItem };
   setActiveclassToCurrent(setActiveclassToCurrentParams);
   allowShift = sliderItemsRemoveClass(sliderItems);
 };
 
 export const slide = () => {
-
   //store main slider before init
   orginSlider = sliderItems.cloneNode(true);
   setSliderItemsPosition({
-    indexItem: truncResponsiveItemSize(config.responsive),
+    indexItem: truncResponsiveItemCount(config.responsive),
     sliderItemWidth,
-    sliderItems,
+    sliderItems
   });
 
   // init slider for start
@@ -190,18 +211,16 @@ export const slide = () => {
   // Mouse events
   sliderItems.onmousedown = dragStart;
 
-
   // Clone first and last slide
   const cloneNodeGeneratorParams = {
-    countItem:truncResponsiveItemSize(config.responsive),
+    countItem: truncResponsiveItemCount(config.responsive),
     sliderItems
   };
   cloneNodeGenerator(cloneNodeGeneratorParams);
 
-
   // init index for start
-  index = truncResponsiveItemSize(config.responsive);
-  
+  index = truncResponsiveItemCount(config.responsive);
+
   // generate dots items
   // const dotsItemsParams = { slidesLength, dots };
   // dotsItemsGenerator(dotsItemsParams);
@@ -214,7 +233,7 @@ export const slide = () => {
   //       dots,
   //       dotIndex,
   //       index,
-  //       sliderItemWidth: calcSliderMainWidth(responsiveItemSize(responsive)),
+  //       sliderItemWidth: calcSliderChildWidth(responsiveItemSize(responsive)),
   //       slidesLength
   //     };
   //     const dotsItemsClickConst = dotsItemsClick(dotsItemsClickParams);
@@ -225,7 +244,8 @@ export const slide = () => {
   // });
 
   setActiveclassToCurrent({
-    sliderItems, countItem:truncResponsiveItemSize(config.responsive)
+    sliderItems,
+    countItem: truncResponsiveItemCount(config.responsive)
   });
 
   slider.classList.add("loaded");
@@ -236,10 +256,10 @@ export const slide = () => {
   sliderItems.addEventListener("touchmove", dragAction);
 
   // Click events
-  prev.addEventListener("click", function () {
+  prev.addEventListener("click", function() {
     shiftSlide(-1);
   });
-  next.addEventListener("click", function () {
+  next.addEventListener("click", function() {
     shiftSlide(1);
   });
 
