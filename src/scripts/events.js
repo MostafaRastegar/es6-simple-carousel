@@ -33,6 +33,7 @@ import {
   calcCurrentIndex,
   calcSliderGroupCount,
   calcTruncSlideItemSize,
+  setPageNumberOnChild
 } from "./utils";
 
 let { slider, sliderItems, prev, next, threshold, dots, responsive } = config;
@@ -82,7 +83,9 @@ export const dragAction = e => {
     posX2,
     slidesLength,
     countItem: truncResponsiveItemCount(config.responsive),
-    sliderItemWidth: calcSliderChildWidth(responsiveItemCount(responsive))
+    sliderItemWidth: calcSliderChildWidth(responsiveItemCount(responsive)),
+    slideSize,
+    sliderMainWidth
   };
   dragActionCalcPosition(dragActionCalcPositionParams);
 };
@@ -137,7 +140,7 @@ export const shiftSlide = (dir, action) => {
       countItem,
       dir,
       sliderMainWidth,
-      responsiveItem:responsiveItemCount(responsive)
+      responsiveItem: responsiveItemCount(responsive),
     };
     if (dir == 1) {
       index = shiftSlideIsDir(shiftSlideParams);
@@ -151,28 +154,29 @@ export const shiftSlide = (dir, action) => {
 export const checkIndex = () => {
   const countItem = truncResponsiveItemCount(config.responsive);
 
-  if(index === countItem){
+  if (index === countItem) {
     config.prev.style.display = "none";
-  }else{
+  } else {
     config.prev.style.display = "block";
   }
 
-  if(index >= slidesLength){
+  if (index >= slidesLength) {
     config.next.style.display = "none";
-  }else{
+  } else {
     config.next.style.display = "block";
   }
 
   // shift to end from start item
-  // if (index == -1) {
-  //   const checkIndexEndParams = { sliderItems, slidesLength, slideSize };
-  //   index = checkIndexEnd(checkIndexEndParams);
-  // }
+  if (index == -1) {
+    // const checkIndexEndParams = { sliderItems, slidesLength, slideSize };
+    // index = checkIndexEnd(checkIndexEndParams);
+  }
 
   // shift after finish items
   if (index === slidesLength + countItem) {
     const checkIndexFinishParams = { sliderItems, slideSize, countItem };
     index = checkIndexFinish(checkIndexFinishParams);
+
   }
 
   //action on index end
@@ -185,6 +189,16 @@ export const checkIndex = () => {
   const setActiveclassToCurrentParams = { index, sliderItems, dots, countItem };
   setActiveclassToCurrent(setActiveclassToCurrentParams);
   allowShift = sliderItemsRemoveClass(sliderItems);
+  const currentDataPage = sliderItems.children[index + 1].getAttribute('data-page');
+  const currentDot = dots.children[currentDataPage - 1];
+  dots.children.forEach(child => {
+    child.classList.remove('active');
+  });
+  currentDot.classList.add('active');
+  console.log('============188 event========================');
+  console.log(currentDot, currentDataPage, sliderItems.children[index + 1]);
+  console.log('====================================');
+
 };
 
 export const slide = () => {
@@ -214,9 +228,10 @@ export const slide = () => {
   index = truncResponsiveItemCount(config.responsive);
 
   // generate dots items
-  // const dotsItemsParams = { slidesLength, dots };
-  // dotsItemsGenerator(dotsItemsParams);
+  const dotsItemsParams = { slidesLength, configResponsive: responsive, dots, sliderItems };
+  dotsItemsGenerator(dotsItemsParams);
 
+  setPageNumberOnChild(dotsItemsParams);
   // dots item click for transition on active index
   // dots.children.forEach((item, dotIndex) => {
   //   item.addEventListener("click", () => {
@@ -248,10 +263,10 @@ export const slide = () => {
   sliderItems.addEventListener("touchmove", dragAction);
 
   // Click events
-  prev.addEventListener("click", function() {
+  prev.addEventListener("click", function () {
     shiftSlide(-1);
   });
-  next.addEventListener("click", function() {
+  next.addEventListener("click", function () {
     shiftSlide(1);
   });
 

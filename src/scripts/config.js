@@ -14,7 +14,7 @@ export default {
       items: 1
     },
     760:{
-      items: 1.5
+      items: 2.5
     }
   }
 };
