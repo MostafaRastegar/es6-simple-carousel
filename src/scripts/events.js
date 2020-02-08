@@ -24,7 +24,7 @@ import {
   getTranslate3d,
   arrGenerator,
   slideItemGenerator,
-  responsiveItemSize,
+  responsiveItemCount,
   cloneNodeGenerator,
   truncResponsiveItemCount,
   calcFinalItemPosition,
@@ -44,8 +44,8 @@ let posX1 = 0,
   sliderMainWidth = slider.clientWidth,
   // slideSize = sliderItems.getElementsByClassName("slide")[0].offsetWidth,
   orginSlider = [],
-  slideSize = calcSliderChildWidth(responsiveItemSize(responsive)),
-  sliderItemWidth = calcSliderChildWidth(responsiveItemSize(responsive)),
+  slideSize = calcSliderChildWidth(responsiveItemCount(responsive)),
+  sliderItemWidth = calcSliderChildWidth(responsiveItemCount(responsive)),
   index = 0,
   allowShift = true;
 
@@ -82,7 +82,7 @@ export const dragAction = e => {
     posX2,
     slidesLength,
     countItem: truncResponsiveItemCount(config.responsive),
-    sliderItemWidth: calcSliderChildWidth(responsiveItemSize(responsive))
+    sliderItemWidth: calcSliderChildWidth(responsiveItemCount(responsive))
   };
   dragActionCalcPosition(dragActionCalcPositionParams);
 };
@@ -111,7 +111,7 @@ export const dragEnd = e => {
   if (calcIndex === slidesLength || calcIndex === countItem) {
     // revert final item when drag
     const dragEndCalcPositionParams = {
-      sliderItemWidth: calcSliderChildWidth(responsiveItemSize(responsive)),
+      sliderItemWidth: calcSliderChildWidth(responsiveItemCount(responsive)),
       indexItem: index,
       sliderItems,
       slidesLength
@@ -136,7 +136,8 @@ export const shiftSlide = (dir, action) => {
       slidesLength,
       countItem,
       dir,
-      sliderMainWidth
+      sliderMainWidth,
+      responsiveItem:responsiveItemCount(responsive)
     };
     if (dir == 1) {
       index = shiftSlideIsDir(shiftSlideParams);
@@ -148,17 +149,8 @@ export const shiftSlide = (dir, action) => {
 };
 
 export const checkIndex = () => {
-  console.log('====================================');
-  console.log(index,slideSize,getTranslate3d(sliderItems));
-  console.log('====================================');
   const countItem = truncResponsiveItemCount(config.responsive);
-  // const truncChild = getTruncChildItems(responsiveItemSize(config.responsive));
-  // const calcSliderGroupCountParams = {slidesLength, configResponsive:config.responsive};
-  // const truncChild = calcSliderGroupCount(calcSliderGroupCountParams);
-  // getTruncChildItems(2.5)
-  // console.log('=============================truncChild=======');
-  // console.log(slideSize * slidesLength);
-  // console.log('====================================');
+
   if(index === countItem){
     config.prev.style.display = "none";
   }else{
@@ -233,7 +225,7 @@ export const slide = () => {
   //       dots,
   //       dotIndex,
   //       index,
-  //       sliderItemWidth: calcSliderChildWidth(responsiveItemSize(responsive)),
+  //       sliderItemWidth: calcSliderChildWidth(responsiveItemCount(responsive)),
   //       slidesLength
   //     };
   //     const dotsItemsClickConst = dotsItemsClick(dotsItemsClickParams);
