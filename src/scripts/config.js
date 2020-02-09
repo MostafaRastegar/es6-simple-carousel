@@ -12,7 +12,7 @@ export default {
       items:2
     },
     560:{
-      items: 3
+      items: 2.5
     },
     760:{
       items: 3

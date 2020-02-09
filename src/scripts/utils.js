@@ -101,6 +101,8 @@ export const shiftSlideIsDir = params => {
       calcFinalItemPosition(calcFinalItemPositionParams)
     );
     nextNone();
+    prevBlock();
+
     return index + countItem;
   }
 
@@ -243,23 +245,26 @@ export const dotsItemsClick = params => {
     slideSize,
     slidesLength,
     sliderItems,
-    sliderMainWidth
+    sliderMainWidth,
+    infinite,
+    dotIndex
   } = params;
-  // const configResponsive = config.responsive;
-  // const newDotIndex = (dotIndex + 1) * truncResponsiveItemCount(configResponsive);
+  const configResponsive = config.responsive;
+  const newDotIndex = (dotIndex + 1) * truncResponsiveItemCount(configResponsive);
   setSliderItemsPositionAfterDotClick({
     indexItem,
     slideSize,
     sliderItems,
     slidesLength,
     sliderMainWidth,
-    countItem
+    countItem,
+    infinite
   });
-  // return {
-  //   index: newDotIndex,
-  //   allowShift: sliderItemsAddClass(sliderItems),
-  //   posInitial: getTranslate3d(sliderItems)
-  // };
+  return {
+    index: newDotIndex,
+    allowShift: sliderItemsAddClass(sliderItems),
+    posInitial: getTranslate3d(sliderItems)
+  };
 };
 
 export const dotsItemsGenerator = params => {
@@ -269,7 +274,7 @@ export const dotsItemsGenerator = params => {
     i < calcSliderGroupCount({ configResponsive, slidesLength });
     i++
   ) {
-    dots.innerHTML += `<li class="dots-item" data-dot-index="${i + 1}">${i +
+    dots.innerHTML += `<li class="dots-item${!i && ' active'}" data-dot-index="${i + 1}">${i +
       1}</li>`;
   }
 };
@@ -356,9 +361,11 @@ export const setSliderItemsPositionAfterDotClick = params => {
     sliderItems,
     sliderMainWidth,
     countItem,
-    slidesLength
+    slidesLength,
+    infinite
   } = params;
-  if (indexItem > slidesLength) {
+
+  if (indexItem * countItem > slidesLength) {
     const calcFinalItemPositionParams = {
       slideSize,
       slidesLength,
@@ -367,13 +374,22 @@ export const setSliderItemsPositionAfterDotClick = params => {
       infinite
     };
 
-    return (sliderItems.style["transform"] = setTranslate3d(
+    sliderItems.style["transform"] = setTranslate3d(
       calcFinalItemPosition(calcFinalItemPositionParams)
-    ));
+    );
+    nextNone();
+    prevBlock();
+    return true;
+  };
+
+  nextBlock();
+  prevBlock();
+
+  if(indexItem === 0){
+      nextBlock();
+      prevNone();
   }
-  return (sliderItems.style["transform"] = setTranslate3d(
-    indexItem * -slideSize
-  ));
+  sliderItems.style["transform"] = setTranslate3d(indexItem * -slideSize);
 };
 
 export const setTranslate3d = getValue => `translate3d(${getValue}px,0px,0px)`;

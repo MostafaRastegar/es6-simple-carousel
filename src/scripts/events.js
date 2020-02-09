@@ -268,10 +268,7 @@ export const slide = () => {
   // Clone first and last slide
   if(infinite){
     const cloneNodeGeneratorParams = {
-      countItem: switchInfiniteResponsiveCount(
-        truncResponsiveItemCount(config.responsive),
-        infinite
-      ),
+      countItem,
       sliderItems
     };
     cloneNodeGenerator(cloneNodeGeneratorParams);
@@ -281,40 +278,42 @@ export const slide = () => {
   index = countItem;
 
   // generate dots items
-    const dotsItemsParams = {
-      slidesLength,
-      configResponsive: responsive,
-      dots,
-      sliderItems
-    };
-    dotsItemsGenerator(dotsItemsParams);
+  //   const dotsItemsParams = {
+  //     slidesLength,
+  //     configResponsive: responsive,
+  //     dots,
+  //     sliderItems
+  //   };
+  //   dotsItemsGenerator(dotsItemsParams);
 
-  setPageNumberOnChild(dotsItemsParams);
-  // dots item click for transition on active index
-  dots.children.forEach((item) => {
-    item.addEventListener("click", () => {
-      dots.children.forEach(child => {
-        child.classList.remove("active");
-      });
-      item.classList.add("active");
-      const dotIndex = parseInt(item.getAttribute('data-dot-index'));
-      const indexItem = countItem * dotIndex;
-      const dotsItemsClickParams = {
-        indexItem,
-        sliderItemWidth,
-        sliderMainWidth,
-        sliderItems,
-        slidesLength,
-        countItem,
-        slideSize,
-      };
-      dotsItemsClick(dotsItemsClickParams);
-      // const dotsItemsClickConst = dotsItemsClick(dotsItemsClickParams);
-      // index = dotsItemsClickConst.index;
-      // allowShift = dotsItemsClickConst.allowShift;
-      // posInitial = dotsItemsClickConst.posInitial;
-    });
-  });
+  // setPageNumberOnChild(dotsItemsParams);
+  // // dots item click for transition on active index
+  // dots.children.forEach((item) => {
+  //   item.addEventListener("click", () => {
+  //     dots.children.forEach(child => {
+  //       child.classList.remove("active");
+  //     });
+  //     item.classList.add("active");
+  //     const dotIndex = parseInt(item.getAttribute('data-dot-index'));
+  //     const indexItem =  truncResponsiveItemCount(config.responsive) * (dotIndex-1);
+  //     const dotsItemsClickParams = {
+  //       indexItem,
+  //       sliderItemWidth,
+  //       sliderMainWidth,
+  //       sliderItems,
+  //       slidesLength,
+  //       countItem:truncResponsiveItemCount(config.responsive),
+  //       slideSize,
+  //       infinite,
+  //       dotIndex
+  //     };
+  //     dotsItemsClick(dotsItemsClickParams);
+  //     const dotsItemsClickConst = dotsItemsClick(dotsItemsClickParams);
+  //     index = dotsItemsClickConst.index;
+  //     allowShift = dotsItemsClickConst.allowShift;
+  //     posInitial = dotsItemsClickConst.posInitial;
+  //   });
+  // });
 
   setActiveclassToCurrent({
     sliderItems,
