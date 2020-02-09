@@ -153,9 +153,6 @@ export const dragEnd = e => {
     };
     setSliderItemsPosition(dragEndCalcPositionParams);
   }
-  console.log('====================================');
-  console.log(calcIndex,countItem,calcFinalItemPositionConst);
-  console.log('====================================');
   if (!infinite && getTranslate3d(sliderItems) <= threshold && getTranslate3d(sliderItems) >=0) {
     sliderItems.style["transform"] = setTranslate3d(0);
     prevNone();
@@ -163,9 +160,6 @@ export const dragEnd = e => {
   }
 
   if (infinite && calcIndex === slidesLength) {
-    console.log("====================================");
-    console.log(4);
-    console.log("====================================");
     sliderItems.style["transform"] = setTranslate3d(calcFinalItemPositionConst);
   }
 
@@ -235,13 +229,6 @@ export const checkIndex = () => {
   if (!infinite && index === 0) {
     prevNone();
     nextBlock();
-  }
-  console.log('==========index==========================');
-  console.log((index * countItem),slidesLength);
-  console.log('====================================');
-  if (!infinite && (index * countItem) >= slidesLength) {
-    nextNone();
-    prevBlock();
   }
 
   // run for set active class
