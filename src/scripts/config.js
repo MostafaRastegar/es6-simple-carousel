@@ -6,6 +6,7 @@ export default {
   next: document.getElementById('next'),
   threshold: 50,
   items:3,
+  infinite: false,
   responsive: {
     0:{
       items:2
@@ -14,7 +15,7 @@ export default {
       items: 4.5
     },
     760:{
-      items: 2.5
+      items: 3
     }
   }
 };

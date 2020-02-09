@@ -31,7 +31,8 @@ export const dragActionCalcPosition = params => {
     sliderItemWidth,
     countItem,
     slideSize,
-    sliderMainWidth
+    sliderMainWidth,
+    infinite
   } = params;
 
   // stop scroll when firstItem go to lastItem on drag
@@ -46,9 +47,10 @@ export const dragActionCalcPosition = params => {
       slideSize,
       slidesLength,
       sliderMainWidth,
-      countItem
+      countItem,
+      infinite
     }) -
-      50
+    50
   ) {
     return false;
   }
@@ -81,21 +83,33 @@ export const shiftSlideIsDir = params => {
     slideSize,
     slidesLength,
     sliderMainWidth,
-    responsiveItem
+    responsiveItem,
+    infinite,
   } = params;
-  if (index + countItem >= slidesLength && responsiveItem !== 1) {
+  const newSlidesLength = infinite ? slidesLength : slidesLength -1;
+
+console.log('==========params==========================');
+console.log(params);
+console.log('====================================');
+
+
+
+
+  if (index + countItem >= newSlidesLength && responsiveItem !== 1) {
     const calcFinalItemPositionParams = {
       slideSize,
       slidesLength,
       sliderMainWidth,
-      countItem
+      countItem,
+      infinite
     };
 
     sliderItems.style["transform"] = setTranslate3d(
       calcFinalItemPosition(calcFinalItemPositionParams)
-    );
-    return index + countItem;
-  }
+      );
+      nextNone();
+      return index + countItem;
+    }
   sliderItems.style["transform"] = setTranslate3d(
     -(index + countItem) * slideSize
   );
@@ -103,14 +117,10 @@ export const shiftSlideIsDir = params => {
 };
 
 export const shiftSlideNonDir = params => {
-  // let { sliderItems, index } = params;
-  // const calcTraslate3d = (index - 1) * -getTruncChildItems(responsiveItemCount(config.responsive));
-
-  // sliderItems.style["transform"] = setTranslate3d(calcTraslate3d);
-  // return index - 1;
-  let { sliderItems, slideSize, index, countItem } = params;
-  if (index - countItem <= countItem && index !== -1) {
-    const calcFirstItemPositionParams = { slideSize, countItem };
+  let { sliderItems, slideSize, index, countItem,infinite } = params;
+  const infinitCountItem = infinite ? countItem : 0;
+  if (index - infinitCountItem <= countItem && index !== -1) {
+    const calcFirstItemPositionParams = { slideSize, countItem, infinite };
     sliderItems.style["transform"] = setTranslate3d(
       calcFirstItemPosition(calcFirstItemPositionParams)
     );
@@ -134,17 +144,33 @@ export const checkIndexFinish = params => {
   return countItem;
 };
 
-export const calcCurrentIndex = sliderItems => {
-  return Math.abs(
-    Math.floor(
-      getTranslate3d(sliderItems) / sliderItems.children[0].clientWidth
-    )
-  );
+export const calcCurrentIndex = params => {
+  const {sliderItems,infinite,countItem,slideSize,sliderMainWidth} = params;
+
+  if(infinite){
+    return Math.abs(
+      Math.floor(
+        getTranslate3d(sliderItems) / sliderItems.children[0].clientWidth
+      )
+    );
+  }
+
+  if(getTranslate3d(sliderItems) === 0){
+    return 0;
+  }
+
+  if(Math.abs(getTranslate3d(sliderItems)) > 0){
+    const scroll = Math.abs(getTranslate3d(sliderItems));
+    return Math.trunc(((scroll + sliderMainWidth) / slideSize) - countItem);
+  }
+
 };
 
 export const setActiveclassToCurrent = params => {
-  const { sliderItems, countItem } = params;
-  const activeIndex = calcCurrentIndex(sliderItems);
+  const { sliderItems, countItem,infinit,   slideSize,
+    sliderMainWidth } = params;
+  const activeIndex = calcCurrentIndex({ sliderItems, countItem,infinit,    slideSize,
+    sliderMainWidth });
   const configCount = countItem;
   const activeItems = [];
   [...Array(configCount).keys()].forEach(item =>
@@ -190,10 +216,7 @@ export const setActiveclassToCurrent = params => {
 };
 
 export const dotsItemsClick = params => {
-  console.log("================params====================");
-  console.log(params);
-  console.log("====================================");
-  const { indexItem, countItem, slideSize, slidesLength, sliderItems,sliderMainWidth } = params;
+  const { indexItem, countItem, slideSize, slidesLength, sliderItems, sliderMainWidth } = params;
   // const configResponsive = config.responsive;
   // const newDotIndex = (dotIndex + 1) * truncResponsiveItemCount(configResponsive);
   setSliderItemsPositionAfterDotClick({
@@ -239,14 +262,15 @@ export const getTruncChildItems = items => {
 };
 
 export const calcFinalItemPosition = params => {
-  const { slideSize, sliderMainWidth, countItem, slidesLength } = params;
-  const totalDistanceToFinal = slidesLength * slideSize;
+  const { slideSize, sliderMainWidth, countItem, slidesLength,infinite } = params;
+  const infiniteSlideLength = infinite ? slidesLength : (slidesLength-countItem);
+  const totalDistanceToFinal = infiniteSlideLength * slideSize;
   return -(totalDistanceToFinal - (sliderMainWidth - slideSize * countItem));
 };
 
 export const calcFirstItemPosition = params => {
-  const { slideSize, countItem } = params;
-  return -(slideSize * countItem);
+  const { slideSize, countItem, infinite } = params;
+  return -((infinite ? slideSize : 0) * countItem);
 };
 
 export const calcSliderGroupCount = params => {
@@ -290,29 +314,24 @@ export const setSliderItemsPosition = params => {
 };
 
 export const setSliderItemsPositionAfterDotClick = params => {
-  const {     
+  const {
     indexItem,
     slideSize,
     sliderItems,
     sliderMainWidth,
     countItem,
-    slidesLength} = params;
-    console.log('====================================');
-    console.log(params);
-    console.log('====================================');
-    if(indexItem > slidesLength){
-      console.log('======indexItem > slidesLength==============================');
-      console.log(indexItem, slidesLength);
-      console.log('====================================');
-      const calcFinalItemPositionParams = {
-        slideSize,
-        slidesLength,
-        sliderMainWidth,
-        countItem
-      };
+    slidesLength } = params;
+  if (indexItem > slidesLength) {
+    const calcFinalItemPositionParams = {
+      slideSize,
+      slidesLength,
+      sliderMainWidth,
+      countItem,
+      infinite
+    };
 
-      return sliderItems.style["transform"] = setTranslate3d(calcFinalItemPosition(calcFinalItemPositionParams));
-    }
+    return sliderItems.style["transform"] = setTranslate3d(calcFinalItemPosition(calcFinalItemPositionParams));
+  }
   return sliderItems.style["transform"] = setTranslate3d(indexItem * -slideSize);
 };
 
@@ -416,3 +435,13 @@ export const setPageNumberOnChild = params => {
     item.setAttribute("data-page", Math.trunc(itemIndex / countItem));
   });
 };
+
+
+export const switchInfiniteResponsiveCount = (itemCont, infinite) => {
+  return infinite ? itemCont : 0;
+};
+
+export const prevNone = () => config.prev.style.display = "none";
+export const prevBlock = () => config.prev.style.display = "block";
+export const nextNone = () => config.next.style.display = "none";
+export const nextBlock = () => config.next.style.display = "block";
