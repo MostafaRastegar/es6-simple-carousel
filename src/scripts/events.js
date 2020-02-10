@@ -1,13 +1,4 @@
-import config from "./config";
 import {
-  caroueslTouchStart,
-  caroueslDragAction,
-  dragActionTouchmovePosX1,
-  dragActionTouchmovePosX2,
-  dragActionMousemovePosX1,
-  dragActionMousemove,
-  dragActionCalcPosition,
-  mouseEventNull,
   sliderItemsAddClass,
   sliderItemsRemoveClass,
   shiftSlideIsDir,
@@ -41,6 +32,18 @@ import {
   nextBlock
 } from "./utils";
 
+import {
+  caroueslDragAction,
+  caroueslTouchStart,
+  dragActionCalcPosition,
+  dragActionMousemove,
+  dragActionMousemovePosX1,
+  dragActionTouchmovePosX1,
+  dragActionTouchmovePosX2,
+  mouseEventNull,
+  dragStart
+} from './dragEvent';
+
 let
   sliderSelector=null,
   dotsSelector=null,
@@ -55,28 +58,12 @@ let
   posFinal,
   slidesLength = 0,
   sliderMainWidth = 0,
-  // slideSize = sliderItems.getElementsByClassName("slide")[0].offsetWidth,
   orginSlider = [],
   slideSize = 0,
   sliderItemWidth = 0,
   index = 0,
   allowShift = true;
-export const dragStart = e => {
-  e = e || window.event;
-  e.preventDefault();
-  posInitial = getTranslate3d(sliderItems);
 
-  if (e.type == "touchstart") {
-    posX1 = caroueslTouchStart(e);
-  } else {
-    const dragActionParams = {
-      e,
-      dragEnd,
-      dragAction
-    };
-    posX1 = caroueslDragAction(dragActionParams);
-  }
-};
 
 export const dragAction = e => {
   e = e || window.event;
@@ -291,16 +278,20 @@ export const slide = (slideConfig) => {
       sliderItemWidth,
       sliderItems
     });
-    console.log('====================================');
-    console.log(countItem);
-    console.log('====================================');
 
   // // init slider for start
   const slides = sliderItems.children;
   slidesLength = slides.length;
 
+  const dragStartCall = (e) => {
+    let dragStartParams = {e,sliderItems,dragEnd,dragAction};
+    const dragStartResult = dragStart(dragStartParams);
+    posInitial = dragStartResult.posInitial;
+    posX1 = dragStartResult.posX1;
+  };
+
   // // Mouse events
-  sliderItems.onmousedown = dragStart;
+  sliderItems.onmousedown = dragStartCall;
 
   // // Clone first and last slide
   if(infinite){
@@ -325,7 +316,7 @@ export const slide = (slideConfig) => {
   slider.classList.add("loaded");
 
   // // Touch events
-  sliderItems.addEventListener("touchstart", dragStart);
+  sliderItems.addEventListener("touchstart", dragStartCall);
   sliderItems.addEventListener("touchend", dragEnd);
   sliderItems.addEventListener("touchmove", dragAction);
   // // Transition events
