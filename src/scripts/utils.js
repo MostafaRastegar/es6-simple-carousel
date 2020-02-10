@@ -30,7 +30,7 @@ export const shiftSlideIsDir = params => {
     infinite
   };
 
-  if (index + countItem >= newSlidesLength && responsiveItem !== 1) {
+  if (!infinite && index + countItem >= newSlidesLength && responsiveItem !== 1) {
     sliderItems.style["transform"] = setTranslate3d(
       calcFinalItemPosition(calcFinalItemPositionParams)
     );
@@ -63,7 +63,7 @@ export const shiftSlideNonDir = params => {
 
   const infinitCountItem = infinite ? countItem : 0;
 
-  if (index - infinitCountItem <= countItem && index !== -1) {
+  if (!infinite && index - infinitCountItem <= countItem && index !== -1) {
     const calcFirstItemPositionParams = { slideSize, countItem, infinite };
     sliderItems.style["transform"] = setTranslate3d(
       calcFirstItemPosition(calcFirstItemPositionParams)

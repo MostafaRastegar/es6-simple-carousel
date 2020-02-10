@@ -139,20 +139,20 @@ export const dragEnd = e => {
       posFinal - sliderItems.children[0].clientWidth
     );
   }
-  if (infinite && calcIndex === countItem) {
-    // revert to final item when drag end
-    const dragEndCalcPositionParams = {
-      sliderItemWidth: calcSliderChildWidth({
-        responsiveItemCount:responsiveItemCount(responsive),
-        slider,
-      }),
-      indexItem: index,
-      sliderItems,
-      slidesLength,
-      infinite
-    };
-    setSliderItemsPosition(dragEndCalcPositionParams);
-  }
+  // if (infinite && calcIndex === countItem) {
+  //   // revert to final item when drag end
+  //   const dragEndCalcPositionParams = {
+  //     sliderItemWidth: calcSliderChildWidth({
+  //       responsiveItemCount:responsiveItemCount(responsive),
+  //       slider,
+  //     }),
+  //     indexItem: index,
+  //     sliderItems,
+  //     slidesLength,
+  //     infinite
+  //   };
+  //   setSliderItemsPosition(dragEndCalcPositionParams);
+  // }
   if (!infinite && getTranslate3d(sliderItems) <= threshold && getTranslate3d(sliderItems) >=0) {
     sliderItems.style["transform"] = setTranslate3d(0);
     prevNone(sliderSelector);
