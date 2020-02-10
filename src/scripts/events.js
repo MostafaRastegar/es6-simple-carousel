@@ -17,22 +17,22 @@ import {
   setActiveclassToCurrent,
   dotsItemsGenerator,
   dotsItemsClick,
-  sliderClientWidth,
+  // sliderClientWidth,
   calcSliderChildWidth,
   setSliderItemsChildWidth,
   setSliderItemsPosition,
   getTranslate3d,
   arrGenerator,
-  slideItemGenerator,
+  // slideItemGenerator,
   responsiveItemCount,
   cloneNodeGenerator,
   truncResponsiveItemCount,
   calcFinalItemPosition,
-  getTruncChildItems,
+  // getTruncChildItems,
   setTranslate3d,
   calcCurrentIndex,
   calcSliderGroupCount,
-  calcTruncSlideItemSize,
+  // calcTruncSlideItemSize,
   setPageNumberOnChild,
   switchInfiniteResponsiveCount,
   prevNone,
@@ -41,20 +41,26 @@ import {
   nextBlock
 } from "./utils";
 
-let { slider, sliderItems, prev, next, threshold, dots, responsive,infinite } = config;
-let posX1 = 0,
+let
+  sliderSelector=null,
+  dotsSelector=null,
+  posX1 = 0,
   posX2 = 0,
+  responsive=null,
+  infinite=false,
+  threshold=0,
+  slider=null,
+  sliderItems=null,
   posInitial,
   posFinal,
   slidesLength = 0,
-  sliderMainWidth = slider.clientWidth,
+  sliderMainWidth = 0,
   // slideSize = sliderItems.getElementsByClassName("slide")[0].offsetWidth,
   orginSlider = [],
-  slideSize = calcSliderChildWidth(responsiveItemCount(responsive)),
-  sliderItemWidth = calcSliderChildWidth(responsiveItemCount(responsive)),
+  slideSize = 0,
+  sliderItemWidth = 0,
   index = 0,
   allowShift = true;
-
 export const dragStart = e => {
   e = e || window.event;
   e.preventDefault();
@@ -85,13 +91,17 @@ export const dragAction = e => {
   }
   const dragActionCalcPositionParams = {
     sliderItems,
+    threshold,
     posX2,
     slidesLength,
     countItem: switchInfiniteResponsiveCount(
-      truncResponsiveItemCount(config.responsive),
+      truncResponsiveItemCount(responsive),
       infinite
     ),
-    sliderItemWidth: calcSliderChildWidth(responsiveItemCount(responsive)),
+    sliderItemWidth: calcSliderChildWidth({
+      responsiveItemCount:responsiveItemCount(responsive),
+      slider,
+    }),
     slideSize,
     sliderMainWidth,
     infinite
@@ -100,7 +110,7 @@ export const dragAction = e => {
 };
 
 export const dragEnd = e => {
-  const countItem = truncResponsiveItemCount(config.responsive);
+  const countItem = truncResponsiveItemCount(responsive);
   const calcFinalItemPositionConst =  calcFinalItemPosition({
     slideSize,
     slidesLength,
@@ -127,8 +137,8 @@ export const dragEnd = e => {
   index = calcIndex;
 
   if(!infinite){
-    prevBlock();
-    nextBlock();
+    prevBlock(sliderSelector);
+    nextBlock(sliderSelector);
   }
   if (calcIndex > slidesLength && calcIndex < slidesLength + countItem) {
     sliderItems.style["transform"] = setTranslate3d(calcFinalItemPositionConst);
@@ -145,7 +155,10 @@ export const dragEnd = e => {
   if (infinite && calcIndex === countItem) {
     // revert to final item when drag end
     const dragEndCalcPositionParams = {
-      sliderItemWidth: calcSliderChildWidth(responsiveItemCount(responsive)),
+      sliderItemWidth: calcSliderChildWidth({
+        responsiveItemCount:responsiveItemCount(responsive),
+        slider,
+      }),
       indexItem: index,
       sliderItems,
       slidesLength,
@@ -155,8 +168,8 @@ export const dragEnd = e => {
   }
   if (!infinite && getTranslate3d(sliderItems) <= threshold && getTranslate3d(sliderItems) >=0) {
     sliderItems.style["transform"] = setTranslate3d(0);
-    prevNone();
-    nextBlock();
+    prevNone(sliderSelector);
+    nextBlock(sliderSelector);
   }
 
   if (infinite && calcIndex === slidesLength) {
@@ -165,8 +178,8 @@ export const dragEnd = e => {
 
   if(!infinite && getTranslate3d(sliderItems) <= calcFinalItemPositionConst){
     sliderItems.style["transform"] = setTranslate3d(calcFinalItemPositionConst);
-    nextNone();
-    prevBlock();
+    nextNone(sliderSelector);
+    prevBlock(sliderSelector);
   }
 
 
@@ -175,7 +188,7 @@ export const dragEnd = e => {
 };
 
 export const shiftSlide = (dir, action) => {
-  const countItem = truncResponsiveItemCount(config.responsive);
+  const countItem = truncResponsiveItemCount(responsive);
   if (allowShift) {
     if (!action) {
       posInitial = getTranslate3d(sliderItems);
@@ -190,7 +203,8 @@ export const shiftSlide = (dir, action) => {
       dir,
       sliderMainWidth,
       responsiveItem: responsiveItemCount(responsive),
-      infinite
+      infinite,
+      sliderSelector
     };
     if (dir == 1) {
       index = shiftSlideIsDir(shiftSlideParams);
@@ -202,11 +216,11 @@ export const shiftSlide = (dir, action) => {
 };
 
 export const checkIndex = () => {
-  const countItem = truncResponsiveItemCount(config.responsive);
-  const countItemInfinit = switchInfiniteResponsiveCount(
-    truncResponsiveItemCount(config.responsive),
-    infinite
-  );
+  const countItem = truncResponsiveItemCount(responsive);
+  // const countItemInfinit = switchInfiniteResponsiveCount(
+  //   truncResponsiveItemCount(responsive),
+  //   infinite
+  // );
 
   // shift to end from start item
   if (index == -1) {
@@ -227,45 +241,68 @@ export const checkIndex = () => {
   }
 
   if (!infinite && index === 0) {
-    prevNone();
-    nextBlock();
+    prevNone(sliderSelector);
+    nextBlock(sliderSelector);
   }
 
   // run for set active class
-  const setActiveclassToCurrentParams = { index, sliderItems, dots, countItem,infinite,    slideSize,
+  const setActiveclassToCurrentParams = { index, sliderItems, dotsSelector, countItem,infinite,    slideSize,
     sliderMainWidth };
   setActiveclassToCurrent(setActiveclassToCurrentParams);
   allowShift = sliderItemsRemoveClass(sliderItems);
   // const currentDataPage = sliderItems.children[index + 1].getAttribute("data-page");
-  // const currentDot = dots.children[currentDataPage - 1];
-  // dots.children.forEach(child => {
+  // const currentDot = dotsSelector.children[currentDataPage - 1];
+  // dotsSelector.children.forEach(child => {
   //   child.classList.remove("active");
   // });
   // currentDot.classList.add("active");
 };
 
-export const slide = () => {
-  //store main slider before init
-  // orginSlider = sliderItems.cloneNode(true);
-  const countItem = switchInfiniteResponsiveCount(
-    truncResponsiveItemCount(config.responsive),
-    infinite
-  );
-
-  setSliderItemsPosition({
-    indexItem: countItem,
-    sliderItemWidth,
-    sliderItems
+export const slide = (slideConfig) => {
+  sliderSelector = slideConfig.slider;
+  slider = document.querySelector(`${sliderSelector}`);
+  threshold = slideConfig.threshold;
+  infinite = slideConfig.infinite;
+  responsive = slideConfig.responsive;
+  sliderMainWidth = slider.clientWidth;
+  sliderItems = document.querySelector(`${sliderSelector} .slides`);
+  const dotsSelector = document.querySelector(`${sliderSelector} .dots`);
+  const prevSelector = document.querySelector(`${sliderSelector} .prev`);
+  const nextSelector = document.querySelector(`${sliderSelector} .next`);
+  slideSize = calcSliderChildWidth({
+    responsiveItemCount:responsiveItemCount(responsive),
+    slider,
+  });
+  sliderItemWidth = calcSliderChildWidth({
+    responsiveItemCount:responsiveItemCount(responsive),
+    slider,
   });
 
-  // init slider for start
+  //store main slider before init
+  // orginSlider = sliderItems.cloneNode(true);
+
+  const countItem = switchInfiniteResponsiveCount(
+    truncResponsiveItemCount(responsive),
+    infinite
+  );
+  // // init slider position
+  setSliderItemsPosition({
+      indexItem: countItem, // user init slide index (feature)
+      sliderItemWidth,
+      sliderItems
+    });
+    console.log('====================================');
+    console.log(countItem);
+    console.log('====================================');
+
+  // // init slider for start
   const slides = sliderItems.children;
   slidesLength = slides.length;
 
-  // Mouse events
+  // // Mouse events
   sliderItems.onmousedown = dragStart;
 
-  // Clone first and last slide
+  // // Clone first and last slide
   if(infinite){
     const cloneNodeGeneratorParams = {
       countItem,
@@ -274,38 +311,74 @@ export const slide = () => {
     cloneNodeGenerator(cloneNodeGeneratorParams);
   }
 
-  // init index for start
+  // // init index for start
   index = countItem;
 
-  // generate dots items
+  setActiveclassToCurrent({
+    sliderItems,
+    countItem,
+    infinite,
+    slideSize,
+    sliderMainWidth
+  });
+
+  slider.classList.add("loaded");
+
+  // // Touch events
+  sliderItems.addEventListener("touchstart", dragStart);
+  sliderItems.addEventListener("touchend", dragEnd);
+  sliderItems.addEventListener("touchmove", dragAction);
+  // // Transition events
+  sliderItems.addEventListener("transitionend", checkIndex);
+
+
+  // // Click events
+  prevSelector.addEventListener("click", function() {
+    shiftSlide(-1);
+  });
+  nextSelector.addEventListener("click", function() {
+    shiftSlide(1);
+  });
+
+
+  // sliderItemWidth = sliderClientWidth(slider);
+
+  setSliderItemsChildWidth({
+    sliderItems,
+    responsive,
+    slider,
+  });
+
+    // //generate dots items
   //   const dotsItemsParams = {
   //     slidesLength,
-  //     configResponsive: responsive,
+  //     responsive,
   //     dots,
   //     sliderItems
   //   };
   //   dotsItemsGenerator(dotsItemsParams);
 
-  // setPageNumberOnChild(dotsItemsParams);
+  // // setPageNumberOnChild(dotsItemsParams);
   // // dots item click for transition on active index
-  // dots.children.forEach((item) => {
+  // dotsSelector.children.forEach((item) => {
   //   item.addEventListener("click", () => {
-  //     dots.children.forEach(child => {
+  //     dotsSelector.children.forEach(child => {
   //       child.classList.remove("active");
   //     });
   //     item.classList.add("active");
   //     const dotIndex = parseInt(item.getAttribute('data-dot-index'));
-  //     const indexItem =  truncResponsiveItemCount(config.responsive) * (dotIndex-1);
+  //     const indexItem =  truncResponsiveItemCount(responsive) * (dotIndex-1);
   //     const dotsItemsClickParams = {
   //       indexItem,
   //       sliderItemWidth,
   //       sliderMainWidth,
   //       sliderItems,
   //       slidesLength,
-  //       countItem:truncResponsiveItemCount(config.responsive),
+  //       countItem:truncResponsiveItemCount(responsive),
   //       slideSize,
   //       infinite,
-  //       dotIndex
+  //       dotIndex,
+  //       responsive
   //     };
   //     dotsItemsClick(dotsItemsClickParams);
   //     const dotsItemsClickConst = dotsItemsClick(dotsItemsClickParams);
@@ -315,43 +388,11 @@ export const slide = () => {
   //   });
   // });
 
-  setActiveclassToCurrent({
-    sliderItems,
-    countItem: switchInfiniteResponsiveCount(
-      truncResponsiveItemCount(config.responsive),
-      infinite
-    ),
-    infinite,
-    slideSize,
-    sliderMainWidth
-  });
-
-  slider.classList.add("loaded");
-
-  // Touch events
-  sliderItems.addEventListener("touchstart", dragStart);
-  sliderItems.addEventListener("touchend", dragEnd);
-  sliderItems.addEventListener("touchmove", dragAction);
-
-  // Click events
-  prev.addEventListener("click", function() {
-    shiftSlide(-1);
-  });
-  next.addEventListener("click", function() {
-    shiftSlide(1);
-  });
-
-  // Transition events
-  sliderItems.addEventListener("transitionend", checkIndex);
-
-  sliderItemWidth = sliderClientWidth();
-
-  setSliderItemsChildWidth(sliderItems);
 
   // window.onresize = () => {
   //   sliderItems = orginSlider;
   //   sliderItems.innerHTML = slideItemGenerator(orginSlider);
-  //   sliderItemWidth = slideSize = sliderClientWidth();
+  //   sliderItemWidth = slideSize = sliderClientWidth(slider);
   //   setSliderItemsChildWidth(orginSlider);
   //   const setSliderItemsPositionParams = {
   //     indexItem: index,
