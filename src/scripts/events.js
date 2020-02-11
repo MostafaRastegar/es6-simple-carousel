@@ -3,8 +3,8 @@ import {
   sliderItemsRemoveClass,
   shiftSlideIsDir,
   shiftSlideNonDir,
-  checkIndexEnd,
-  checkIndexFinish,
+  shiftFirstToEnd,
+  shiftEndToFirst,
   setActiveclassToCurrent,
   dotsItemsGenerator,
   dotsItemsClick,
@@ -204,28 +204,28 @@ export const shiftSlide = (dir, action) => {
 
 export const checkIndex = () => {
   const countItem = truncResponsiveItemCount(responsive);
+  console.log('====================================');
+  console.log(index,countItem,slidesLength);
+  console.log('====================================');
+
   // const countItemInfinit = switchInfiniteResponsiveCount(
   //   truncResponsiveItemCount(responsive),
   //   infinite
   // );
 
+
   // shift to end from start item
-  if (index == -1) {
-    // const checkIndexEndParams = { sliderItems, slidesLength, slideSize };
-    // index = checkIndexEnd(checkIndexEndParams);
+  if (infinite && index < 0) {
+    const shiftFirstToEndParams = { sliderItems, slidesLength, slideSize,countItem };
+    index = shiftFirstToEnd(shiftFirstToEndParams);
   }
 
   // shift after finish items
-  if (index === slidesLength + countItem) {
-    const checkIndexFinishParams = { sliderItems, slideSize, countItem };
-    index = checkIndexFinish(checkIndexFinishParams);
+  if (infinite && index >= countItem + slidesLength) {
+    const shiftEndToFirstParams = { sliderItems, slideSize, countItem };
+    index = shiftEndToFirst(shiftEndToFirstParams);
   }
 
-  //action on index end
-  if (index === 0 && infinite) {
-    const checkIndexFinishParams = { sliderItems, slidesLength, slideSize };
-    index = checkIndexEnd(checkIndexFinishParams);
-  }
 
   if (!infinite && index === 0) {
     prevNone(sliderSelector);

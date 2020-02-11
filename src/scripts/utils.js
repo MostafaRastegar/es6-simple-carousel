@@ -39,22 +39,22 @@ export const shiftSlideIsDir = params => {
 
     return index + countItem;
   }
+  
+  if (!infinite && (index + countItem) * countItem >= slidesLength) {
+    sliderItems.style["transform"] = setTranslate3d(
+      calcFinalItemPosition(calcFinalItemPositionParams)
+      );
+      nextNone(sliderSelector);
+      prevBlock(sliderSelector);
+    }
+    if(!infinite && index + countItem === newSlidesLength){
+      nextNone(sliderSelector);
+      prevBlock(sliderSelector);
+    }
 
   sliderItems.style["transform"] = setTranslate3d(
     -(index + countItem) * slideSize
   );
-
-  if (!infinite && (index + countItem) * countItem >= slidesLength) {
-    sliderItems.style["transform"] = setTranslate3d(
-      calcFinalItemPosition(calcFinalItemPositionParams)
-    );
-    nextNone(sliderSelector);
-    prevBlock(sliderSelector);
-  }
-  if(!infinite && index + countItem === newSlidesLength){
-    nextNone(sliderSelector);
-    prevBlock(sliderSelector);
-  }
   return index + countItem;
 };
 
@@ -78,15 +78,15 @@ export const shiftSlideNonDir = params => {
   return index - countItem;
 };
 
-export const checkIndexEnd = params => {
-  const { sliderItems, slidesLength, slideSize } = params;
-  sliderItems.style["transform"] = setTranslate3d(-(slidesLength * slideSize));
-  return slidesLength;
+export const shiftFirstToEnd = params => {
+  const { sliderItems, slidesLength, slideSize,countItem } = params;
+  sliderItems.style["transform"] = setTranslate3d(-((slidesLength-countItem) * slideSize));
+  return slidesLength - 1;
 };
 
-export const checkIndexFinish = params => {
+export const shiftEndToFirst = params => {
   const { sliderItems, slideSize, countItem } = params;
-  sliderItems.style["transform"] = setTranslate3d(-slideSize * countItem);
+  sliderItems.style["transform"] = setTranslate3d(-(countItem) * slideSize);
   return countItem;
 };
 
