@@ -11,7 +11,7 @@ const slideConfig = {
       items: 1.5
     },
     560: {
-      items: 2.5
+      items: 3
     },
     760: {
       items: 2

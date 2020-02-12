@@ -19,6 +19,7 @@ import {
   cloneNodeGenerator,
   truncResponsiveItemCount,
   calcFinalItemPosition,
+  calcFirstItemPosition,
   // getTruncChildItems,
   setTranslate3d,
   calcCurrentIndex,
@@ -64,6 +65,10 @@ let sliderSelector = null,
   allowShift = true;
 
 export const dragAction = e => {
+  const countItem = switchInfiniteResponsiveCount(
+    truncResponsiveItemCount(responsive),
+    infinite
+  );
   e = e || window.event;
   if (e.type == "touchmove") {
     const dragActionTouchmovePosX2Params = { e, posX1 };
@@ -79,17 +84,14 @@ export const dragAction = e => {
     threshold,
     posX2,
     slidesLength,
-    countItem: switchInfiniteResponsiveCount(
-      truncResponsiveItemCount(responsive),
-      infinite
-    ),
+    countItem,
     sliderItemWidth: calcSliderChildWidth({
       responsiveItemCount: responsiveItemCount(responsive),
       slider
     }),
     slideSize,
     sliderMainWidth,
-    infinite
+    infinite,
   };
   dragActionCalcPosition(dragActionCalcPositionParams);
 };
@@ -111,46 +113,40 @@ export const dragEnd = e => {
     slideSize,
     sliderMainWidth
   });
+  index = calcIndex;
   const setActiveclassToCurrentParams = {
     sliderItems,
     countItem,
     infinite,
     slideSize,
-    sliderMainWidth
+    sliderMainWidth,
+    dotsSelector,
+    index
   };
   setActiveclassToCurrent(setActiveclassToCurrentParams);
-  index = calcIndex;
+
+  if (!infinite && calcIndex > slidesLength && calcIndex < slidesLength + countItem || 
+    infinite && calcIndex + countItem === countItem
+    ) {
+    sliderItems.style["transform"] = setTranslate3d(calcFinalItemPositionConst);
+  }
+
+  if (infinite && calcIndex >= countItem + slidesLength) {
+    const calcFirstItemPositionConst = calcFirstItemPosition({
+      slideSize, countItem, infinite
+    });
+    sliderItems.style["transform"] = setTranslate3d(calcFirstItemPositionConst);
+  }
 
   if (!infinite) {
     prevBlock(sliderSelector);
     nextBlock(sliderSelector);
   }
-  if (calcIndex > slidesLength && calcIndex < slidesLength + countItem) {
-    sliderItems.style["transform"] = setTranslate3d(calcFinalItemPositionConst);
-    // revert final item when drag
-    // sliderItems.style["transform"] = setTranslate3d(
-    //   posFinal - sliderItems.children[0].clientWidth
-    // );
-  }
-  if (calcIndex === slidesLength + countItem) {
+  if (!infinite && calcIndex === slidesLength + countItem) {
     sliderItems.style["transform"] = setTranslate3d(
       posFinal - sliderItems.children[0].clientWidth
     );
   }
-  // if (infinite && calcIndex === countItem) {
-  //   // revert to final item when drag end
-  //   const dragEndCalcPositionParams = {
-  //     sliderItemWidth: calcSliderChildWidth({
-  //       responsiveItemCount:responsiveItemCount(responsive),
-  //       slider,
-  //     }),
-  //     indexItem: index,
-  //     sliderItems,
-  //     slidesLength,
-  //     infinite
-  //   };
-  //   setSliderItemsPosition(dragEndCalcPositionParams);
-  // }
   if (
     !infinite &&
     getTranslate3d(sliderItems) <= threshold &&
@@ -159,10 +155,6 @@ export const dragEnd = e => {
     sliderItems.style["transform"] = setTranslate3d(0);
     prevNone(sliderSelector);
     nextBlock(sliderSelector);
-  }
-
-  if (infinite && calcIndex === slidesLength) {
-    sliderItems.style["transform"] = setTranslate3d(calcFinalItemPositionConst);
   }
 
   if (!infinite && getTranslate3d(sliderItems) <= calcFinalItemPositionConst) {
@@ -236,12 +228,12 @@ export const checkIndex = () => {
   };
   setActiveclassToCurrent(setActiveclassToCurrentParams);
   allowShift = sliderItemsRemoveClass(sliderItems);
-  // const currentDataPage = sliderItems.children[index + 1].getAttribute("data-page");
-  // const currentDot = dotsSelector.children[currentDataPage - 1];
-  // dotsSelector.children.forEach(child => {
-  //   child.classList.remove("active");
-  // });
-  // currentDot.classList.add("active");
+  const currentDataPage = parseInt(sliderItems.children[infinite ? index : index -1].getAttribute("data-page"));
+  const currentDot = dotsSelector.children[currentDataPage-1];
+  dotsSelector.children.forEach(child => {
+    child.classList.remove("active");
+  });
+  currentDot.classList.add("active");
 };
 
 export const slide = slideConfig => {
@@ -252,7 +244,7 @@ export const slide = slideConfig => {
   responsive = slideConfig.responsive;
   sliderMainWidth = slider.clientWidth;
   sliderItems = document.querySelector(`${sliderSelector} .slides`);
-  const dotsSelector = document.querySelector(`${sliderSelector} .dots`);
+  dotsSelector = document.querySelector(`${sliderSelector} .dots`);
   const prevSelector = document.querySelector(`${sliderSelector} .prev`);
   const nextSelector = document.querySelector(`${sliderSelector} .next`);
   slideSize = calcSliderChildWidth({
@@ -265,8 +257,6 @@ export const slide = slideConfig => {
   });
 
   //store main slider before init
-  // orginSlider = sliderItems.cloneNode(true);
-
   const countItem = switchInfiniteResponsiveCount(
     truncResponsiveItemCount(responsive),
     infinite
@@ -292,6 +282,17 @@ export const slide = slideConfig => {
   // // Mouse events
   sliderItems.onmousedown = dragStartCall;
 
+    //generate dots items
+    const dotsItemsParams = {
+      slidesLength,
+      responsive,
+      dotsSelector,
+      sliderItems
+    };
+    dotsSelector = dotsItemsGenerator(dotsItemsParams);
+
+  setPageNumberOnChild(dotsItemsParams);
+
   // // Clone first and last slide
   if (infinite) {
     const cloneNodeGeneratorParams = {
@@ -309,7 +310,9 @@ export const slide = slideConfig => {
     countItem,
     infinite,
     slideSize,
-    sliderMainWidth
+    sliderMainWidth,
+    dotsSelector,
+    index
   });
 
   slider.classList.add("loaded");
@@ -337,44 +340,36 @@ export const slide = slideConfig => {
     slider
   });
 
-  // //generate dots items
-  //   const dotsItemsParams = {
-  //     slidesLength,
-  //     responsive,
-  //     dots,
-  //     sliderItems
-  //   };
-  //   dotsItemsGenerator(dotsItemsParams);
 
-  // // setPageNumberOnChild(dotsItemsParams);
-  // // dots item click for transition on active index
-  // dotsSelector.children.forEach((item) => {
-  //   item.addEventListener("click", () => {
-  //     dotsSelector.children.forEach(child => {
-  //       child.classList.remove("active");
-  //     });
-  //     item.classList.add("active");
-  //     const dotIndex = parseInt(item.getAttribute('data-dot-index'));
-  //     const indexItem =  truncResponsiveItemCount(responsive) * (dotIndex-1);
-  //     const dotsItemsClickParams = {
-  //       indexItem,
-  //       sliderItemWidth,
-  //       sliderMainWidth,
-  //       sliderItems,
-  //       slidesLength,
-  //       countItem:truncResponsiveItemCount(responsive),
-  //       slideSize,
-  //       infinite,
-  //       dotIndex,
-  //       responsive
-  //     };
-  //     dotsItemsClick(dotsItemsClickParams);
-  //     const dotsItemsClickConst = dotsItemsClick(dotsItemsClickParams);
-  //     index = dotsItemsClickConst.index;
-  //     allowShift = dotsItemsClickConst.allowShift;
-  //     posInitial = dotsItemsClickConst.posInitial;
-  //   });
-  // });
+  // dots item click for transition on active index
+  dotsSelector.children.forEach((item) => {
+    item.addEventListener("click", () => {
+      dotsSelector.children.forEach(child => {
+        child.classList.remove("active");
+      });
+      item.classList.add("active");
+      const dotIndex = parseInt(item.getAttribute('data-dot-index'));
+      const indexItem =  truncResponsiveItemCount(responsive) * (dotIndex-1);
+      const dotsItemsClickParams = {
+        indexItem,
+        sliderItemWidth,
+        sliderMainWidth,
+        sliderItems,
+        slidesLength,
+        countItem:truncResponsiveItemCount(responsive),
+        slideSize,
+        infinite,
+        dotIndex,
+        responsive,
+        sliderSelector
+      };
+      // dotsItemsClick(dotsItemsClickParams);
+      const dotsItemsClickConst = dotsItemsClick(dotsItemsClickParams);
+      index = dotsItemsClickConst.index;
+      allowShift = dotsItemsClickConst.allowShift;
+      posInitial = dotsItemsClickConst.posInitial;
+    });
+  });
 
   // window.onresize = () => {
   //   sliderItems = orginSlider;

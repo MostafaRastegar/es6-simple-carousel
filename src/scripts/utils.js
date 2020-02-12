@@ -158,7 +158,9 @@ export const setActiveclassToCurrent = params => {
     countItem,
     infinit,
     slideSize,
-    sliderMainWidth
+    sliderMainWidth,
+    dotsSelector,
+    index
   } = params;
   const activeIndex = calcCurrentIndex({
     sliderItems,
@@ -180,10 +182,11 @@ export const setActiveclassToCurrent = params => {
     }
   });
 
+  console.log('==========itemIndex==========================');
+  console.log(dotsSelector);
+  console.log('====================================');
+
   // dotsSelector.children.forEach((item,itemIndex) => {
-  //   console.log('==========itemIndex==========================');
-  //   console.log(itemIndex);
-  //   console.log('====================================');
 
   //   if((itemIndex + 1 * Math.floor(sliderWidth)) === Math.abs(translate3d)){
   //     item.classList.add("active");
@@ -201,13 +204,13 @@ export const setActiveclassToCurrent = params => {
 
   // });
 
-  // if (activeIndex === index) {
-  //   dotsSelector.children[activeIndex/2].a
-  //   item.classList.add("active");
-  // }else{
-  //   item.classList.remove("active");
-  // }
   // dotsSelector.children.forEach((item, itemIndex) => {
+  //   if (activeIndex === index) {
+  //     // dotsSelector.children[activeIndex/2].a;
+  //     item.classList.add("active");
+  //   }else{
+  //     item.classList.remove("active");
+  //   }
   // });
 };
 
@@ -221,9 +224,13 @@ export const dotsItemsClick = params => {
     sliderMainWidth,
     infinite,
     dotIndex,
-    responsive
+    responsive,
+    sliderSelector
   } = params;
-  const newDotIndex = (dotIndex + 1) * truncResponsiveItemCount(responsive);
+  const newDotIndex = (dotIndex) * truncResponsiveItemCount(responsive);
+  console.log('===========newDotIndex=========================');
+  console.log(newDotIndex,dotIndex);
+  console.log('====================================');
   setSliderItemsPositionAfterDotClick({
     indexItem,
     slideSize,
@@ -231,7 +238,8 @@ export const dotsItemsClick = params => {
     slidesLength,
     sliderMainWidth,
     countItem,
-    infinite
+    infinite,
+    sliderSelector
   });
   return {
     index: newDotIndex,
@@ -241,11 +249,12 @@ export const dotsItemsClick = params => {
 };
 
 export const dotsItemsGenerator = params => {
-  const { slidesLength, dots, responsive } = params;
+  const { slidesLength, dotsSelector, responsive } = params;
   for (let i = 0; i < calcSliderGroupCount({ responsive, slidesLength }); i++) {
-    dotsSelector.innerHTML += `<li class="dots-item${!i &&
-      " active"}" data-dot-index="${i + 1}">${i + 1}</li>`;
+    dotsSelector.innerHTML += `<li class="dots-item${!i ?
+      " active":""}" data-dot-index="${i + 1}">${i + 1}</li>`;
   }
+  return dotsSelector;
 };
 
 export const sliderClientWidth = slider => slider.clientWidth;
@@ -325,6 +334,7 @@ export const setSliderItemsChildWidth = params => {
 export const setSliderItemsPosition = params => {
   const { indexItem, sliderItemWidth, sliderItems } = params;
   sliderItems.style["transform"] = setTranslate3d(indexItem * -sliderItemWidth);
+  return indexItem;
 };
 
 export const setSliderItemsPositionAfterDotClick = params => {
@@ -335,7 +345,8 @@ export const setSliderItemsPositionAfterDotClick = params => {
     sliderMainWidth,
     countItem,
     slidesLength,
-    infinite
+    infinite,
+    sliderSelector
   } = params;
 
   if (indexItem * countItem > slidesLength) {
@@ -350,19 +361,19 @@ export const setSliderItemsPositionAfterDotClick = params => {
     sliderItems.style["transform"] = setTranslate3d(
       calcFinalItemPosition(calcFinalItemPositionParams)
     );
-    nextNone();
-    prevBlock();
+    nextNone(sliderSelector);
+    prevBlock(sliderSelector);
     return true;
   }
 
-  nextBlock();
-  prevBlock();
+  nextBlock(sliderSelector);
+  prevBlock(sliderSelector);
 
   if (indexItem === 0) {
-    nextBlock();
-    prevNone();
+    nextBlock(sliderSelector);
+    prevNone(sliderSelector);
   }
-  sliderItems.style["transform"] = setTranslate3d(indexItem * -slideSize);
+  sliderItems.style["transform"] = setTranslate3d((infinite ? indexItem + countItem : indexItem) * -slideSize);
 };
 
 export const setTranslate3d = getValue => `translate3d(${getValue}px,0px,0px)`;
@@ -462,7 +473,7 @@ export const setPageNumberOnChild = params => {
   const { slidesLength, sliderItems, responsive } = params;
   const countItem = truncResponsiveItemCount(responsive);
   sliderItems.children.forEach((item, itemIndex) => {
-    item.setAttribute("data-page", Math.trunc(itemIndex / countItem));
+    item.setAttribute("data-page", Math.trunc(itemIndex / countItem) + 1);
   });
 };
 
