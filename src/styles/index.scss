@@ -50,12 +50,14 @@ body {
   height: $slider-height;
   cursor: pointer;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  transition: all 1s;
+  flex-direction: row;
+  // transition: all 1s;
   position: relative;
   background: #FFCF47;
   border-radius: 2px;
+  > * {
+    flex: 1;
+  }
 }
 
 .slider.loaded {
@@ -103,7 +105,7 @@ body {
   transform: scale(.8);
 }
 
-#dots{
+.dots{
   padding:0;
   li{
     font-size: 0;
