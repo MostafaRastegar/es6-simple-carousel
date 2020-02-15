@@ -236,7 +236,9 @@ export const checkIndex = () => {
   currentDot.classList.add("active");
 };
 
-export const slide = slideConfig => {
+export const sliderCore = slideConfig => {
+
+  //----------- start init variables  -----
   sliderSelector = slideConfig.slider;
   slider = document.querySelector(`${sliderSelector}`);
   threshold = slideConfig.threshold;
@@ -244,9 +246,10 @@ export const slide = slideConfig => {
   responsive = slideConfig.responsive;
   sliderMainWidth = slider.clientWidth;
   sliderItems = document.querySelector(`${sliderSelector} .slides`);
+
+  // put in dots feature
   dotsSelector = document.querySelector(`${sliderSelector} .dots`);
-  const prevSelector = document.querySelector(`${sliderSelector} .prev`);
-  const nextSelector = document.querySelector(`${sliderSelector} .next`);
+
   slideSize = calcSliderChildWidth({
     responsiveItemCount: responsiveItemCount(responsive),
     slider
@@ -256,12 +259,20 @@ export const slide = slideConfig => {
     slider
   });
 
+  // put in arrow feature
+  const prevSelector = document.querySelector(`${sliderSelector} .prev`);
+  const nextSelector = document.querySelector(`${sliderSelector} .next`);
+
   //store main slider before init
   const countItem = switchInfiniteResponsiveCount(
     truncResponsiveItemCount(responsive),
     infinite
   );
-  // // init slider position
+  // ------ End init variables ---------
+
+
+
+  // init slider position
   setSliderItemsPosition({
     indexItem: countItem, // user init slide index (feature)
     sliderItemWidth,
@@ -385,4 +396,4 @@ export const slide = slideConfig => {
   // };
 };
 
-export default slide;
+export default sliderCore;
