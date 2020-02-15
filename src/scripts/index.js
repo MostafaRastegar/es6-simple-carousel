@@ -1,5 +1,5 @@
 import "../styles/index.scss";
-import sliderCore from "./events";
+import SliderCore from "./events";
 
 const slideConfig = {
   slider: "#slider", //add user
@@ -19,4 +19,6 @@ const slideConfig = {
   }
 };
 
-sliderCore(slideConfig);
+
+new SliderCore(slideConfig);
+// sliderCore();

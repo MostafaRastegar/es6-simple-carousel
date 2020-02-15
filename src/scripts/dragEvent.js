@@ -37,7 +37,7 @@ export const dragActionCalcPosition = params => {
         posX2,
         slidesLength,
         sliderItemWidth,
-        countItem,
+        perSlide,
         slideSize,
         sliderMainWidth,
         infinite,
@@ -45,7 +45,7 @@ export const dragActionCalcPosition = params => {
     } = params;
 
     // stop scroll when firstItem go to lastItem on drag
-    if (!infinite && getTranslate3d(sliderItems) - posX2 > -sliderItemWidth * countItem + threshold) {
+    if (!infinite && getTranslate3d(sliderItems) - posX2 > -sliderItemWidth * perSlide + threshold) {
         return false;
     }
     // stop scroll when lastItem go to firstItem on drag
@@ -55,7 +55,7 @@ export const dragActionCalcPosition = params => {
             slideSize,
             slidesLength,
             sliderMainWidth,
-            countItem,
+            perSlide,
             infinite
         }) -
         threshold
@@ -69,7 +69,7 @@ export const dragActionCalcPosition = params => {
         return false;
     }
     // stop scroll when lastItem go to fistItem on drag
-    if (infinite && (getTranslate3d(sliderItems) - posX2  < -(sliderItemWidth * (slidesLength + countItem)))) {
+    if (infinite && (getTranslate3d(sliderItems) - posX2  < -(sliderItemWidth * (slidesLength + perSlide)))) {
         return false;
     }
 
