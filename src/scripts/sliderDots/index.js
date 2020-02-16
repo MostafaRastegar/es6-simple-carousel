@@ -2,8 +2,7 @@ import {
 	dotsItemsGenerator,
 	dotsItemsClick,
 	truncResponsiveItemCount
-	
-} from './utils';
+} from '../utils';
 
 export default class SliderDots {
 	// core = null;

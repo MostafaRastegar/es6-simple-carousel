@@ -486,3 +486,82 @@ export const nextNone = sliderSelector =>
   (document.querySelector(`${sliderSelector} .next`).style.display = "none");
 export const nextBlock = sliderSelector =>
   (document.querySelector(`${sliderSelector} .next`).style.display = "block");
+
+
+
+  export const caroueslTouchStart = e => e.touches[0].clientX;
+
+  export const caroueslDragAction = params => {
+      const { e, dragEndCall, dragActionCall } = params;
+      document.onmouseup = dragEndCall;
+      document.onmousemove = dragActionCall;
+      return e.clientX;
+  };
+  
+  export const dragActionTouchmovePosX2 = params => {
+      const { e, posX1 } = params;
+      return posX1 - e.touches[0].clientX;
+  };
+  
+  export const dragActionTouchmovePosX1 = e => e.touches[0].clientX;
+  
+  export const dragActionMousemove = params => {
+      const { posX1, e } = params;
+      return posX1 - e.clientX;
+  };
+  
+  export const dragActionMousemovePosX1 = e => e.clientX;
+  
+  export const dragActionCalcPosition = params => {
+      const {
+          sliderItems,
+          posX2,
+          slidesLength,
+          sliderItemWidth,
+          perSlide,
+          slideSize,
+          sliderMainWidth,
+          infinite,
+          threshold,
+      } = params;
+  
+      // stop scroll when firstItem go to lastItem on drag
+      if (!infinite && getTranslate3d(sliderItems) - posX2 > -sliderItemWidth * perSlide + threshold) {
+          return false;
+      }
+      // stop scroll when lastItem go to firstItem on drag
+      if (!infinite &&
+          getTranslate3d(sliderItems) - posX2 <=
+          calcFinalItemPosition({
+              slideSize,
+              slidesLength,
+              sliderMainWidth,
+              perSlide,
+              infinite
+          }) -
+          threshold
+      ) {
+          return false;
+      }
+      
+  
+      // stop scroll when firstItem go to lastItem on drag
+      if (infinite && getTranslate3d(sliderItems) - posX2 > 0) {
+          return false;
+      }
+      // stop scroll when lastItem go to fistItem on drag
+      if (infinite && (getTranslate3d(sliderItems) - posX2  < -(sliderItemWidth * (slidesLength + perSlide)))) {
+          return false;
+      }
+  
+  
+      sliderItems.style["transform"] = setTranslate3d(
+          getTranslate3d(sliderItems) - posX2
+      );
+  };
+  
+  export const mouseEventNull = () => {
+    console.log('======mouseEventNull==============================');
+      document.onmouseup = null;
+      document.onmousemove = null;
+  };
