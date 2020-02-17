@@ -37,23 +37,28 @@ export default class SliderDots {
 			getSlider,
 			getSlideSize,
 			setIndex,
+			getIndex,
 			setAllowShift,
 			setPosInitial,
 		} = this.core;
+
+		const sliderItems = getSliderItems();
+		// const index = getIndex();
 		
-		const sliderDotsSelector = document.querySelector(`${slider} .dots`);
-		this.setDotsSelector(sliderDotsSelector);
+		// const sliderDotsSelector = document.querySelector(`${slider} .dots`);
+		// this.setDotsSelector(sliderDotsSelector);
+		const dotsSelector =  document.querySelector(`${slider} .dots`);
 
 		//generate dots items
 		const dotsItemsParams = {
 			slidesLength: getSlidesLength(),
 			responsive,
-			dotsSelector: this.getDotsSelector(),
-			sliderItems: getSliderItems()
+			dotsSelector,
+			sliderItems
 		};
-		this.setDotsSelector(dotsItemsGenerator(dotsItemsParams));
+		dotsItemsGenerator(dotsItemsParams);
 		// dots item click for transition on active index
-		this.getDotsSelector().children.forEach((item) => {
+		dotsSelector.children.forEach((item) => {
 			item.addEventListener("click", () => {
 				const dotIndex = parseInt(item.getAttribute('data-dot-index'));
 				const indexItem = truncResponsiveItemCount(responsive) * (dotIndex - 1);
@@ -61,7 +66,7 @@ export default class SliderDots {
 					indexItem,
 					sliderItemWidth: getSliderItemWidth(),
 					sliderMainWidth: getSliderMainWidth(),
-					sliderItems: getSliderItems(),
+					sliderItems,
 					sliderSelector: getSlider(),
 					slideSize: getSlideSize(),
 					slidesLength: getSlidesLength(),

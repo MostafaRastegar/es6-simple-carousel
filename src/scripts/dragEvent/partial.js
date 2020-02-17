@@ -107,7 +107,7 @@ export const dragEnd = (params) => {
         sliderMainWidth,
         setIndex,
         // getDotsSelector,
-        // checkIndexCall,
+        checkIndexCall,
         sliderSelector,
         setPosFinal,
         posFinal,
@@ -139,17 +139,6 @@ export const dragEnd = (params) => {
         sliderMainWidth
     });
     setIndex(calcIndex);
-
-    const setActiveclassToCurrentParams = {
-        sliderItems,
-        perSlide,
-        infinite,
-        slideSize,
-        sliderMainWidth,
-        // dotsSelector: getDotsSelector(),
-        index,
-    };
-    setActiveclassToCurrent(setActiveclassToCurrentParams);
 
     if (!infinite && calcIndex > slidesLength && calcIndex < slidesLength + perSlide ||
         infinite && calcIndex + perSlide === perSlide
@@ -190,18 +179,5 @@ export const dragEnd = (params) => {
     }
 
     mouseEventNull();
-    // let dragStartParams = {
-    //     sliderItems,
-    //     dragAction,
-    //     setPosInitial,
-    //     setPosX1,
-    //     responsive,
-    //     infinite,
-    //     setAllowShift,
-    //     index,
-    //     // dotsSelector:getDotsSelector(),
-    //     slideSize,
-    //     sliderMainWidth
-    // } = params;
-    // checkIndexCall(dragStartParams);
+    checkIndexCall();
 };

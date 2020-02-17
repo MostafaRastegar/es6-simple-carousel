@@ -3,7 +3,8 @@ import {
     truncResponsiveItemCount,
     getTranslate3d,
     sliderItemsAddClass,
-    shiftSlideIsDir
+    shiftSlideIsDir,
+    shiftSlideNonDir
 } from '../utils';
 
 export default class SliderArrows {
@@ -62,10 +63,6 @@ export default class SliderArrows {
                 infinite,
             };
             if (dir == 1) {
-                console.log('=======shiftSlideIsDir(shiftSlideParams)=============================');
-                console.log(shiftSlideIsDir(shiftSlideParams));
-                console.log(shiftSlideParams);
-                console.log('====================================');
                 setIndex(shiftSlideIsDir(shiftSlideParams));
             } else if (dir == -1) {
                 setIndex(shiftSlideNonDir(shiftSlideParams));

@@ -54,7 +54,8 @@ export default class DragEvent {
 			getSliderSelector,
 			setPosFinal,
 			getPosFinal,
-			setAllowShift
+			setAllowShift,
+			checkIndexCall
 		} = this.core;
 
 
@@ -72,7 +73,7 @@ export default class DragEvent {
 				setIndex,
 				// getDotsSelector,
 				setPosFinal,
-				// checkIndexCall,
+				checkIndexCall,
 				dragAction,
 				setPosInitial,
 				setPosX1,

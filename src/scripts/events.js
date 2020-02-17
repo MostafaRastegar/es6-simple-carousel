@@ -29,7 +29,8 @@ import {
   prevNone,
   prevBlock,
   nextNone,
-  nextBlock
+  nextBlock,
+  checkIndex
 } from "./utils";
 
 import SliderDots from './sliderDots/index';
@@ -37,30 +38,30 @@ import SliderTrailer from './slideTrailer/index';
 import SliderArrows from './sliderArrows/index';
 import DragEvent from "./dragEvent/index";
 
-let sliderSelector = null,
-  posX1 = 0,
-  posX2 = 0,
-  responsive = null,
-  infinite = false,
-  threshold = 0,
-  slider = null,
-  sliderItems = null,
-  posInitial,
-  posFinal,
-  slidesLength = 0,
-  sliderMainWidth = 0,
-  orginSlider = [],
-  slideSize = 0,
-  sliderItemWidth = 0,
-  index = 0,
-  allowShift = true;
+// let sliderSelector = null,
+//   posX1 = 0,
+//   posX2 = 0,
+//   responsive = null,
+//   infinite = false,
+//   threshold = 0,
+//   slider = null,
+//   sliderItems = null,
+//   posInitial,
+//   posFinal,
+//   slidesLength = 0,
+//   sliderMainWidth = 0,
+//   orginSlider = [],
+//   slideSize = 0,
+//   sliderItemWidth = 0,
+//   index = 0,
+//   allowShift = true;
 
 class SliderCore {
     config = {};
     sliderSelector = null;
     posX1 = 0;
     posX2 = 0;
-    responsive = null;
+    // responsive = null;
     infinite = false;
     threshold = 0;
     slider = null;
@@ -180,7 +181,9 @@ class SliderCore {
     this.sliderTrailer = new SliderTrailer({core: this});
     this.dragEvent = new DragEvent({core: this});
     this.sliderDots = new SliderDots({core: this});
-    this.SliderArrows = new SliderArrows({core: this});
+    this.sliderArrows = new SliderArrows({core: this});
+
+    sliderSlidesSelector.addEventListener("transitionend", this.checkIndexCall);
 
         // window.onresize = () => {
         //   sliderItems = orginSlider;
@@ -195,6 +198,37 @@ class SliderCore {
         //   setSliderItemsPosition(setSliderItemsPositionParams);
         // };
 
+    }
+
+    checkIndexCall = () => {
+      const {
+        config: {
+          slider,
+          infinite,
+          responsive,
+        },
+        index,
+        dragAction,
+        setPosInitial,
+        setPosX1,
+        setAllowShift,
+        sliderItems,
+        slideSize,
+        sliderMainWidth
+      } = this;
+      checkIndex({
+        slider,
+        infinite,
+        responsive,
+        sliderItems,
+        dragAction,
+        setPosInitial,
+        setPosX1,
+        setAllowShift,
+        index,
+        slideSize,
+        sliderMainWidth
+      });
     }
 
 };

@@ -6,8 +6,6 @@ import {
 	setActiveclassToCurrent
 } from '../utils';
 
-import { checkIndex } from './partial';
-
 export default class SliderTrailer {
 	// core = null;
 	// dotsSelector = null;
@@ -45,7 +43,6 @@ export default class SliderTrailer {
 			setAllowShift
 		} = this.core;
 
-		const index = getIndex();
 		const sliderItems = getSliderItems();
 		const slideSize = getSlideSize();
 		const sliderItemWidth =  getSliderItemWidth();
@@ -78,27 +75,12 @@ export default class SliderTrailer {
 			perSlide,
 			slideSize,
 			sliderMainWidth,
-			index,
+			index: getIndex(),
 			infinite,
 		});
 		// add loaded class to main slide
 		sliderSelector.classList.add("loaded");
 		// Transition events
-		sliderItems.addEventListener("transitionend", () => {
-			checkIndex({
-				slider,
-				infinite,
-				responsive,
-				sliderItems,
-				dragAction,
-				setPosInitial,
-				setPosX1,
-				setAllowShift,
-				index ,
-				slideSize,
-				sliderMainWidth
-			});
-		});
 		
 	}
 }

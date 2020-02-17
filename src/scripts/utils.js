@@ -245,6 +245,24 @@ export const dotsItemsClick = params => {
   };
 };
 
+export const dotActive = (params) => {
+  const {
+    index,
+    sliderItems,
+    infinite,
+    slider
+  } = params;
+  const dotsSelector =  document.querySelector(`${slider} .dots`);
+  const currentDataPage = parseInt(
+    sliderItems.children[infinite ? index : index -1].getAttribute("data-page")
+  );
+  const currentDot = dotsSelector.children[currentDataPage-1];
+  dotsSelector.children.forEach(child => {
+    child.classList.remove("active");
+  });
+  currentDot.classList.add("active");
+};
+
 export const dotsItemsGenerator = params => {
   const { slidesLength, dotsSelector, responsive } = params;
   for (let i = 0; i < calcSliderGroupCount({ responsive, slidesLength }); i++) {
@@ -565,3 +583,60 @@ export const nextBlock = sliderSelector =>
       document.onmouseup = null;
       document.onmousemove = null;
   };
+
+  export const checkIndex = (params) => {
+
+    const {
+        responsive,
+        infinite,
+        slider,
+        index,
+        sliderItems,
+        dotsSelector,
+        slideSize,
+        sliderMainWidth,
+        setAllowShift
+    } = params;
+
+    const perSlide = truncResponsiveItemCount(responsive);
+    // const responsiveItem = responsiveItemCount(responsive);
+
+    // // shift to end from start item
+    // if (infinite && index < 0) {
+    //   const shiftFirstToEndParams = { sliderItems, slidesLength, slideSize,perSlide,responsiveItem };
+    //   index = shiftFirstToEnd(shiftFirstToEndParams);
+    // }
+
+    // // shift after finish items
+    // if (infinite && index >= perSlide + slidesLength) {
+    //   const shiftEndToFirstParams = { sliderItems, slideSize, perSlide,responsiveItem };
+    //   index = shiftEndToFirst(shiftEndToFirstParams);
+    // }
+
+    if (!infinite && index === 0) {
+        prevNone(sliderSelector);
+        nextBlock(sliderSelector);
+    }
+
+    // run for set active class
+    const setActiveclassToCurrentParams = {
+        index,
+        sliderItems,
+        dotsSelector,
+        perSlide,
+        infinite,
+        slideSize,
+        sliderMainWidth
+    };
+    setActiveclassToCurrent(setActiveclassToCurrentParams);
+    setAllowShift(sliderItemsRemoveClass(sliderItems));
+
+    const dotActiveParams = {
+        index,
+        sliderItems,
+        infinite,
+        dotsSelector,
+        slider
+    };
+    dotActive(dotActiveParams);
+};
