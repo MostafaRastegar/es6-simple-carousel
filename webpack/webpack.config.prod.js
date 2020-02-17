@@ -1,3 +1,4 @@
+const Path = require('path');
 const Webpack = require('webpack');
 const merge = require('webpack-merge');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -8,9 +9,17 @@ module.exports = merge(common, {
   devtool: 'source-map',
   stats: 'errors-only',
   bail: true,
+  // output: {
+  //   filename: 'js/[name].[chunkhash:8].js',
+  //   chunkFilename: 'js/[name].[chunkhash:8].chunk.js'
+  // },
+  entry: {
+    app: Path.resolve(__dirname, '../src/scripts/index.js')
+  },
   output: {
-    filename: 'js/[name].[chunkhash:8].js',
-    chunkFilename: 'js/[name].[chunkhash:8].chunk.js'
+    filename: 'js/main.js',
+    libraryTarget: 'commonjs2',
+
   },
   plugins: [
     new Webpack.DefinePlugin({

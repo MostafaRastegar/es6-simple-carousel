@@ -68,7 +68,7 @@ export default class SliderArrows {
 			}
 		}
 		setAllowShift(sliderItemsAddClass(getSliderItems()));
-		updateLog();
+		// updateLog();
 	};
 
 	initialize() {

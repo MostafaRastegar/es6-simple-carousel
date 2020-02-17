@@ -106,7 +106,7 @@ class SliderCore {
         const sliderClienWidth = this.getSliderSelector().clientWidth;
         this.setSliderMainWidth(sliderClienWidth);
 
-        const sliderSlidesSelector = document.querySelector(`${slider} .slides`);
+        let sliderSlidesSelector = document.querySelector(`${slider} .slides`);
         this.setSliderItems(sliderSlidesSelector);
 
         const sliderChildWidth = calcSliderChildWidth({
