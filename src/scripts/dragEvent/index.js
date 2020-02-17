@@ -1,15 +1,8 @@
 import {
-	setActiveclassToCurrent,
-	truncResponsiveItemCount,
-} from '../utils';
-
-import {
 	dragAction,
 	dragEnd,
 	dragStart
 } from './partial';
-
-// import {checkIndexCall} from '../slideTrailer/partial';
 
 export default class DragEvent {
 
@@ -17,11 +10,7 @@ export default class DragEvent {
 		const { core } = params;
 		this.setCore(core);
 		this.initialize();
-		console.log('===================asdsad=================');
-		console.log(core);
-		console.log('====================================');
 	}
-
 
 	setCore(core) {
 		this.core = core;
@@ -61,25 +50,23 @@ export default class DragEvent {
 
 		const dragEndCall = () => {
 			let dragStartParams = {
-				sliderItems:getSliderItems(),
-				slidesLength:getSlidesLength(),
-				slideSize:getSlideSize(),
-				sliderMainWidth:getSliderMainWidth(),
-				sliderSelector:getSliderSelector(),
-				posFinal:getPosFinal(),
+				sliderItems: getSliderItems(),
+				slidesLength: getSlidesLength(),
+				slideSize: getSlideSize(),
+				sliderMainWidth: getSliderMainWidth(),
+				sliderSelector: getSliderSelector(),
+				posFinal: getPosFinal(),
 				threshold,
 				responsive,
 				infinite,
 				setIndex,
-				// getDotsSelector,
 				setPosFinal,
 				checkIndexCall,
 				dragAction,
 				setPosInitial,
 				setPosX1,
 				setAllowShift,
-				index:getIndex(),
-				// dotsSelector:getDotsSelector(),
+				index: getIndex(),
 			};
 			dragEnd(dragStartParams);
 		};
@@ -106,7 +93,6 @@ export default class DragEvent {
 		};
 
 		const dragStartCall = (e) => {
-			// debugger;
 			let dragStartParams = {
 				e,
 				sliderItems: getSliderItems(),

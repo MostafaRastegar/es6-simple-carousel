@@ -21,4 +21,3 @@ const slideConfig = {
 
 
 new SliderCore(slideConfig);
-// sliderCore();

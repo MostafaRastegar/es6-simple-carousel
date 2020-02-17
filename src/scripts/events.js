@@ -1,35 +1,8 @@
 import {
-  sliderItemsAddClass,
-  sliderItemsRemoveClass,
-  shiftSlideIsDir,
-  shiftSlideNonDir,
-  shiftFirstToEnd,
-  shiftEndToFirst,
-  setActiveclassToCurrent,
-
-  // sliderClientWidth,
   calcSliderChildWidth,
-  setSliderItemsChildWidth,
-  setSliderItemsPosition,
-  getTranslate3d,
-  arrGenerator,
-  // slideItemGenerator,
   responsiveItemCount,
-  cloneNodeGenerator,
   truncResponsiveItemCount,
-  calcFinalItemPosition,
-  calcFirstItemPosition,
-  // getTruncChildItems,
-  setTranslate3d,
-  calcCurrentIndex,
-  calcSliderGroupCount,
-  // calcTruncSlideItemSize,
-  setPageNumberOnChild,
   switchInfiniteResponsiveCount,
-  prevNone,
-  prevBlock,
-  nextNone,
-  nextBlock,
   checkIndex
 } from "./utils";
 
@@ -37,24 +10,6 @@ import SliderDots from './sliderDots/index';
 import SliderTrailer from './slideTrailer/index';
 import SliderArrows from './sliderArrows/index';
 import DragEvent from "./dragEvent/index";
-
-// let sliderSelector = null,
-//   posX1 = 0,
-//   posX2 = 0,
-//   responsive = null,
-//   infinite = false,
-//   threshold = 0,
-//   slider = null,
-//   sliderItems = null,
-//   posInitial,
-//   posFinal,
-//   slidesLength = 0,
-//   sliderMainWidth = 0,
-//   orginSlider = [],
-//   slideSize = 0,
-//   sliderItemWidth = 0,
-//   index = 0,
-//   allowShift = true;
 
 class SliderCore {
     config = {};
@@ -95,7 +50,7 @@ class SliderCore {
     getPosX1 = () => this.posX1;
 
     setPosX2 = posX2 => { this.posX2 = posX2 };
-  getPosX2 = () => this.posX2;
+    getPosX2 = () => this.posX2;
   
     setPerSlide = perSlide => { this.perSlide = perSlide };
     getPerSlide = () => this.perSlide;

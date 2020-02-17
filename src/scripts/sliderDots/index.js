@@ -1,31 +1,31 @@
 import {
-	dotsItemsGenerator,
-	dotsItemsClick,
 	truncResponsiveItemCount
 } from '../utils';
 
-export default class SliderDots {
-	// core = null;
-	// dotsSelector = null;
+import {
+	dotsItemsGenerator,
+	dotsItemsClick,
+} from './partial';
 
+export default class SliderDots {
 	constructor(params) {
 		const { core } = params;
 		this.setCore(core);
 		this.initialize();
 	}
 
-	setCore(core){
+	setCore(core) {
 		this.core = core;
 	}
 	getCore() {
 		return this.core;
 	}
 
-	setDotsSelector(dotsSelector){ this.dotsSelector = dotsSelector; };
-	getDotsSelector(){ return this.dotsSelector;};
-	initialize(){
+	setDotsSelector(dotsSelector) { this.dotsSelector = dotsSelector; };
+	getDotsSelector() { return this.dotsSelector; };
+	initialize() {
 		const {
-			config:{
+			config: {
 				slider,
 				infinite,
 				responsive,
@@ -37,17 +37,12 @@ export default class SliderDots {
 			getSlider,
 			getSlideSize,
 			setIndex,
-			getIndex,
 			setAllowShift,
 			setPosInitial,
 		} = this.core;
 
 		const sliderItems = getSliderItems();
-		// const index = getIndex();
-		
-		// const sliderDotsSelector = document.querySelector(`${slider} .dots`);
-		// this.setDotsSelector(sliderDotsSelector);
-		const dotsSelector =  document.querySelector(`${slider} .dots`);
+		const dotsSelector = document.querySelector(`${slider} .dots`);
 
 		//generate dots items
 		const dotsItemsParams = {

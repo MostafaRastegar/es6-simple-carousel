@@ -1,14 +1,15 @@
 import {
 	setSliderItemsPosition,
-	setPageNumberOnChild,
 	setSliderItemsChildWidth,
-	cloneNodeGenerator,
 	setActiveclassToCurrent
 } from '../utils';
 
+import {
+	setPageNumberOnChild,
+	cloneNodeGenerator
+} from './partial';
+
 export default class SliderTrailer {
-	// core = null;
-	// dotsSelector = null;
 
 	constructor(params) {
 		const { core } = params;
@@ -26,7 +27,6 @@ export default class SliderTrailer {
 	initialize() {
 		const {
 			config: {
-				slider,
 				infinite,
 				responsive,
 			},
@@ -37,15 +37,11 @@ export default class SliderTrailer {
 			getSliderMainWidth,
 			getIndex,
 			getSliderSelector,
-			dragAction,
-			setPosInitial,
-			setPosX1,
-			setAllowShift
 		} = this.core;
 
 		const sliderItems = getSliderItems();
 		const slideSize = getSlideSize();
-		const sliderItemWidth =  getSliderItemWidth();
+		const sliderItemWidth = getSliderItemWidth();
 		const sliderSelector = getSliderSelector();
 		const perSlide = getPerSlide();
 		const sliderMainWidth = getSliderMainWidth();
@@ -81,6 +77,6 @@ export default class SliderTrailer {
 		// add loaded class to main slide
 		sliderSelector.classList.add("loaded");
 		// Transition events
-		
+
 	}
 }
