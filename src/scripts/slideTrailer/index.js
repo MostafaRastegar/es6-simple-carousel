@@ -6,7 +6,7 @@ import {
 
 import {
 	setPageNumberOnChild,
-	cloneNodeGenerator
+	cloneNodeGenerator,
 } from './partial';
 
 export default class SliderTrailer {
@@ -66,6 +66,11 @@ export default class SliderTrailer {
 			};
 			cloneNodeGenerator(cloneNodeGeneratorParams);
 		}
+
+		// if(!nav){
+
+		// }
+
 		setActiveclassToCurrent({
 			sliderItems,
 			perSlide,

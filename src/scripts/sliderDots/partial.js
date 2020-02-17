@@ -31,7 +31,8 @@ export const dotsItemsClick = params => {
 		infinite,
 		dotIndex,
 		responsive,
-		sliderSelector
+		sliderSelector,
+		nav
 	} = params;
 	const newDotIndex = (dotIndex) * truncResponsiveItemCount(responsive);
 	setSliderItemsPositionAfterDotClick({
@@ -42,7 +43,8 @@ export const dotsItemsClick = params => {
 		sliderMainWidth,
 		perSlide,
 		infinite,
-		sliderSelector
+		sliderSelector,
+		nav
 	});
 	return {
 		index: newDotIndex,
@@ -60,7 +62,8 @@ export const setSliderItemsPositionAfterDotClick = params => {
 		perSlide,
 		slidesLength,
 		infinite,
-		sliderSelector
+		sliderSelector,
+		nav
 	} = params;
 
 	if (indexItem * perSlide > slidesLength) {
@@ -75,15 +78,19 @@ export const setSliderItemsPositionAfterDotClick = params => {
 		sliderItems.style["transform"] = setTranslate3d(
 			calcFinalItemPosition(calcFinalItemPositionParams)
 		);
-		nextNone(sliderSelector);
-		prevBlock(sliderSelector);
+		if(nav){
+			nextNone(sliderSelector);
+			prevBlock(sliderSelector);
+		}
 		return true;
 	}
 
-	nextBlock(sliderSelector);
-	prevBlock(sliderSelector);
+	if(nav){
+		nextBlock(sliderSelector);
+		prevBlock(sliderSelector);
+	}
 
-	if (indexItem === 0) {
+	if (nav && indexItem === 0) {
 		nextBlock(sliderSelector);
 		prevNone(sliderSelector);
 	}

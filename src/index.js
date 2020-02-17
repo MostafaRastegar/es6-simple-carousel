@@ -3,11 +3,12 @@ import "./styles/custom.css";
 import {Slider} from "./scripts/index";
 
 const slideConfig = {
-  slider: "#slider", //add user
-  threshold: 50, // add user
-  infinite: true, //add user
+  slider: "#slider",
+  threshold: 50,
+  infinite: true,
+  nav: true,
+  dots: true,
   responsive: {
-    //add user
     0: {
       items: 1.5
     },
@@ -19,7 +20,5 @@ const slideConfig = {
     }
   }
 };
-
-// console.log(typeof Slider);
 
 new Slider(slideConfig);

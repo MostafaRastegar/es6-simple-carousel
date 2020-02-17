@@ -197,7 +197,9 @@ export const checkIndex = (params) => {
     dotsSelector,
     slideSize,
     sliderMainWidth,
-    setAllowShift
+    setAllowShift,
+    dots,
+    nav
   } = params;
 
   const perSlide = truncResponsiveItemCount(responsive);
@@ -215,7 +217,7 @@ export const checkIndex = (params) => {
   //   index = shiftEndToFirst(shiftEndToFirstParams);
   // }
 
-  if (!infinite && index === 0) {
+  if (!infinite && nav && index === 0) {
     prevNone(sliderSelector);
     nextBlock(sliderSelector);
   }
@@ -233,14 +235,16 @@ export const checkIndex = (params) => {
   setActiveclassToCurrent(setActiveclassToCurrentParams);
   setAllowShift(sliderItemsRemoveClass(sliderItems));
 
-  const dotActiveParams = {
-    index,
-    sliderItems,
-    infinite,
-    dotsSelector,
-    slider
-  };
-  dotActive(dotActiveParams);
+  if(dots){
+    const dotActiveParams = {
+      index,
+      sliderItems,
+      infinite,
+      dotsSelector,
+      slider
+    };
+    dotActive(dotActiveParams);
+  }
 };
 
 export const dotActive = (params) => {
@@ -259,4 +263,12 @@ export const dotActive = (params) => {
 		child.classList.remove("active");
 	});
 	currentDot.classList.add("active");
+};
+
+
+export const elementCreator = (params) => {
+	const {tag,wrapper,className} = params;
+	let node = document.createElement(tag);
+	node.className = className;
+	document.querySelector(`${wrapper}`).appendChild(node); 
 };

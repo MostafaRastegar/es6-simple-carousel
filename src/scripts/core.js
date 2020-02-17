@@ -3,7 +3,8 @@ import {
   responsiveItemCount,
   truncResponsiveItemCount,
   switchInfiniteResponsiveCount,
-  checkIndex
+  checkIndex,
+  elementCreator
 } from "./utils";
 
 import SliderDots from './sliderDots/index';
@@ -96,6 +97,8 @@ class SliderCore {
             slider,
             infinite,
             responsive,
+            nav,
+            dots
         } = this.getConfig();
         //----------- start init variables  -----
         this.setSlider(slider);
@@ -132,11 +135,20 @@ class SliderCore {
     );
     this.setPerSlide(perSlide);
     this.setIndex(perSlide);
+
+		if(nav){
+			elementCreator({tag:'Span',wrapper:slider,className:'control next'});
+			elementCreator({tag:'Span',wrapper:slider,className:'control prev'});
+      this.sliderArrows = new SliderArrows({core: this});
+    }
+    
+		if(dots){
+			elementCreator({tag:'Ul',wrapper:slider,className:'dots'});
+      this.sliderDots = new SliderDots({core: this});
+    }
     
     this.sliderTrailer = new SliderTrailer({core: this});
     this.dragEvent = new DragEvent({core: this});
-    this.sliderDots = new SliderDots({core: this});
-    this.sliderArrows = new SliderArrows({core: this});
 
     sliderSlidesSelector.addEventListener("transitionend", this.checkIndexCall);
 
@@ -161,6 +173,8 @@ class SliderCore {
           slider,
           infinite,
           responsive,
+          dots,
+          nav
         },
         index,
         dragAction,
@@ -175,6 +189,8 @@ class SliderCore {
         slider,
         infinite,
         responsive,
+        dots,
+        nav,
         sliderItems,
         dragAction,
         setPosInitial,
