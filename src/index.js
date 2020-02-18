@@ -4,11 +4,12 @@ import {Slider} from "../src/scripts/index";
 // import {Slider} from "../src/scripts/index.es";
 
 const slideConfig = {
-  slider: "#slider",
+  slider:  document.querySelector(`#slider`),
   threshold: 50,
   infinite: true,
   nav: true,
   dots: true,
+  autoPlay:true,
   responsive: {
     0: {
       items: 1.5

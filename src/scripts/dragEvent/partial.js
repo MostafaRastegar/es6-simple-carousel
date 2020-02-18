@@ -163,7 +163,7 @@ export const dragEnd = (params) => {
 		sliderMainWidth,
 		setIndex,
 		checkIndexCall,
-		sliderSelector,
+		slider,
 		setPosFinal,
 	} = params;
 
@@ -200,8 +200,8 @@ export const dragEnd = (params) => {
 	}
 
 	if (!infinite) {
-		prevBlock(sliderSelector);
-		nextBlock(sliderSelector);
+		prevBlock(slider);
+		nextBlock(slider);
 	}
 	if (!infinite && calcIndex === slidesLength + perSlide) {
 		sliderItems.style["transform"] = setTranslate3d(
@@ -214,14 +214,14 @@ export const dragEnd = (params) => {
 		getTranslate3d(sliderItems) >= 0
 	) {
 		sliderItems.style["transform"] = setTranslate3d(0);
-		prevNone(sliderSelector);
-		nextBlock(sliderSelector);
+		prevNone(slider);
+		nextBlock(slider);
 	}
 
 	if (!infinite && getTranslate3d(sliderItems) <= calcFinalItemPositionConst) {
 		sliderItems.style["transform"] = setTranslate3d(calcFinalItemPositionConst);
-		nextNone(sliderSelector);
-		prevBlock(sliderSelector);
+		nextNone(slider);
+		prevBlock(slider);
 	}
 
 	mouseEventNull();

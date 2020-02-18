@@ -3,6 +3,7 @@ import {
 	truncResponsiveItemCount,
 	getTranslate3d,
 	sliderItemsAddClass,
+	childFider
 } from '../utils';
 
 import {
@@ -37,7 +38,7 @@ export default class SliderArrows {
 			getIndex,
 			getSlidesLength,
 			getSliderMainWidth,
-			getSliderSelector,
+			getSlider,
 			getAllowShift,
 			setAllowShift,
 			updateLog
@@ -53,7 +54,7 @@ export default class SliderArrows {
 				posInitial: getPosInitial(),
 				slideSize: getSlideSize(),
 				slidesLength: getSlidesLength(),
-				sliderSelector: getSliderSelector(),
+				slider: getSlider(),
 				sliderMainWidth: getSliderMainWidth(),
 				index: getIndex(),
 				responsiveItem: responsiveItemCount(responsive),
@@ -77,8 +78,14 @@ export default class SliderArrows {
 				slider,
 			},
 		} = this.core;
-		const prevSelector = document.querySelector(`${slider} .prev`);
-		const nextSelector = document.querySelector(`${slider} .next`);
+		const prevSelector = childFider({
+			wrapper:slider,
+			className:'.prev'
+		  });
+		const nextSelector = childFider({
+			wrapper:slider,
+			className:'.next'
+		  });
 
 		// Click events
 		prevSelector.addEventListener("click", () => this.shiftSlide(-1));

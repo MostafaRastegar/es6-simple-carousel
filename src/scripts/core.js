@@ -4,8 +4,11 @@ import {
   truncResponsiveItemCount,
   switchInfiniteResponsiveCount,
   checkIndex,
-  elementCreator
+  elementCreator,
+  childFider,
 } from "./utils";
+
+import {shiftSlideIsDir} from './sliderArrows/partial';
 
 import SliderDots from './sliderDots/index';
 import SliderTrailer from './slideTrailer/index';
@@ -13,25 +16,7 @@ import SliderArrows from './sliderArrows/index';
 import DragEvent from "./dragEvent/index";
 
 class SliderCore {
-    config = {};
-    sliderSelector = null;
-    posX1 = 0;
-    posX2 = 0;
-    // responsive = null;
-    infinite = false;
-    threshold = 0;
-    slider = null;
-    sliderItems = null;
-    posInitial = 0;
-    posFinal = 0;
-    slidesLength = 0;
-    sliderMainWidth = 0;
-    orginSlider = [];
-    slideSize = 0;
-    sliderItemWidth = 0;
-    index = 0;
-      allowShift = true;
-      perSlide = 0;
+
 
     constructor(config) {
         this.setConfig(config);
@@ -40,9 +25,6 @@ class SliderCore {
 
     setConfig = config => { this.config = config };
     getConfig = () => this.config;
-
-    setSliderSelector = sliderSelector => { this.sliderSelector = sliderSelector };
-    getSliderSelector = () => this.sliderSelector;
 
     setSlider = slider => { this.slider = slider };
     getSlider = () => this.slider;
@@ -98,29 +80,30 @@ class SliderCore {
             infinite,
             responsive,
             nav,
-            dots
+            dots,
+            autoPlay
         } = this.getConfig();
         //----------- start init variables  -----
         this.setSlider(slider);
 
-        const sliderSelector = document.querySelector(`${slider}`);
-        this.setSliderSelector(sliderSelector);
-
-        const sliderClienWidth = this.getSliderSelector().clientWidth;
+        const sliderClienWidth = this.getSlider().clientWidth;
         this.setSliderMainWidth(sliderClienWidth);
-
-        let sliderSlidesSelector = document.querySelector(`${slider} .slides`);
+        
+        let sliderSlidesSelector = childFider({
+          wrapper:slider,
+          className:'.slides'
+        });
         this.setSliderItems(sliderSlidesSelector);
 
         const sliderChildWidth = calcSliderChildWidth({
             responsiveItemCount: responsiveItemCount(responsive),
-            slider:this.getSliderSelector()
+            slider:this.getSlider()
         });
         this.setSlideSize(sliderChildWidth);
 
         const sliderItemWidth = calcSliderChildWidth({
             responsiveItemCount: responsiveItemCount(responsive),
-            slider:this.getSliderSelector()
+            slider:this.getSlider()
         });
         this.setSliderItemWidth(sliderItemWidth);
 
@@ -146,27 +129,63 @@ class SliderCore {
 			elementCreator({tag:'Ul',wrapper:slider,className:'dots'});
       this.sliderDots = new SliderDots({core: this});
     }
+
+    if(autoPlay){
+      // const sliderArrows = new SliderArrows({core: this});
+      setInterval(()=>this.next(),3000);
+
+    }
     
     this.sliderTrailer = new SliderTrailer({core: this});
     this.dragEvent = new DragEvent({core: this});
-
+    
     sliderSlidesSelector.addEventListener("transitionend", this.checkIndexCall);
-
-        // window.onresize = () => {
-        //   sliderItems = orginSlider;
-        //   sliderItems.innerHTML = slideItemGenerator(orginSlider);
-        //   sliderItemWidth = slideSize = sliderClientWidth(slider);
-        //   setSliderItemsChildWidth(orginSlider);
-        //   const setSliderItemsPositionParams = {
+    
+    // window.onresize = () => {
+      //   sliderItems = orginSlider;
+      //   sliderItems.innerHTML = slideItemGenerator(orginSlider);
+      //   sliderItemWidth = slideSize = sliderClientWidth(slider);
+      //   setSliderItemsChildWidth(orginSlider);
+      //   const setSliderItemsPositionParams = {
         //     indexItem: index,
         //     sliderItemWidth,
         //     sliderItems: orginSlider
         //   };
         //   setSliderItemsPosition(setSliderItemsPositionParams);
         // };
-
+        
+      }
+      
+    next(){
+      const {
+        sliderItems,
+        index,
+        perSlide,
+        slideSize,
+        slidesLength,
+        sliderMainWidth,
+        config:{
+          infinite,
+          slider,
+          responsive
+        }
+      } = this;
+      childFider({
+        wrapper:slider,
+        className:".slides"
+      }).classList.add('shifting')
+      this.setIndex(shiftSlideIsDir({
+        sliderItems,
+        index,
+        perSlide,
+        slideSize,
+        slidesLength,
+        sliderMainWidth,
+        responsiveItem:responsiveItemCount(responsive),
+        infinite,
+        slider,
+      }))
     }
-
     checkIndexCall = () => {
       const {
         config: {

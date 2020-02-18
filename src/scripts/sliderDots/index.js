@@ -1,5 +1,6 @@
 import {
-	truncResponsiveItemCount
+	truncResponsiveItemCount,
+	childFider
 } from '../utils';
 
 import {
@@ -43,7 +44,10 @@ export default class SliderDots {
 		} = this.core;
 
 		const sliderItems = getSliderItems();
-		const dotsSelector = document.querySelector(`${slider} .dots`);
+		const dotsSelector = childFider({
+			wrapper:slider,
+			className:'.dots'
+		  });
 
 		//generate dots items
 		const dotsItemsParams = {
@@ -63,7 +67,7 @@ export default class SliderDots {
 					sliderItemWidth: getSliderItemWidth(),
 					sliderMainWidth: getSliderMainWidth(),
 					sliderItems,
-					sliderSelector: getSlider(),
+					slider: getSlider(),
 					slideSize: getSlideSize(),
 					slidesLength: getSlidesLength(),
 					perSlide: truncResponsiveItemCount(responsive),

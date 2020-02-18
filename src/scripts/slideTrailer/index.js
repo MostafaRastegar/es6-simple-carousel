@@ -29,6 +29,7 @@ export default class SliderTrailer {
 			config: {
 				infinite,
 				responsive,
+				slider,
 			},
 			getSliderItems,
 			getSliderItemWidth,
@@ -36,13 +37,13 @@ export default class SliderTrailer {
 			getSlideSize,
 			getSliderMainWidth,
 			getIndex,
-			getSliderSelector,
+			getSlider,
+			sliderArrows
 		} = this.core;
 
 		const sliderItems = getSliderItems();
 		const slideSize = getSlideSize();
 		const sliderItemWidth = getSliderItemWidth();
-		const sliderSelector = getSliderSelector();
 		const perSlide = getPerSlide();
 		const sliderMainWidth = getSliderMainWidth();
 
@@ -55,7 +56,7 @@ export default class SliderTrailer {
 		setPageNumberOnChild({ sliderItems, responsive });
 		setSliderItemsChildWidth({
 			sliderItems,
-			slider: sliderSelector,
+			slider,
 			responsive,
 		});
 		// Clone first and last slide
@@ -80,8 +81,7 @@ export default class SliderTrailer {
 			infinite,
 		});
 		// add loaded class to main slide
-		sliderSelector.classList.add("loaded");
+		slider.classList.add("loaded");
 		// Transition events
-
 	}
 }

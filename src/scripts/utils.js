@@ -177,14 +177,28 @@ export const switchInfiniteResponsiveCount = (itemCont, infinite) => {
   return infinite ? itemCont : 0;
 };
 
-export const prevNone = sliderSelector =>
-  (document.querySelector(`${sliderSelector} .prev`).style.display = "none");
-export const prevBlock = sliderSelector =>
-  (document.querySelector(`${sliderSelector} .prev`).style.display = "block");
-export const nextNone = sliderSelector =>
-  (document.querySelector(`${sliderSelector} .next`).style.display = "none");
-export const nextBlock = sliderSelector =>
-  (document.querySelector(`${sliderSelector} .next`).style.display = "block");
+export const prevNone = slider =>
+  childFider({
+    wrapper: slider,
+    className: ".prev"
+  }).style.display = "none";
+
+export const prevBlock = slider =>
+  childFider({
+    wrapper: slider,
+    className: ".prev"
+  }).style.display = "block";
+
+export const nextNone = slider =>
+  childFider({
+    wrapper: slider,
+    className: ".next"
+  }).style.display = "none";
+export const nextBlock = slider =>
+  childFider({
+    wrapper: slider,
+    className: ".next"
+  }).style.display = "block";
 
 
 export const checkIndex = (params) => {
@@ -218,8 +232,8 @@ export const checkIndex = (params) => {
   // }
 
   if (!infinite && nav && index === 0) {
-    prevNone(sliderSelector);
-    nextBlock(sliderSelector);
+    prevNone(slider);
+    nextBlock(slider);
   }
 
   // run for set active class
@@ -235,7 +249,7 @@ export const checkIndex = (params) => {
   setActiveclassToCurrent(setActiveclassToCurrentParams);
   setAllowShift(sliderItemsRemoveClass(sliderItems));
 
-  if(dots){
+  if (dots) {
     const dotActiveParams = {
       index,
       sliderItems,
@@ -248,27 +262,35 @@ export const checkIndex = (params) => {
 };
 
 export const dotActive = (params) => {
-	const {
-		index,
-		sliderItems,
-		infinite,
-		slider
-	} = params;
-	const dotsSelector = document.querySelector(`${slider} .dots`);
-	const currentDataPage = parseInt(
-		sliderItems.children[infinite ? index : index - 1].getAttribute("data-page")
-	);
-	const currentDot = dotsSelector.children[currentDataPage - 1];
-	dotsSelector.children.forEach(child => {
-		child.classList.remove("active");
-	});
-	currentDot.classList.add("active");
+  const {
+    index,
+    sliderItems,
+    infinite,
+    slider
+  } = params;
+  const dotsSelector = childFider({
+    wrapper: slider,
+    className: '.dots'
+  });
+  const currentDataPage = parseInt(
+    sliderItems.children[infinite ? index : index - 1].getAttribute("data-page")
+  );
+  const currentDot = dotsSelector.children[currentDataPage - 1];
+  dotsSelector.children.forEach(child => {
+    child.classList.remove("active");
+  });
+  currentDot.classList.add("active");
 };
 
 
 export const elementCreator = (params) => {
-	const {tag,wrapper,className} = params;
-	let node = document.createElement(tag);
-	node.className = className;
-	document.querySelector(`${wrapper}`).appendChild(node); 
+  const { tag, wrapper, className } = params;
+  let node = document.createElement(tag);
+  node.className = className;
+  wrapper.appendChild(node);
+};
+
+export const childFider = (params) => {
+  const { wrapper, className } = params;
+  return wrapper.querySelector(className);
 };
