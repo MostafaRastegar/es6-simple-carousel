@@ -1,6 +1,7 @@
 import "./styles/slider.css";
 import "./styles/custom.css";
-import {Slider} from "./scripts/index";
+import {Slider} from "../src/scripts/index";
+// import {Slider} from "../src/scripts/index.es";
 
 const slideConfig = {
   slider: "#slider",
