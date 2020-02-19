@@ -9,7 +9,7 @@ const slideConfig = {
   infinite: true,
   nav: true,
   dots: true,
-  autoPlay:true,
+  autoPlay:false,
   responsive: {
     0: {
       items: 1.5

@@ -3,7 +3,8 @@ import {
 	truncResponsiveItemCount,
 	getTranslate3d,
 	sliderItemsAddClass,
-	childFider
+	childFider,
+	sliderItemsRemoveClass
 } from '../utils';
 
 import {
@@ -77,6 +78,8 @@ export default class SliderArrows {
 			config: {
 				slider,
 			},
+			getSliderItems,
+			setAllowShift	
 		} = this.core;
 		const prevSelector = childFider({
 			wrapper:slider,
@@ -90,5 +93,7 @@ export default class SliderArrows {
 		// Click events
 		prevSelector.addEventListener("click", () => this.shiftSlide(-1));
 		nextSelector.addEventListener("click", () => this.shiftSlide(1));
+		setAllowShift(sliderItemsRemoveClass(getSliderItems()));
+		// setAllowShift();
 	}
 }
