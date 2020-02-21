@@ -6,7 +6,11 @@ import {
 	calcSliderChildWidth,
 	truncResponsiveItemCount,
 	calcCurrentIndex,
-	calcFirstItemPosition
+	calcFirstItemPosition,
+	prevBlock,
+	prevNone,
+	nextBlock,
+	nextNone
 } from '../utils';
 
 export const caroueslTouchStart = e => e.touches[0].clientX;

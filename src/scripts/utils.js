@@ -213,7 +213,10 @@ export const checkIndex = (params) => {
     sliderMainWidth,
     setAllowShift,
     dots,
-    nav
+    slidesLength,
+    sliderItemWidth,
+    nav,
+    setIndex,
   } = params;
 
   const perSlide = truncResponsiveItemCount(responsive);
@@ -230,7 +233,21 @@ export const checkIndex = (params) => {
   //   const shiftEndToFirstParams = { sliderItems, slideSize, perSlide,responsiveItem };
   //   index = shiftEndToFirst(shiftEndToFirstParams);
   // }
-
+	if (infinite && index > perSlide + slidesLength) {
+		// init slider position
+		setIndex(setSliderItemsPosition({
+			indexItem: index - slidesLength, // user init slide index (feature)
+			sliderItemWidth,
+			sliderItems
+		}));
+  }
+  if (infinite && index <= 1) {
+		setIndex(setSliderItemsPosition({
+			indexItem: slidesLength + index,
+			sliderItemWidth,
+			sliderItems
+		}));
+	}
   if (!infinite && nav && index === 0) {
     prevNone(slider);
     nextBlock(slider);
@@ -255,7 +272,8 @@ export const checkIndex = (params) => {
       sliderItems,
       infinite,
       dotsSelector,
-      slider
+      slider,
+      perSlide
     };
     dotActive(dotActiveParams);
   }
@@ -266,15 +284,19 @@ export const dotActive = (params) => {
     index,
     sliderItems,
     infinite,
-    slider
+    slider,
+    perSlide
   } = params;
   const dotsSelector = childFider({
     wrapper: slider,
     className: '.dots'
   });
   const currentDataPage = parseInt(
-    sliderItems.children[infinite ? index : index - 1].getAttribute("data-page")
-  );
+    sliderItems.children[infinite ? index : index - perSlide].getAttribute("data-page")
+    );
+    console.log('==========sliderItems.children==========================');
+    console.log(currentDataPage);
+    console.log('====================================');
   const currentDot = dotsSelector.children[currentDataPage - 1];
   dotsSelector.children.forEach(child => {
     child.classList.remove("active");

@@ -31,7 +31,7 @@ export const cloneNodeGenerator = params => {
 export const cloneNodeAppendChild = params => {
 	const { perSlide, deepCloneSliderItemsChildren, sliderItems } = params;
 	deepCloneSliderItemsChildren.forEach((element, index) => {
-		if (index < perSlide) {
+		if (index <= perSlide) {
 			const cln = element.cloneNode(true);
 			addCloneClass(cln);
 			sliderItems.appendChild(cln);
@@ -42,7 +42,7 @@ export const cloneNodeAppendChild = params => {
 export const cloneNodeInsertBefore = params => {
 	const { perSlide, deepCloneSliderItemsChildren, sliderItems } = params;
 	for (
-		let i = deepCloneSliderItemsChildren.length - perSlide;
+		let i = deepCloneSliderItemsChildren.length - perSlide -1;
 		i < deepCloneSliderItemsChildren.length;
 		i++
 	) {
