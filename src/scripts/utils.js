@@ -8,128 +8,11 @@ export const sliderItemsRemoveClass = sliderItems => {
   return true;
 };
 
-export const shiftSlideIsDir = params => {
-  let {
-    sliderItems,
-    index,
-    countItem,
-    slideSize,
-    slidesLength,
-    sliderMainWidth,
-    responsiveItem,
-    infinite,
-    sliderSelector
-  } = params;
-  const newSlidesLength = infinite ? slidesLength : slidesLength - 1;
-
-  const calcFinalItemPositionParams = {
-    slideSize,
-    slidesLength,
-    sliderMainWidth,
-    countItem,
-    infinite
-  };
-
-  const newIndex = index + countItem;
-  // const ceilResponsiveItem = Math.ceil(responsiveItem);
-
-  if (!infinite && newIndex >= newSlidesLength && responsiveItem !== 1) {
-    sliderItems.style["transform"] = setTranslate3d(
-      calcFinalItemPosition(calcFinalItemPositionParams)
-    );
-    nextNone(sliderSelector);
-    prevBlock(sliderSelector);
-
-    return newIndex;
-  }
-
-  if (!infinite && newIndex * countItem >= slidesLength) {
-    sliderItems.style["transform"] = setTranslate3d(
-      calcFinalItemPosition(calcFinalItemPositionParams)
-    );
-    nextNone(sliderSelector);
-    prevBlock(sliderSelector);
-  }
-  if (!infinite && newIndex === newSlidesLength) {
-    nextNone(sliderSelector);
-    prevBlock(sliderSelector);
-  }
-
-  if (infinite && newIndex >= countItem + slidesLength) {
-    // shift after finish items
-    const shiftEndToFirstParams = {
-      sliderItems,
-      slideSize,
-      countItem,
-      newIndex,
-      slidesLength
-    };
-    return shiftEndToFirst(shiftEndToFirstParams);
-  }
-
-  sliderItems.style["transform"] = setTranslate3d(-newIndex * slideSize);
-  return newIndex;
-};
-
-export const shiftSlideNonDir = params => {
-  let {
-    sliderItems,
-    slideSize,
-    index,
-    countItem,
-    infinite,
-    sliderSelector,
-    slidesLength
-  } = params;
-  const newIndex = index - countItem;
-  const infinitCountItem = infinite ? countItem : 0;
-
-  if (!infinite && index - infinitCountItem <= countItem && index !== -1) {
-    const calcFirstItemPositionParams = { slideSize, countItem, infinite };
-    sliderItems.style["transform"] = setTranslate3d(
-      calcFirstItemPosition(calcFirstItemPositionParams)
-    );
-    nextBlock(sliderSelector);
-    prevNone(sliderSelector);
-    return newIndex;
-  }
-
-  // shift to end from start item
-  if (infinite && newIndex < 0) {
-    const shiftFirstToEndParams = {
-      sliderItems,
-      slidesLength,
-      slideSize,
-      newIndex
-    };
-    return shiftFirstToEnd(shiftFirstToEndParams);
-  }
-
-  sliderItems.style["transform"] = setTranslate3d(-newIndex * slideSize);
-  return newIndex;
-};
-
-export const shiftFirstToEnd = params => {
-  const { sliderItems, slidesLength, slideSize, newIndex } = params;
-  sliderItems.style["transform"] = setTranslate3d(
-    -((slidesLength + newIndex) * slideSize)
-  );
-  return slidesLength + newIndex;
-};
-
-export const shiftEndToFirst = params => {
-  const { sliderItems, slideSize, countItem, newIndex, slidesLength } = params;
-  sliderItems.style["transform"] = setTranslate3d(
-    -(newIndex - slidesLength) * slideSize
-  );
-  return newIndex - slidesLength;
-};
-
 export const calcCurrentIndex = params => {
   const {
     sliderItems,
     infinite,
-    countItem,
+    perSlide,
     slideSize,
     sliderMainWidth
   } = params;
@@ -148,28 +31,26 @@ export const calcCurrentIndex = params => {
 
   if (Math.abs(getTranslate3d(sliderItems)) > 0) {
     const scroll = Math.abs(getTranslate3d(sliderItems));
-    return Math.trunc((scroll + sliderMainWidth) / slideSize - countItem);
+    return Math.trunc((scroll + sliderMainWidth) / slideSize - perSlide);
   }
 };
 
 export const setActiveclassToCurrent = params => {
   const {
     sliderItems,
-    countItem,
+    perSlide,
     infinit,
     slideSize,
     sliderMainWidth,
-    dotsSelector,
-    index
   } = params;
   const activeIndex = calcCurrentIndex({
     sliderItems,
-    countItem,
+    perSlide,
     infinit,
     slideSize,
     sliderMainWidth
   });
-  const configCount = countItem;
+  const configCount = perSlide;
   const activeItems = [];
   [...Array(configCount).keys()].forEach(item =>
     activeItems.push(item + activeIndex)
@@ -181,81 +62,8 @@ export const setActiveclassToCurrent = params => {
       item.classList.remove("active");
     }
   });
-
-  console.log('==========itemIndex==========================');
-  console.log(dotsSelector);
-  console.log('====================================');
-
-  // dotsSelector.children.forEach((item,itemIndex) => {
-
-  //   if((itemIndex + 1 * Math.floor(sliderWidth)) === Math.abs(translate3d)){
-  //     item.classList.add("active");
-  //   }
-
-  //   if ((itemIndex * Math.floor(sliderWidth)) <= Math.abs(translate3d) && ((itemIndex + 1) * Math.floor(sliderWidth)) <= Math.abs(translate3d) ) {
-  //     item.classList.add("active");
-  //     if(itemIndex !== 0){
-  //       dotsSelector.children[itemIndex - 1].classList.remove("active");
-  //     }
-  //   }
-  //   if(itemIndex - 1 === -1){
-  //     dotsSelector.children[dotsSelector.children.length - 1].classList.remove("active");
-  // }
-
-  // });
-
-  // dotsSelector.children.forEach((item, itemIndex) => {
-  //   if (activeIndex === index) {
-  //     // dotsSelector.children[activeIndex/2].a;
-  //     item.classList.add("active");
-  //   }else{
-  //     item.classList.remove("active");
-  //   }
-  // });
 };
 
-export const dotsItemsClick = params => {
-  const {
-    indexItem,
-    countItem,
-    slideSize,
-    slidesLength,
-    sliderItems,
-    sliderMainWidth,
-    infinite,
-    dotIndex,
-    responsive,
-    sliderSelector
-  } = params;
-  const newDotIndex = (dotIndex) * truncResponsiveItemCount(responsive);
-  console.log('===========newDotIndex=========================');
-  console.log(newDotIndex,dotIndex);
-  console.log('====================================');
-  setSliderItemsPositionAfterDotClick({
-    indexItem,
-    slideSize,
-    sliderItems,
-    slidesLength,
-    sliderMainWidth,
-    countItem,
-    infinite,
-    sliderSelector
-  });
-  return {
-    index: newDotIndex,
-    allowShift: sliderItemsAddClass(sliderItems),
-    posInitial: getTranslate3d(sliderItems)
-  };
-};
-
-export const dotsItemsGenerator = params => {
-  const { slidesLength, dotsSelector, responsive } = params;
-  for (let i = 0; i < calcSliderGroupCount({ responsive, slidesLength }); i++) {
-    dotsSelector.innerHTML += `<li class="dots-item${!i ?
-      " active":""}" data-dot-index="${i + 1}">${i + 1}</li>`;
-  }
-  return dotsSelector;
-};
 
 export const sliderClientWidth = slider => slider.clientWidth;
 
@@ -263,33 +71,25 @@ export const truncResponsiveItemCount = responsive => {
   return Math.trunc(responsiveItemCount(responsive));
 };
 
-// export const getTruncChildItems = items => {
-//   const itemsTrunc = Math.ceil(items);
-//   if (items - itemsTrunc === 0) {
-//     return sliderClientWidth(slider);
-//   }
-//   const mainWidthTruncItem = sliderClientWidth(slider) / itemsTrunc;
-//   return sliderClientWidth(slider) - mainWidthTruncItem / 2;
-// };
 
 export const calcFinalItemPosition = params => {
   const {
     slideSize,
     sliderMainWidth,
-    countItem,
+    perSlide,
     slidesLength,
     infinite
   } = params;
   const infiniteSlideLength = infinite
     ? slidesLength
-    : slidesLength - countItem;
+    : slidesLength - perSlide;
   const totalDistanceToFinal = infiniteSlideLength * slideSize;
-  return -(totalDistanceToFinal - (sliderMainWidth - slideSize * countItem));
+  return -(totalDistanceToFinal - (sliderMainWidth - slideSize * perSlide));
 };
 
 export const calcFirstItemPosition = params => {
-  const { slideSize, countItem, infinite } = params;
-  return -((infinite ? slideSize : 0) * countItem);
+  const { slideSize, perSlide, infinite } = params;
+  return -((infinite ? slideSize : 0) * perSlide);
 };
 
 export const calcSliderGroupCount = params => {
@@ -337,45 +137,6 @@ export const setSliderItemsPosition = params => {
   return indexItem;
 };
 
-export const setSliderItemsPositionAfterDotClick = params => {
-  const {
-    indexItem,
-    slideSize,
-    sliderItems,
-    sliderMainWidth,
-    countItem,
-    slidesLength,
-    infinite,
-    sliderSelector
-  } = params;
-
-  if (indexItem * countItem > slidesLength) {
-    const calcFinalItemPositionParams = {
-      slideSize,
-      slidesLength,
-      sliderMainWidth,
-      countItem,
-      infinite
-    };
-
-    sliderItems.style["transform"] = setTranslate3d(
-      calcFinalItemPosition(calcFinalItemPositionParams)
-    );
-    nextNone(sliderSelector);
-    prevBlock(sliderSelector);
-    return true;
-  }
-
-  nextBlock(sliderSelector);
-  prevBlock(sliderSelector);
-
-  if (indexItem === 0) {
-    nextBlock(sliderSelector);
-    prevNone(sliderSelector);
-  }
-  sliderItems.style["transform"] = setTranslate3d((infinite ? indexItem + countItem : indexItem) * -slideSize);
-};
-
 export const setTranslate3d = getValue => `translate3d(${getValue}px,0px,0px)`;
 
 export const getTranslate3d = sliderItems => {
@@ -412,80 +173,124 @@ export const responsiveItemCount = getConfig => {
   return getConfig[parseInt(newResp.pop())].items;
 };
 
-// export const slideItemGenerator = sliderItems => {
-//   const newSliderItems = arrGenerator(
-//     Array.from(sliderItems.children),
-//     responsiveItemCount(config.responsive)
-//   );
-//   const newHtml = newSliderItems
-//     .map(
-//       (items, indexItem) =>
-//         `<div class="slide ${indexItem}">
-//       ${items.map(item => item.outerHTML).join("")}
-//     </div>`
-//     )
-//     .join("");
-//   return newHtml;
-// };
-
-export const addCloneClass = item => {
-  item.classList.add("clone");
-};
-
-export const cloneNodeGenerator = params => {
-  const { countItem, sliderItems } = params;
-  const sliderItemsChildren = sliderItems.children;
-  const deepCloneSliderItemsChildren = [...sliderItemsChildren];
-  const cloneNodeParams = {
-    countItem,
-    deepCloneSliderItemsChildren,
-    sliderItems
-  };
-  cloneNodeAppendChild(cloneNodeParams);
-  cloneNodeInsertBefore(cloneNodeParams);
-};
-
-export const cloneNodeAppendChild = params => {
-  const { countItem, deepCloneSliderItemsChildren, sliderItems } = params;
-  deepCloneSliderItemsChildren.forEach((element, index) => {
-    if (index < countItem) {
-      const cln = element.cloneNode(true);
-      addCloneClass(cln);
-      sliderItems.appendChild(cln);
-    }
-  });
-};
-
-export const cloneNodeInsertBefore = params => {
-  const { countItem, deepCloneSliderItemsChildren, sliderItems } = params;
-  for (
-    let i = deepCloneSliderItemsChildren.length - countItem;
-    i < deepCloneSliderItemsChildren.length;
-    i++
-  ) {
-    const cln = deepCloneSliderItemsChildren[i].cloneNode(true);
-    addCloneClass(cln);
-    sliderItems.insertBefore(cln, deepCloneSliderItemsChildren[0]);
-  }
-};
-
-export const setPageNumberOnChild = params => {
-  const { slidesLength, sliderItems, responsive } = params;
-  const countItem = truncResponsiveItemCount(responsive);
-  sliderItems.children.forEach((item, itemIndex) => {
-    item.setAttribute("data-page", Math.trunc(itemIndex / countItem) + 1);
-  });
-};
-
 export const switchInfiniteResponsiveCount = (itemCont, infinite) => {
   return infinite ? itemCont : 0;
 };
 
-export const prevNone = sliderSelector =>
-  (document.querySelector(`${sliderSelector} .prev`).style.display = "none");
-export const prevBlock = sliderSelector =>
-  (document.querySelector(`${sliderSelector} .prev`).style.display = "block");
-export const nextNone = sliderSelector =>
-  (document.querySelector(`${sliderSelector} .next`).style.display = "none");
-export const nextBlock = sliderSelector =>
-  (document.querySelector(`${sliderSelector} .next`).style.display = "block");
+export const prevNone = slider =>
+  childFider({
+    wrapper: slider,
+    className: ".prev"
+  }).style.display = "none";
+
+export const prevBlock = slider =>
+  childFider({
+    wrapper: slider,
+    className: ".prev"
+  }).style.display = "block";
+
+export const nextNone = slider =>
+  childFider({
+    wrapper: slider,
+    className: ".next"
+  }).style.display = "none";
+export const nextBlock = slider =>
+  childFider({
+    wrapper: slider,
+    className: ".next"
+  }).style.display = "block";
+
+
+export const checkIndex = (params) => {
+  const {
+    responsive,
+    infinite,
+    slider,
+    index,
+    sliderItems,
+    dotsSelector,
+    slideSize,
+    sliderMainWidth,
+    setAllowShift,
+    dots,
+    nav
+  } = params;
+
+  const perSlide = truncResponsiveItemCount(responsive);
+  // const responsiveItem = responsiveItemCount(responsive);
+
+  // // shift to end from start item
+  // if (infinite && index < 0) {
+  //   const shiftFirstToEndParams = { sliderItems, slidesLength, slideSize,perSlide,responsiveItem };
+  //   index = shiftFirstToEnd(shiftFirstToEndParams);
+  // }
+
+  // // shift after finish items
+  // if (infinite && index >= perSlide + slidesLength) {
+  //   const shiftEndToFirstParams = { sliderItems, slideSize, perSlide,responsiveItem };
+  //   index = shiftEndToFirst(shiftEndToFirstParams);
+  // }
+
+  if (!infinite && nav && index === 0) {
+    prevNone(slider);
+    nextBlock(slider);
+  }
+
+  // run for set active class
+  const setActiveclassToCurrentParams = {
+    index,
+    sliderItems,
+    dotsSelector,
+    perSlide,
+    infinite,
+    slideSize,
+    sliderMainWidth
+  };
+  setActiveclassToCurrent(setActiveclassToCurrentParams);
+  setAllowShift(sliderItemsRemoveClass(sliderItems));
+
+  if (dots) {
+    const dotActiveParams = {
+      index,
+      sliderItems,
+      infinite,
+      dotsSelector,
+      slider
+    };
+    dotActive(dotActiveParams);
+  }
+};
+
+export const dotActive = (params) => {
+  const {
+    index,
+    sliderItems,
+    infinite,
+    slider
+  } = params;
+  const dotsSelector = childFider({
+    wrapper: slider,
+    className: '.dots'
+  });
+  const currentDataPage = parseInt(
+    sliderItems.children[infinite ? index : index - 1].getAttribute("data-page")
+  );
+  const currentDot = dotsSelector.children[currentDataPage - 1];
+  dotsSelector.children.forEach(child => {
+    child.classList.remove("active");
+  });
+  currentDot.classList.add("active");
+};
+
+
+export const elementCreator = (params) => {
+  const { tag, wrapper, className } = params;
+  let node = document.createElement(tag);
+  node.className = className;
+  wrapper.appendChild(node);
+};
+
+export const childFider = (params) => {
+  const { wrapper, className } = params;
+  return wrapper.querySelector(className);
+};
