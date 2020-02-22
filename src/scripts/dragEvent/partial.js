@@ -61,12 +61,12 @@ export const dragActionCalcPosition = params => {
   ) {
     return false;
   }
-  // stop scroll when firstItem go to lastItem on drag
+  // stop drag when firstItem go to lastItem on drag
   if (infinite && getTranslate3d(sliderItems) - posX2 > 0) {
     return false;
   }
-  // stop scroll when lastItem go to fistItem on drag
-  if (infinite && (getTranslate3d(sliderItems) - posX2 < -(sliderItemWidth * (slidesLength + perSlide)))) {
+  // stop drag when lastItem go to fistItem on drag
+  if (infinite && (getTranslate3d(sliderItems) - posX2 < -(sliderItemWidth * (slidesLength + perSlide + 1)))) {
     return false;
   }
   sliderItems.style["transform"] = setTranslate3d(
@@ -194,13 +194,6 @@ export const dragEnd = (params) => {
 		infinite && calcIndex + perSlide === perSlide
 	) {
 		sliderItems.style["transform"] = setTranslate3d(calcFinalItemPositionConst);
-	}
-
-	if (infinite && calcIndex >= perSlide + slidesLength) {
-		const calcFirstItemPositionConst = calcFirstItemPosition({
-			slideSize, perSlide, infinite
-		});
-		sliderItems.style["transform"] = setTranslate3d(calcFirstItemPositionConst);
 	}
 
 	if (!infinite) {

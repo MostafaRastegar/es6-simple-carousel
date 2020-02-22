@@ -93,17 +93,6 @@ export const shiftSlideNonDir = params => {
 		return newIndex;
 	}
 
-	// shift to end from start item
-	// if (infinite && newIndex < 0) {
-	// 	const shiftFirstToEndParams = {
-	// 		sliderItems,
-	// 		slidesLength,
-	// 		slideSize,
-	// 		newIndex
-	// 	};
-	// 	return shiftFirstToEnd(shiftFirstToEndParams);
-	// }
-
 	sliderItems.style["transform"] = setTranslate3d(-newIndex * slideSize);
 	return newIndex;
 };

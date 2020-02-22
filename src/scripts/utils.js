@@ -143,6 +143,9 @@ export const getTranslate3d = sliderItems => {
   const values = sliderItems.style.transform.match(
     /translate3d\((.*)px\, (.*)px\, (.*)px\)/
   );
+  console.log('======values==============================');
+  console.log(values);
+  console.log('====================================');
   if (!values[1] || !values[1].length) {
     return 0;
   }
@@ -202,6 +205,9 @@ export const nextBlock = slider =>
 
 
 export const checkIndex = (params) => {
+  console.log('====================================');
+  console.log('checkIndex');
+  console.log('====================================');
   const {
     responsive,
     infinite,
@@ -220,34 +226,27 @@ export const checkIndex = (params) => {
   } = params;
 
   const perSlide = truncResponsiveItemCount(responsive);
-  // const responsiveItem = responsiveItemCount(responsive);
 
-  // // shift to end from start item
-  // if (infinite && index < 0) {
-  //   const shiftFirstToEndParams = { sliderItems, slidesLength, slideSize,perSlide,responsiveItem };
-  //   index = shiftFirstToEnd(shiftFirstToEndParams);
-  // }
-
-  // // shift after finish items
-  // if (infinite && index >= perSlide + slidesLength) {
-  //   const shiftEndToFirstParams = { sliderItems, slideSize, perSlide,responsiveItem };
-  //   index = shiftEndToFirst(shiftEndToFirstParams);
-  // }
-	if (infinite && index > perSlide + slidesLength) {
-		// init slider position
-		setIndex(setSliderItemsPosition({
-			indexItem: index - slidesLength, // user init slide index (feature)
-			sliderItemWidth,
-			sliderItems
-		}));
+  if (infinite && index > perSlide + slidesLength &&
+    Math.abs(getTranslate3d(sliderItems)) >= (perSlide + 1 + slidesLength) * sliderItemWidth
+  ) {
+    // init slider position
+    setIndex(setSliderItemsPosition({
+      indexItem: index - slidesLength,
+      sliderItemWidth,
+      sliderItems
+    }));
   }
-  if (infinite && index <= 1) {
-		setIndex(setSliderItemsPosition({
-			indexItem: slidesLength + index,
-			sliderItemWidth,
-			sliderItems
-		}));
-	}
+  // shift to end from start item
+  if (infinite && Math.abs(getTranslate3d(sliderItems)) <= 0 ||
+    Math.abs(getTranslate3d(sliderItems)) === sliderItemWidth) {
+    setIndex(setSliderItemsPosition({
+      indexItem: slidesLength + index,
+      sliderItemWidth,
+      sliderItems
+    }));
+  }
+
   if (!infinite && nav && index === 0) {
     prevNone(slider);
     nextBlock(slider);
@@ -273,7 +272,8 @@ export const checkIndex = (params) => {
       infinite,
       dotsSelector,
       slider,
-      perSlide
+      perSlide,
+      sliderMainWidth
     };
     dotActive(dotActiveParams);
   }
@@ -291,13 +291,11 @@ export const dotActive = (params) => {
     wrapper: slider,
     className: '.dots'
   });
+
   const currentDataPage = parseInt(
-    sliderItems.children[infinite ? index : index - perSlide].getAttribute("data-page")
+    sliderItems.children[infinite ? index + 1 : index - perSlide].getAttribute("data-page")
     );
-    console.log('==========sliderItems.children==========================');
-    console.log(currentDataPage);
-    console.log('====================================');
-  const currentDot = dotsSelector.children[currentDataPage - 1];
+  const currentDot = dotsSelector.children[infinite ? currentDataPage - 1 : currentDataPage -1];
   dotsSelector.children.forEach(child => {
     child.classList.remove("active");
   });
