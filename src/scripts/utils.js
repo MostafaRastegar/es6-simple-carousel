@@ -25,7 +25,7 @@ export const calcCurrentIndex = params => {
     );
   }
 
-  if (getTranslate3d(sliderItems) === 0) {
+  if (Math.abs(getTranslate3d(sliderItems)) <= 1) {
     return 0;
   }
 
@@ -39,14 +39,14 @@ export const setActiveclassToCurrent = params => {
   const {
     sliderItems,
     perSlide,
-    infinit,
+    infinite,
     slideSize,
     sliderMainWidth,
   } = params;
   const activeIndex = calcCurrentIndex({
     sliderItems,
     perSlide,
-    infinit,
+    infinite,
     slideSize,
     sliderMainWidth
   });
@@ -146,7 +146,7 @@ export const getTranslate3d = sliderItems => {
   if (!values[1] || !values[1].length) {
     return 0;
   }
-  return parseInt(values[1]);
+  return parseFloat(values[1]);
 };
 
 export const arrGenerator = (arr, part) => {
@@ -232,8 +232,10 @@ export const checkIndex = (params) => {
     }));
   }
   // shift to end from start item
-  if (infinite && Math.abs(getTranslate3d(sliderItems)) <= 0 ||
-    Math.abs(getTranslate3d(sliderItems)) === sliderItemWidth) {
+  if (infinite && (
+    Math.abs(getTranslate3d(sliderItems)) <= 1 ||
+    Math.abs(getTranslate3d(sliderItems)) === sliderItemWidth)
+  ) {
     setIndex(setSliderItemsPosition({
       indexItem: slidesLength + index,
       sliderItemWidth,
