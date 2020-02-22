@@ -54,17 +54,17 @@ export const shiftSlideIsDir = params => {
 		prevBlock(slider);
 	}
 
-	if (infinite && newIndex >= perSlide + slidesLength) {
-		// shift after finish items
-		const shiftEndToFirstParams = {
-			sliderItems,
-			slideSize,
-			perSlide,
-			newIndex,
-			slidesLength
-		};
-		return shiftEndToFirst(shiftEndToFirstParams);
-	}
+	// if (infinite && newIndex >= perSlide + slidesLength) {
+	// 	// shift after finish items
+	// 	const shiftEndToFirstParams = {
+	// 		sliderItems,
+	// 		slideSize,
+	// 		perSlide,
+	// 		newIndex,
+	// 		slidesLength
+	// 	};
+	// 	return shiftEndToFirst(shiftEndToFirstParams);
+	// }
 
 	sliderItems.style["transform"] = setTranslate3d(-newIndex * slideSize);
 	return newIndex;
@@ -91,17 +91,6 @@ export const shiftSlideNonDir = params => {
 		nextBlock(slider);
 		prevNone(slider);
 		return newIndex;
-	}
-
-	// shift to end from start item
-	if (infinite && newIndex < 0) {
-		const shiftFirstToEndParams = {
-			sliderItems,
-			slidesLength,
-			slideSize,
-			newIndex
-		};
-		return shiftFirstToEnd(shiftFirstToEndParams);
 	}
 
 	sliderItems.style["transform"] = setTranslate3d(-newIndex * slideSize);

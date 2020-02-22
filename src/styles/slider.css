@@ -8,6 +8,10 @@
   transition: all 0.2s ease-out;
 }
 
+.slider{
+  position: relative;
+}
+
 .slide {
   height: 300px;
   cursor: pointer;

@@ -196,13 +196,16 @@ class SliderCore {
           nav
         },
         index,
+        setIndex,
         dragAction,
         setPosInitial,
         setPosX1,
         setAllowShift,
         sliderItems,
         slideSize,
-        sliderMainWidth
+        sliderMainWidth,
+        slidesLength,
+        sliderItemWidth
       } = this;
       checkIndex({
         slider,
@@ -217,7 +220,10 @@ class SliderCore {
         setAllowShift,
         index,
         slideSize,
-        sliderMainWidth
+        sliderMainWidth,
+        slidesLength,
+        sliderItemWidth,
+        setIndex
       });
     }
 

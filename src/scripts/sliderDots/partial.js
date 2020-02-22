@@ -66,7 +66,7 @@ export const setSliderItemsPositionAfterDotClick = params => {
 		nav
 	} = params;
 
-	if (indexItem * perSlide > slidesLength) {
+	if (!infinite && indexItem * perSlide > slidesLength) {
 		const calcFinalItemPositionParams = {
 			slideSize,
 			slidesLength,
@@ -90,9 +90,9 @@ export const setSliderItemsPositionAfterDotClick = params => {
 		prevBlock(slider);
 	}
 
-	if (nav && indexItem === 0) {
+	if (!infinite && nav && indexItem === 0) {
 		nextBlock(slider);
 		prevNone(slider);
 	}
-	sliderItems.style["transform"] = setTranslate3d((infinite ? indexItem + perSlide : indexItem) * -slideSize);
+	sliderItems.style["transform"] = setTranslate3d((infinite ? indexItem + (perSlide +1) : indexItem) * -slideSize);
 };

@@ -213,23 +213,33 @@ export const checkIndex = (params) => {
     sliderMainWidth,
     setAllowShift,
     dots,
-    nav
+    slidesLength,
+    sliderItemWidth,
+    nav,
+    setIndex,
   } = params;
 
   const perSlide = truncResponsiveItemCount(responsive);
-  // const responsiveItem = responsiveItemCount(responsive);
 
-  // // shift to end from start item
-  // if (infinite && index < 0) {
-  //   const shiftFirstToEndParams = { sliderItems, slidesLength, slideSize,perSlide,responsiveItem };
-  //   index = shiftFirstToEnd(shiftFirstToEndParams);
-  // }
-
-  // // shift after finish items
-  // if (infinite && index >= perSlide + slidesLength) {
-  //   const shiftEndToFirstParams = { sliderItems, slideSize, perSlide,responsiveItem };
-  //   index = shiftEndToFirst(shiftEndToFirstParams);
-  // }
+  if (infinite && index > perSlide + slidesLength &&
+    Math.abs(getTranslate3d(sliderItems)) >= (perSlide + 1 + slidesLength) * sliderItemWidth
+  ) {
+    // init slider position
+    setIndex(setSliderItemsPosition({
+      indexItem: index - slidesLength,
+      sliderItemWidth,
+      sliderItems
+    }));
+  }
+  // shift to end from start item
+  if (infinite && Math.abs(getTranslate3d(sliderItems)) <= 0 ||
+    Math.abs(getTranslate3d(sliderItems)) === sliderItemWidth) {
+    setIndex(setSliderItemsPosition({
+      indexItem: slidesLength + index,
+      sliderItemWidth,
+      sliderItems
+    }));
+  }
 
   if (!infinite && nav && index === 0) {
     prevNone(slider);
@@ -255,7 +265,9 @@ export const checkIndex = (params) => {
       sliderItems,
       infinite,
       dotsSelector,
-      slider
+      slider,
+      perSlide,
+      sliderMainWidth
     };
     dotActive(dotActiveParams);
   }
@@ -266,20 +278,20 @@ export const dotActive = (params) => {
     index,
     sliderItems,
     infinite,
-    slider
+    slider,
+    perSlide
   } = params;
   const dotsSelector = childFider({
     wrapper: slider,
     className: '.dots'
   });
-  const currentDataPage = parseInt(
-    sliderItems.children[infinite ? index : index - 1].getAttribute("data-page")
-  );
-  const currentDot = dotsSelector.children[currentDataPage - 1];
-  dotsSelector.children.forEach(child => {
-    child.classList.remove("active");
-  });
-  currentDot.classList.add("active");
+  if(activeChecker(sliderItems) >= 0){
+    const currentDot = dotsSelector.children[activeChecker(sliderItems)];
+    dotsSelector.children.forEach(child => {
+      child.classList.remove("active");
+    });
+    currentDot.classList.add("active");
+  }
 };
 
 
@@ -293,4 +305,16 @@ export const elementCreator = (params) => {
 export const childFider = (params) => {
   const { wrapper, className } = params;
   return wrapper.querySelector(className);
+};
+
+export const activeChecker = (sliderItems) => {
+  const activeChild = [];
+  if(sliderItems.children.length){
+    sliderItems.children.forEach(child => {
+      if(child.classList.contains('active')){
+        activeChild.push(child.dataset.page);
+      }
+    });
+  }
+  return parseInt(activeChild.sort().pop()-1);
 };

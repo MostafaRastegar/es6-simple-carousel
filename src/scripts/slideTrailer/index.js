@@ -37,6 +37,7 @@ export default class SliderTrailer {
 			getSlideSize,
 			getSliderMainWidth,
 			getIndex,
+			setIndex,
 			getSlider,
 			sliderArrows
 		} = this.core;
@@ -48,11 +49,11 @@ export default class SliderTrailer {
 		const sliderMainWidth = getSliderMainWidth();
 
 		// init slider position
-		setSliderItemsPosition({
-			indexItem: perSlide, // user init slide index (feature)
+		setIndex(setSliderItemsPosition({
+			indexItem: infinite ? perSlide + 1: 0, // user init slide index (feature)
 			sliderItemWidth,
 			sliderItems
-		});
+		}));
 		setPageNumberOnChild({ sliderItems, responsive });
 		setSliderItemsChildWidth({
 			sliderItems,
