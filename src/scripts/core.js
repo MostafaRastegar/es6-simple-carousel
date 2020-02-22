@@ -6,6 +6,7 @@ import {
   checkIndex,
   elementCreator,
   childFider,
+  prevNone
 } from "./utils";
 
 import {shiftSlideIsDir} from './sliderArrows/partial';
@@ -123,6 +124,10 @@ class SliderCore {
 			elementCreator({tag:'Span',wrapper:slider,className:'control next'});
 			elementCreator({tag:'Span',wrapper:slider,className:'control prev'});
       this.sliderArrows = new SliderArrows({core: this});
+      const index = this.getIndex();
+      if (!infinite && index === 0) {
+        prevNone(slider);
+      }
     }
     
 		if(dots){
