@@ -143,9 +143,6 @@ export const getTranslate3d = sliderItems => {
   const values = sliderItems.style.transform.match(
     /translate3d\((.*)px\, (.*)px\, (.*)px\)/
   );
-  console.log('======values==============================');
-  console.log(values);
-  console.log('====================================');
   if (!values[1] || !values[1].length) {
     return 0;
   }
@@ -205,9 +202,6 @@ export const nextBlock = slider =>
 
 
 export const checkIndex = (params) => {
-  console.log('====================================');
-  console.log('checkIndex');
-  console.log('====================================');
   const {
     responsive,
     infinite,
@@ -291,15 +285,13 @@ export const dotActive = (params) => {
     wrapper: slider,
     className: '.dots'
   });
-
-  const currentDataPage = parseInt(
-    sliderItems.children[infinite ? index + 1 : index - perSlide].getAttribute("data-page")
-    );
-  const currentDot = dotsSelector.children[infinite ? currentDataPage - 1 : currentDataPage -1];
-  dotsSelector.children.forEach(child => {
-    child.classList.remove("active");
-  });
-  currentDot.classList.add("active");
+  if(activeChecker(sliderItems) >= 0){
+    const currentDot = dotsSelector.children[activeChecker(sliderItems)];
+    dotsSelector.children.forEach(child => {
+      child.classList.remove("active");
+    });
+    currentDot.classList.add("active");
+  }
 };
 
 
@@ -313,4 +305,16 @@ export const elementCreator = (params) => {
 export const childFider = (params) => {
   const { wrapper, className } = params;
   return wrapper.querySelector(className);
+};
+
+export const activeChecker = (sliderItems) => {
+  const activeChild = [];
+  if(sliderItems.children.length){
+    sliderItems.children.forEach(child => {
+      if(child.classList.contains('active')){
+        activeChild.push(child.dataset.page);
+      }
+    });
+  }
+  return parseInt(activeChild.sort().pop()-1);
 };
