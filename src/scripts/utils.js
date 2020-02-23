@@ -20,7 +20,7 @@ export const calcCurrentIndex = params => {
   if (infinite) {
     return Math.abs(
       Math.floor(
-        getTranslate3d(sliderItems) / sliderItems.children[0].clientWidth
+        getTranslate3d(sliderItems) / vdomArrayConvertor(sliderItems.children)[0].clientWidth
       )
     );
   }
@@ -55,7 +55,7 @@ export const setActiveclassToCurrent = params => {
   [...Array(configCount).keys()].forEach(item =>
     activeItems.push(item + activeIndex)
   );
-  sliderItems.children.forEach((item, itemIndex) => {
+  vdomArrayConvertor(sliderItems.children).forEach((item, itemIndex) => {
     const classItemParams = {
       item,
       className:'active',
@@ -126,7 +126,7 @@ export const calcSliderChildWidth = params => {
 
 export const setSliderItemsChildWidth = params => {
   const { responsive, slider, sliderItems } = params;
-  sliderItems.children.forEach(
+  vdomArrayConvertor(sliderItems.children).forEach(
     child =>
       (child.style.width =
         calcSliderChildWidth({
@@ -294,8 +294,9 @@ export const dotActive = (params) => {
     className: '.dots'
   });
   if(activeChecker(sliderItems) >= 0){
-    const currentDot = dotsSelector.children[activeChecker(sliderItems)];
-    dotsSelector.children.forEach(child => {
+    const dotConvertor = vdomArrayConvertor(dotsSelector.children);
+    const currentDot = dotConvertor[activeChecker(sliderItems)];
+    dotConvertor.forEach(child => {
       const classItemParams = {
         item:child,
         className:'active',
@@ -325,12 +326,16 @@ export const childFider = (params) => {
 
 export const activeChecker = (sliderItems) => {
   const activeChild = [];
-  if(sliderItems.children.length){
-    sliderItems.children.forEach(child => {
+    vdomArrayConvertor(sliderItems.children).forEach(child => {
       if(child.classList.contains('active')){
         activeChild.push(child.dataset.page);
       }
     });
-  }
   return parseInt(activeChild.sort().pop()-1);
+};
+
+export const vdomArrayConvertor = (items) => {
+  const isArrayCheck = Array.isArray(items);
+  if(isArrayCheck) return items;
+  return Object.values(items);
 };

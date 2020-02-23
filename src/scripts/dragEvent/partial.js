@@ -168,6 +168,7 @@ export const dragEnd = (params) => {
 		checkIndexCall,
 		slider,
 		setPosFinal,
+		getPosFinal
 	} = params;
 
 	const perSlide = truncResponsiveItemCount(responsive);

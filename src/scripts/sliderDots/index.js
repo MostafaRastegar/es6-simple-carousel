@@ -1,6 +1,7 @@
 import {
 	truncResponsiveItemCount,
-	childFider
+	childFider,
+	vdomArrayConvertor
 } from '../utils';
 
 import {
@@ -48,7 +49,6 @@ export default class SliderDots {
 			wrapper:slider,
 			className:'.dots'
 		  });
-
 		//generate dots items
 		const dotsItemsParams = {
 			slidesLength: getSlidesLength(),
@@ -58,7 +58,7 @@ export default class SliderDots {
 		};
 		dotsItemsGenerator(dotsItemsParams);
 		// dots item click for transition on active index
-		dotsSelector.children.forEach((item) => {
+		vdomArrayConvertor(dotsSelector.children).forEach((item) => {
 			item.addEventListener("click", () => {
 				const dotIndex = parseInt(item.getAttribute('data-dot-index'));
 				const indexItem = truncResponsiveItemCount(responsive) * (dotIndex - 1);
