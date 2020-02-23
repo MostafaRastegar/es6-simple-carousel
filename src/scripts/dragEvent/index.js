@@ -36,7 +36,6 @@ export default class DragEvent {
 			getPerSlide,
 			getSlidesLength,
 			getIndex,
-			// getDotsSelector,
 			getSlideSize,
 			getSliderMainWidth,
 			setIndex,

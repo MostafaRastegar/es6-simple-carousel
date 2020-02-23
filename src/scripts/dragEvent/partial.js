@@ -6,7 +6,6 @@ import {
 	calcSliderChildWidth,
 	truncResponsiveItemCount,
 	calcCurrentIndex,
-	calcFirstItemPosition,
 	prevBlock,
 	prevNone,
 	nextBlock,

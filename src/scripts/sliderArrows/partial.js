@@ -19,7 +19,6 @@ export const shiftSlideIsDir = params => {
 		responsiveItem,
 		infinite,
 		slider,
-		posInitial
 	} = params;
 	const newSlidesLength = infinite ? slidesLength : slidesLength - 1;
 
@@ -54,18 +53,6 @@ export const shiftSlideIsDir = params => {
 		prevBlock(slider);
 	}
 
-	// if (infinite && newIndex >= perSlide + slidesLength) {
-	// 	// shift after finish items
-	// 	const shiftEndToFirstParams = {
-	// 		sliderItems,
-	// 		slideSize,
-	// 		perSlide,
-	// 		newIndex,
-	// 		slidesLength
-	// 	};
-	// 	return shiftEndToFirst(shiftEndToFirstParams);
-	// }
-
 	sliderItems.style["transform"] = setTranslate3d(-newIndex * slideSize);
 	return newIndex;
 };
@@ -78,7 +65,6 @@ export const shiftSlideNonDir = params => {
 		perSlide,
 		infinite,
 		slider,
-		slidesLength
 	} = params;
 	const newIndex = index - perSlide;
 	const infinitperSlide = infinite ? perSlide : 0;

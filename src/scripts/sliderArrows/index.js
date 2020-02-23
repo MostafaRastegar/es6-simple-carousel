@@ -2,9 +2,9 @@ import {
 	responsiveItemCount,
 	truncResponsiveItemCount,
 	getTranslate3d,
-	sliderItemsAddClass,
 	childFider,
-	sliderItemsRemoveClass
+	addClassToElement,
+	removeClassFromElement
 } from '../utils';
 
 import {
@@ -42,7 +42,6 @@ export default class SliderArrows {
 			getSlider,
 			getAllowShift,
 			setAllowShift,
-			updateLog
 		} = this.core;
 
 		const perSlide = truncResponsiveItemCount(responsive);
@@ -68,9 +67,14 @@ export default class SliderArrows {
 			} else if (dir == -1) {
 				setIndex(shiftSlideNonDir(shiftSlideParams));
 			}
-		}
-		setAllowShift(sliderItemsAddClass(getSliderItems()));
-		// updateLog();
+		};
+
+		const itemClassParams = {
+			item:getSliderItems(),
+			className:'shifting'
+		};
+		addClassToElement(itemClassParams);
+		setAllowShift(false);
 	};
 
 	initialize() {
@@ -93,7 +97,11 @@ export default class SliderArrows {
 		// Click events
 		prevSelector.addEventListener("click", () => this.shiftSlide(-1));
 		nextSelector.addEventListener("click", () => this.shiftSlide(1));
-		setAllowShift(sliderItemsRemoveClass(getSliderItems()));
-		// setAllowShift();
+		const itemClassParams = {
+			item:getSliderItems(),
+			className:'shifting'
+		};
+		removeClassFromElement(itemClassParams);
+		setAllowShift(true);
 	}
 }
