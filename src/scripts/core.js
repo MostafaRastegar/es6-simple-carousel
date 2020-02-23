@@ -6,7 +6,8 @@ import {
   checkIndex,
   elementCreator,
   childFider,
-  prevNone
+  prevNone,
+  addClassToElement
 } from "./utils";
 
 import {shiftSlideIsDir} from './sliderArrows/partial';
@@ -136,9 +137,7 @@ class SliderCore {
     }
 
     if(autoPlay){
-      // const sliderArrows = new SliderArrows({core: this});
       setInterval(()=>this.next(),3000);
-
     }
     
     this.sliderTrailer = new SliderTrailer({core: this});
@@ -175,10 +174,15 @@ class SliderCore {
           responsive
         }
       } = this;
-      childFider({
-        wrapper:slider,
-        className:".slides"
-      }).classList.add('shifting')
+      const classItemParams = {
+        item:childFider({
+          wrapper:slider,
+          className:".slides"
+        }),
+        className:'shifting',
+      };
+      addClassToElement(classItemParams);
+
       this.setIndex(shiftSlideIsDir({
         sliderItems,
         index,

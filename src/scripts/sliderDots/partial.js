@@ -1,7 +1,6 @@
 import {
 	calcSliderGroupCount,
 	truncResponsiveItemCount,
-	sliderItemsAddClass,
 	getTranslate3d,
 	calcFinalItemPosition,
 	setTranslate3d,
@@ -9,6 +8,7 @@ import {
 	prevBlock,
 	nextBlock,
 	prevNone,
+	addClassToElement,
 } from '../utils';
 
 export const dotsItemsGenerator = params => {
@@ -32,6 +32,7 @@ export const dotsItemsClick = params => {
 		dotIndex,
 		responsive,
 		slider,
+		getSliderItems,
 		nav
 	} = params;
 	const newDotIndex = (dotIndex) * truncResponsiveItemCount(responsive);
@@ -46,9 +47,14 @@ export const dotsItemsClick = params => {
 		slider,
 		nav
 	});
+	const itemClassParams = {
+		item:getSliderItems(),
+		className:'shifting'
+	};
+	addClassToElement(itemClassParams);
 	return {
 		index: newDotIndex,
-		allowShift: sliderItemsAddClass(sliderItems),
+		allowShift: false,
 		posInitial: getTranslate3d(sliderItems)
 	};
 };
