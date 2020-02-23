@@ -2,7 +2,7 @@
   "name": "webpack-starter",
   "version": "1.0.0",
   "description": "A light foundation for your next frontend project based on webpack.",
-  "main": "dist/index.js",
+  "main": "dist/index.es.js",
   "module": "dist/index.es.js",
   "scripts": {
     "build": "rollup -c -w",
@@ -52,7 +52,7 @@
     "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-browsersync": "^1.1.0",
     "rollup-plugin-commonjs": "^9.2.0",
-    "rollup-plugin-copy": "^3.1.0",
+    "rollup-plugin-copy": "^3.3.0",
     "rollup-plugin-filesize": "^6.2.1",
     "rollup-plugin-inline-svg": "^1.1.1",
     "rollup-plugin-local-resolve": "^1.0.7",
