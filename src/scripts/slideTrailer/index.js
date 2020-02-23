@@ -1,7 +1,8 @@
 import {
 	setSliderItemsPosition,
 	setSliderItemsChildWidth,
-	setActiveclassToCurrent
+	setActiveclassToCurrent,
+	addClassToElement
 } from '../utils';
 
 import {
@@ -38,8 +39,6 @@ export default class SliderTrailer {
 			getSliderMainWidth,
 			getIndex,
 			setIndex,
-			getSlider,
-			sliderArrows
 		} = this.core;
 
 		const sliderItems = getSliderItems();
@@ -69,10 +68,6 @@ export default class SliderTrailer {
 			cloneNodeGenerator(cloneNodeGeneratorParams);
 		}
 
-		// if(!nav){
-
-		// }
-
 		setActiveclassToCurrent({
 			sliderItems,
 			perSlide,
@@ -82,7 +77,11 @@ export default class SliderTrailer {
 			infinite,
 		});
 		// add loaded class to main slide
-		slider.classList.add("loaded");
+		const classItemParams = {
+			item:slider,
+			className:'loaded',
+		};
+		addClassToElement(classItemParams);
 		// Transition events
 	}
 }

@@ -9,5 +9,8 @@
   },
   "rules": {
     "semi": 2
-  }
+  },
+  "extends": [
+    "prettier"
+  ]
 }

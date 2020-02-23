@@ -1,11 +1,11 @@
-export const sliderItemsAddClass = sliderItems => {
-  sliderItems.classList.add("shifting");
-  return false;
+export const addClassToElement = params =>{
+  const { item,className} = params;
+  item.classList.add(className);
 };
 
-export const sliderItemsRemoveClass = sliderItems => {
-  sliderItems.classList.remove("shifting");
-  return true;
+export const removeClassFromElement = params =>{
+  const { item,className} = params;
+  item.classList.remove(className);
 };
 
 export const calcCurrentIndex = params => {
@@ -56,10 +56,15 @@ export const setActiveclassToCurrent = params => {
     activeItems.push(item + activeIndex)
   );
   sliderItems.children.forEach((item, itemIndex) => {
+    const classItemParams = {
+      item,
+      className:'active',
+    };
+
     if (activeItems.includes(itemIndex)) {
-      item.classList.add("active");
+      addClassToElement(classItemParams);
     } else {
-      item.classList.remove("active");
+      removeClassFromElement(classItemParams);
     }
   });
 };
@@ -258,8 +263,12 @@ export const checkIndex = (params) => {
     slideSize,
     sliderMainWidth
   };
+  removeClassFromElement({
+    item:sliderItems,
+    className:'shifting'
+  });
   setActiveclassToCurrent(setActiveclassToCurrentParams);
-  setAllowShift(sliderItemsRemoveClass(sliderItems));
+  setAllowShift(true);
 
   if (dots) {
     const dotActiveParams = {
@@ -277,11 +286,8 @@ export const checkIndex = (params) => {
 
 export const dotActive = (params) => {
   const {
-    index,
     sliderItems,
-    infinite,
     slider,
-    perSlide
   } = params;
   const dotsSelector = childFider({
     wrapper: slider,
@@ -290,9 +296,17 @@ export const dotActive = (params) => {
   if(activeChecker(sliderItems) >= 0){
     const currentDot = dotsSelector.children[activeChecker(sliderItems)];
     dotsSelector.children.forEach(child => {
-      child.classList.remove("active");
+      const classItemParams = {
+        item:child,
+        className:'active',
+      };
+      removeClassFromElement(classItemParams);
     });
-    currentDot.classList.add("active");
+    const classItemParams = {
+			item:currentDot,
+			className:'active',
+		};
+		addClassToElement(classItemParams);
   }
 };
 
