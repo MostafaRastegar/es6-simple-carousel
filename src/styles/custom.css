@@ -49,3 +49,9 @@ body {
 .slider.loaded .slide:nth-child(5) {
   background: #ff8686;
 }
+
+.slide {
+  height: 300px;
+  background: #FFCF47;
+  border-radius: 2px;
+}

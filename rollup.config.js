@@ -6,7 +6,8 @@ import postcss from 'rollup-plugin-postcss';
 import filesize from 'rollup-plugin-filesize';
 import autoprefixer from 'autoprefixer';
 import localResolve from 'rollup-plugin-local-resolve';
-import inlineSvg from 'rollup-plugin-inline-svg';
+import copy from 'rollup-plugin-copy';
+
 
 import pkg from './package.json';
 
@@ -14,21 +15,7 @@ const config = {
   input: 'src/scripts/index.js',
   output: [
     {
-      file: pkg.main,
-      format: 'cjs',
-      exports: 'named',
-      globals: { 'styled-components': 'styled' },
-      sourcemap: true,
-    },
-    {
       file: pkg.module,
-      format: 'es',
-      exports: 'named',
-      globals: { 'styled-components': 'styled' },
-      sourcemap: true,
-    },
-    {
-      file: 'src/scripts/index.es.js',
       format: 'es',
       exports: 'named',
       globals: { 'styled-components': 'styled' },
@@ -50,7 +37,14 @@ const config = {
   plugins: [
     peerDepsExternal(),
     postcss({ extract: true, plugins: [autoprefixer] }),
-    inlineSvg(),
+    copy({
+      targets: [
+        { 
+          src: 'src/styles/*.css',
+          dest: 'dist/styles'
+        },
+      ]
+    }),
     babel({
       runtimeHelpers: true,
       presets: [
@@ -70,7 +64,7 @@ const config = {
     }),
     localResolve(),
     resolve({
-      extensions: ['.js', '.json', '.jsx'],
+      extensions: ['.js', '.json', '.jsx','.css'],
     }),
     commonjs({
       include: 'node_modules/**',

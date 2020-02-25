@@ -7,7 +7,8 @@ import {
   elementCreator,
   childFider,
   prevNone,
-  addClassToElement
+  addClassToElement,
+  vdomArrayConvertor
 } from "./utils";
 
 import {shiftSlideIsDir} from './sliderArrows/partial';
@@ -110,7 +111,7 @@ class SliderCore {
         this.setSliderItemWidth(sliderItemWidth);
 
         // init slider for start
-        const slides = this.getSliderItems().children;
+        const slides = vdomArrayConvertor(this.getSliderItems().children);
         this.setSlidesLength(slides.length);
 
         // change name to perSlide

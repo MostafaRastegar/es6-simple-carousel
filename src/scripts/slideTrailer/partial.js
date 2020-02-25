@@ -1,12 +1,13 @@
 
 import {
 	truncResponsiveItemCount,
+	vdomArrayConvertor
 } from '../utils';
 
 export const setPageNumberOnChild = params => {
 	const { sliderItems, responsive } = params;
 	const perSlide = truncResponsiveItemCount(responsive);
-	sliderItems.children.forEach((item, itemIndex) => {
+	vdomArrayConvertor(sliderItems.children).forEach((item, itemIndex) => {
 		item.setAttribute("data-page", Math.trunc(itemIndex / perSlide) + 1);
 	});
 };
@@ -17,7 +18,7 @@ export const addCloneClass = item => {
 
 export const cloneNodeGenerator = params => {
 	const { perSlide, sliderItems } = params;
-	const sliderItemsChildren = sliderItems.children;
+	const sliderItemsChildren = vdomArrayConvertor(sliderItems.children);
 	const deepCloneSliderItemsChildren = [...sliderItemsChildren];
 	const cloneNodeParams = {
 		perSlide,
