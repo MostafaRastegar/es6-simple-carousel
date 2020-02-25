@@ -206,7 +206,7 @@ export const nextBlock = slider =>
   }).style.display = "block";
 
 
-export const checkIndex = (params) => {
+export const transitionendWatcher = (params) => {
   const {
     responsive,
     infinite,

@@ -3,7 +3,7 @@ import {
   responsiveItemCount,
   truncResponsiveItemCount,
   switchInfiniteResponsiveCount,
-  checkIndex,
+  transitionendWatcher,
   elementCreator,
   childFider,
   prevNone,
@@ -90,6 +90,7 @@ class SliderCore {
         this.setSlider(slider);
 
         const sliderClienWidth = this.getSlider().clientWidth;
+        console.log(sliderClienWidth);
         this.setSliderMainWidth(sliderClienWidth);
         
         let sliderSlidesSelector = childFider({
@@ -144,7 +145,7 @@ class SliderCore {
     this.sliderTrailer = new SliderTrailer({core: this});
     this.dragEvent = new DragEvent({core: this});
     
-    sliderSlidesSelector.addEventListener("transitionend", this.checkIndexCall);
+    sliderSlidesSelector.addEventListener("transitionend", this.transitionendWatcherCall);
     
     // window.onresize = () => {
       //   sliderItems = orginSlider;
@@ -196,7 +197,7 @@ class SliderCore {
         slider,
       }))
     }
-    checkIndexCall = () => {
+    transitionendWatcherCall = () => {
       const {
         config: {
           slider,
@@ -217,7 +218,7 @@ class SliderCore {
         slidesLength,
         sliderItemWidth
       } = this;
-      checkIndex({
+      transitionendWatcher({
         slider,
         infinite,
         responsive,

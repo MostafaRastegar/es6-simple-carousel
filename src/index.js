@@ -18,7 +18,7 @@ const slideConfig = {
       items: 3
     },
     760: {
-      items: 3
+      items: 2
     }
   }
 };
