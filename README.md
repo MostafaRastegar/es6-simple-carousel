@@ -35,9 +35,9 @@ When you run `npm run dist` created module on dist folder. you can use from inde
 ```jsx
 // ...
 import { Slider } from 'es6-simple-carousel';
-import 'es6-simple-carousel/styles/slider.css',
+import 'es6-simple-carousel/dist/styles/slider.css',
 // optional
-import 'es6-simple-carousel/styles/custom.css',
+import 'es6-simple-carousel/dist/styles/custom.css',
 //...
 ```
 ### 2. config your slider
