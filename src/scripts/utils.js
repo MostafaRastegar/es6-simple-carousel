@@ -331,9 +331,7 @@ export const removeAllChildren = (params) => {
   const findElements =  wrapper.querySelectorAll(newClassName);
   if(findElements.length){
     findElements.forEach(child =>{
-      console.log('remove',child);
        child.remove();
-      
       });
   };
 };

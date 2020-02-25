@@ -2,7 +2,6 @@
 import {
 	truncResponsiveItemCount,
 	vdomArrayConvertor,
-	removeAllChildren
 } from '../utils';
 
 export const setPageNumberOnChild = params => {
@@ -19,10 +18,6 @@ export const addCloneClass = item => {
 
 export const cloneNodeGenerator = params => {
 	const { perSlide, sliderItems,wrapper } = params;
-	removeAllChildren({
-		wrapper,
-		className:'clone'
-	});
 	const sliderItemsChildren = vdomArrayConvertor(sliderItems.children);
 	const deepCloneSliderItemsChildren = [...sliderItemsChildren];
 	const cloneNodeParams = {

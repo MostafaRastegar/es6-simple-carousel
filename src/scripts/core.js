@@ -8,7 +8,8 @@ import {
   childFider,
   prevNone,
   addClassToElement,
-  vdomArrayConvertor
+  vdomArrayConvertor,
+  removeAllChildren
 } from "./utils";
 
 import {shiftSlideIsDir} from './sliderArrows/partial';
@@ -86,6 +87,11 @@ class SliderCore {
             dots,
             autoPlay
         } = this.getConfig();
+
+        removeAllChildren({
+          wrapper:slider,
+          className:'clone'
+        });
         //----------- start init variables  -----
         this.setSlider(slider);
 
