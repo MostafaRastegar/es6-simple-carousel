@@ -235,7 +235,7 @@ var nextBlock = function nextBlock(slider) {
     className: ".next"
   }).style.display = "block";
 };
-var checkIndex = function checkIndex(params) {
+var transitionendWatcher = function checkIndex(params) {
   var responsive = params.responsive,
       infinite = params.infinite,
       slider = params.slider,

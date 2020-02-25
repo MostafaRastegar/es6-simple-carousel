@@ -42,7 +42,7 @@ export default class DragEvent {
 			setPosFinal,
 			getPosFinal,
 			setAllowShift,
-			checkIndexCall
+			transitionendWatcherCall
 		} = this.core;
 
 
@@ -59,7 +59,7 @@ export default class DragEvent {
 				infinite,
 				setIndex,
 				setPosFinal,
-				checkIndexCall,
+				transitionendWatcherCall,
 				dragAction,
 				setPosInitial,
 				setPosX1,

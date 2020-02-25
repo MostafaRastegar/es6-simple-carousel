@@ -165,7 +165,7 @@ export const dragEnd = (params) => {
 		slideSize,
 		sliderMainWidth,
 		setIndex,
-		checkIndexCall,
+		transitionendWatcherCall,
 		slider,
 		setPosFinal,
 		getPosFinal
@@ -222,5 +222,5 @@ export const dragEnd = (params) => {
 	}
 
 	mouseEventNull();
-	checkIndexCall();
+	transitionendWatcherCall();
 };

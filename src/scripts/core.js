@@ -3,12 +3,13 @@ import {
   responsiveItemCount,
   truncResponsiveItemCount,
   switchInfiniteResponsiveCount,
-  checkIndex,
+  transitionendWatcher,
   elementCreator,
   childFider,
   prevNone,
   addClassToElement,
-  vdomArrayConvertor
+  vdomArrayConvertor,
+  removeAllChildren
 } from "./utils";
 
 import {shiftSlideIsDir} from './sliderArrows/partial';
@@ -86,6 +87,11 @@ class SliderCore {
             dots,
             autoPlay
         } = this.getConfig();
+
+        removeAllChildren({
+          wrapper:slider,
+          className:'clone'
+        });
         //----------- start init variables  -----
         this.setSlider(slider);
 
@@ -144,22 +150,9 @@ class SliderCore {
     this.sliderTrailer = new SliderTrailer({core: this});
     this.dragEvent = new DragEvent({core: this});
     
-    sliderSlidesSelector.addEventListener("transitionend", this.checkIndexCall);
-    
-    // window.onresize = () => {
-      //   sliderItems = orginSlider;
-      //   sliderItems.innerHTML = slideItemGenerator(orginSlider);
-      //   sliderItemWidth = slideSize = sliderClientWidth(slider);
-      //   setSliderItemsChildWidth(orginSlider);
-      //   const setSliderItemsPositionParams = {
-        //     indexItem: index,
-        //     sliderItemWidth,
-        //     sliderItems: orginSlider
-        //   };
-        //   setSliderItemsPosition(setSliderItemsPositionParams);
-        // };
-        
-      }
+    sliderSlidesSelector.addEventListener("transitionend", this.transitionendWatcherCall);
+    this.windowResizeWatcher();
+    }
       
     next(){
       const {
@@ -195,8 +188,9 @@ class SliderCore {
         infinite,
         slider,
       }))
-    }
-    checkIndexCall = () => {
+    };
+
+    transitionendWatcherCall = () => {
       const {
         config: {
           slider,
@@ -217,7 +211,7 @@ class SliderCore {
         slidesLength,
         sliderItemWidth
       } = this;
-      checkIndex({
+      transitionendWatcher({
         slider,
         infinite,
         responsive,
@@ -235,7 +229,17 @@ class SliderCore {
         sliderItemWidth,
         setIndex
       });
-    }
+    };
+
+    windowResizeWatcher = () => {
+      let resizeTimer;
+      window.onresize = () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          this.initialize();
+        }, 250);
+      };
+    };
 
 };
 

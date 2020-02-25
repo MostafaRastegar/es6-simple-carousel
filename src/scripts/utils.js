@@ -206,7 +206,7 @@ export const nextBlock = slider =>
   }).style.display = "block";
 
 
-export const checkIndex = (params) => {
+export const transitionendWatcher = (params) => {
   const {
     responsive,
     infinite,
@@ -314,6 +314,7 @@ export const dotActive = (params) => {
 
 export const elementCreator = (params) => {
   const { tag, wrapper, className } = params;
+  removeAllChildren({wrapper, className});
   let node = document.createElement(tag);
   node.className = className;
   wrapper.appendChild(node);
@@ -322,6 +323,17 @@ export const elementCreator = (params) => {
 export const childFider = (params) => {
   const { wrapper, className } = params;
   return wrapper.querySelector(className);
+};
+
+export const removeAllChildren = (params) => {
+  const { wrapper, className } = params;
+  const newClassName = `.${className.split(" ").pop()}`;
+  const findElements =  wrapper.querySelectorAll(newClassName);
+  if(findElements.length){
+    findElements.forEach(child =>{
+       child.remove();
+      });
+  };
 };
 
 export const activeChecker = (sliderItems) => {
