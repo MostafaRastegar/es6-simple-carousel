@@ -314,6 +314,13 @@ export const dotActive = (params) => {
 
 export const elementCreator = (params) => {
   const { tag, wrapper, className } = params;
+  const findElement = childFider({
+    wrapper:wrapper,
+    className:className
+  });
+  if(findElement){
+    findElement.remove();
+  };
   let node = document.createElement(tag);
   node.className = className;
   wrapper.appendChild(node);
