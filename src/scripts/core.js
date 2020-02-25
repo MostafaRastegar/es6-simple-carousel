@@ -90,7 +90,6 @@ class SliderCore {
         this.setSlider(slider);
 
         const sliderClienWidth = this.getSlider().clientWidth;
-        console.log(sliderClienWidth);
         this.setSliderMainWidth(sliderClienWidth);
         
         let sliderSlidesSelector = childFider({
@@ -146,21 +145,8 @@ class SliderCore {
     this.dragEvent = new DragEvent({core: this});
     
     sliderSlidesSelector.addEventListener("transitionend", this.transitionendWatcherCall);
-    
-    // window.onresize = () => {
-      //   sliderItems = orginSlider;
-      //   sliderItems.innerHTML = slideItemGenerator(orginSlider);
-      //   sliderItemWidth = slideSize = sliderClientWidth(slider);
-      //   setSliderItemsChildWidth(orginSlider);
-      //   const setSliderItemsPositionParams = {
-        //     indexItem: index,
-        //     sliderItemWidth,
-        //     sliderItems: orginSlider
-        //   };
-        //   setSliderItemsPosition(setSliderItemsPositionParams);
-        // };
-        
-      }
+    this.windowResizeWatcher();
+    }
       
     next(){
       const {
@@ -196,7 +182,8 @@ class SliderCore {
         infinite,
         slider,
       }))
-    }
+    };
+
     transitionendWatcherCall = () => {
       const {
         config: {
@@ -236,7 +223,17 @@ class SliderCore {
         sliderItemWidth,
         setIndex
       });
-    }
+    };
+
+    windowResizeWatcher = () => {
+      let resizeTimer;
+      window.onresize = () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          this.initialize();
+        }, 250);
+      };
+    };
 
 };
 

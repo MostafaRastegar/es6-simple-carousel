@@ -13,6 +13,9 @@ import {
 
 export const dotsItemsGenerator = params => {
 	const { slidesLength, dotsSelector, responsive } = params;
+	console.log('==============dotsItemsGenerator======================');
+	console.log(params);
+	console.log('====================================');
 	for (let i = 0; i < calcSliderGroupCount({ responsive, slidesLength }); i++) {
 		dotsSelector.innerHTML += `<li class="dots-item${!i ?
 			" active" : ""}" data-dot-index="${i + 1}">${i + 1}</li>`;

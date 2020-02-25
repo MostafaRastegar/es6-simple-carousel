@@ -63,7 +63,8 @@ export default class SliderTrailer {
 		if (infinite) {
 			const cloneNodeGeneratorParams = {
 				perSlide,
-				sliderItems
+				sliderItems,
+				wrapper:slider
 			};
 			cloneNodeGenerator(cloneNodeGeneratorParams);
 		}
