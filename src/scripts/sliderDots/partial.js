@@ -29,13 +29,11 @@ export const dotsItemsClick = params => {
 		sliderItems,
 		sliderMainWidth,
 		infinite,
-		dotIndex,
-		responsive,
 		slider,
 		getSliderItems,
 		nav
 	} = params;
-	const newDotIndex = (dotIndex) * truncResponsiveItemCount(responsive);
+
 	setSliderItemsPositionAfterDotClick({
 		indexItem,
 		slideSize,
@@ -53,7 +51,7 @@ export const dotsItemsClick = params => {
 	};
 	addClassToElement(itemClassParams);
 	return {
-		index: newDotIndex,
+		index: infinite ? (indexItem + perSlide + 1)  : indexItem,
 		allowShift: false,
 		posInitial: getTranslate3d(sliderItems)
 	};
@@ -72,7 +70,7 @@ export const setSliderItemsPositionAfterDotClick = params => {
 		nav
 	} = params;
 
-	if (!infinite && indexItem * perSlide > slidesLength) {
+	if (!infinite && indexItem + perSlide > slidesLength) {
 		const calcFinalItemPositionParams = {
 			slideSize,
 			slidesLength,
@@ -91,6 +89,7 @@ export const setSliderItemsPositionAfterDotClick = params => {
 		return true;
 	}
 
+	// after time move to watcher
 	if(nav){
 		nextBlock(slider);
 		prevBlock(slider);
@@ -100,5 +99,7 @@ export const setSliderItemsPositionAfterDotClick = params => {
 		nextBlock(slider);
 		prevNone(slider);
 	}
-	sliderItems.style["transform"] = setTranslate3d((infinite ? indexItem + (perSlide +1) : indexItem) * -slideSize);
+
+	const newItemIndex = infinite ? indexItem + perSlide + 1 : indexItem
+	sliderItems.style["transform"] = setTranslate3d( newItemIndex * -slideSize);
 };

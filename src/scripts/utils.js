@@ -111,17 +111,18 @@ export const calcSliderGroupCount = params => {
 
 export const calcSliderChildWidth = params => {
   const { responsiveItemCount, slider } = params;
-  const itemsTrunc = Math.trunc(responsiveItemCount);
-  if (responsiveItemCount - itemsTrunc === 0) {
-    return sliderClientWidth(slider) / itemsTrunc;
-  }
-  const mainWidthTruncItem = sliderClientWidth(slider) / itemsTrunc;
-  let decriseWithForEachItems = mainWidthTruncItem / itemsTrunc / itemsTrunc;
-  if (responsiveItemCount > 1 && responsiveItemCount < 2) {
-    decriseWithForEachItems = (sliderClientWidth(slider) / itemsTrunc) * 0.25;
-  }
+  // const itemsTrunc = Math.trunc(responsiveItemCount);
+  // if (responsiveItemCount - itemsTrunc === 0) {
+  //   return sliderClientWidth(slider) / itemsTrunc;
+  // }
+  // const mainWidthTruncItem = sliderClientWidth(slider) / itemsTrunc;
+  // let decriseWithForEachItems = mainWidthTruncItem / itemsTrunc / itemsTrunc;
+  // if (responsiveItemCount > 1 && responsiveItemCount < 2) {
+  //   decriseWithForEachItems = (sliderClientWidth(slider) / itemsTrunc) * 0.25;
+  // }
 
-  return mainWidthTruncItem - decriseWithForEachItems;
+	// return mainWidthTruncItem - decriseWithForEachItems;
+	return sliderClientWidth(slider) / responsiveItemCount
 };
 
 export const setSliderItemsChildWidth = params => {
@@ -138,7 +139,7 @@ export const setSliderItemsChildWidth = params => {
 
 export const setSliderItemsPosition = params => {
   const { indexItem, sliderItemWidth, sliderItems } = params;
-  sliderItems.style["transform"] = setTranslate3d(indexItem * -sliderItemWidth);
+	sliderItems.style["transform"] = setTranslate3d(indexItem * -sliderItemWidth);
   return indexItem;
 };
 
@@ -221,15 +222,15 @@ export const transitionendWatcher = (params) => {
     slidesLength,
     sliderItemWidth,
     nav,
-    setIndex,
-  } = params;
+		setIndex,
+		getIndex
+	} = params;
 
   const perSlide = truncResponsiveItemCount(responsive);
 
   if (infinite && index > perSlide + slidesLength &&
     Math.abs(getTranslate3d(sliderItems)) >= (perSlide + 1 + slidesLength) * sliderItemWidth
   ) {
-    // init slider position
     setIndex(setSliderItemsPosition({
       indexItem: index - slidesLength,
       sliderItemWidth,
