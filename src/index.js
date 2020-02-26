@@ -6,7 +6,7 @@ import {Slider} from "../src/scripts/index";
 const slideConfig = {
   slider:  document.querySelector(`#slider`),
   threshold: 50,
-  infinite: false,
+  infinite: true,
   nav: true,
   dots: true,
   autoPlay:false,
@@ -18,7 +18,7 @@ const slideConfig = {
       items: 3
     },
     760: {
-      items: 3.5
+      items: 1.5
     }
   }
 };
