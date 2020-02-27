@@ -93,8 +93,9 @@ export const calcFinalItemPosition = params => {
 };
 
 export const calcFirstItemPosition = params => {
-  const { slideSize, perSlide, infinite } = params;
-  return -((infinite ? slideSize : 0) * perSlide);
+	const { slideSize, perSlide, infinite } = params;
+	const infiSwitchSlideSize = infinite ? slideSize : 0;
+  return -(infiSwitchSlideSize * (perSlide + 1));
 };
 
 export const calcSliderGroupCount = params => {
