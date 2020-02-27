@@ -85,11 +85,11 @@ export const calcFinalItemPosition = params => {
     slidesLength,
     infinite
   } = params;
-  const infiniteSlideLength = infinite
-    ? slidesLength
-    : slidesLength - perSlide;
-  const totalDistanceToFinal = infiniteSlideLength * slideSize;
-  return -(totalDistanceToFinal - (sliderMainWidth - slideSize * perSlide));
+  const infiniteSlideLength = infinite ? slidesLength + perSlide +1 : slidesLength;
+	const box = perSlide * slideSize;
+	const cost = sliderMainWidth - box;
+	const finalResult = ((infiniteSlideLength - perSlide) * slideSize) - cost;
+	return -finalResult;
 };
 
 export const calcFirstItemPosition = params => {
