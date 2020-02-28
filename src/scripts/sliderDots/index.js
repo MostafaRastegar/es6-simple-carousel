@@ -56,7 +56,10 @@ export default class SliderDots {
 			dotsSelector,
 			sliderItems
 		};
+
+		//generate dots group per show slides
 		dotsItemsGenerator(dotsItemsParams);
+		
 		// dots item click for transition on active index
 		vdomArrayConvertor(dotsSelector.children).forEach((item) => {
 			item.addEventListener("click", () => {

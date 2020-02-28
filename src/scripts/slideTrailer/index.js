@@ -46,20 +46,26 @@ export default class SliderTrailer {
 		const sliderItemWidth = getSliderItemWidth();
 		const perSlide = getPerSlide();
 		const sliderMainWidth = getSliderMainWidth();
+		const index = getIndex();
 
-		// init slider position
-		setIndex(setSliderItemsPosition({
-			indexItem: infinite ? perSlide + 1: 0, // user init slide index (feature)
-			sliderItemWidth,
-			sliderItems
-		}));
-		setPageNumberOnChild({ sliderItems, responsive });
+		// set width per slide
 		setSliderItemsChildWidth({
 			sliderItems,
 			slider,
 			responsive,
 		});
-		// Clone first and last slide
+
+		// init slider position
+		setIndex(setSliderItemsPosition({
+			indexItem: index,
+			sliderItemWidth,
+			sliderItems
+		}));
+		
+		setPageNumberOnChild({ sliderItems, responsive });
+
+
+		// Clone group of slide from infinit carousel
 		if (infinite) {
 			const cloneNodeGeneratorParams = {
 				perSlide,
@@ -77,12 +83,12 @@ export default class SliderTrailer {
 			index: getIndex(),
 			infinite,
 		});
-		// add loaded class to main slide
+
+		// add loaded class to main slide after init
 		const classItemParams = {
 			item:slider,
 			className:'loaded',
 		};
 		addClassToElement(classItemParams);
-		// Transition events
 	}
 }

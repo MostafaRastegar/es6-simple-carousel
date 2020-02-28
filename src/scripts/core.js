@@ -1,18 +1,18 @@
 import {
-  calcSliderChildWidth,
-  responsiveItemCount,
-  truncResponsiveItemCount,
-  switchInfiniteResponsiveCount,
-  transitionendWatcher,
-  elementCreator,
-  childFider,
-  prevNone,
-  addClassToElement,
-  vdomArrayConvertor,
-  removeAllChildren
+	calcSliderChildWidth,
+	responsiveItemCount,
+	truncResponsiveItemCount,
+	switchInfiniteResponsiveCount,
+	transitionendWatcher,
+	elementCreator,
+	childFider,
+	prevNone,
+	addClassToElement,
+	vdomArrayConvertor,
+	removeAllChildren
 } from "./utils";
 
-import {shiftSlideIsDir} from './sliderArrows/partial';
+import { shiftSlideIsDir } from './sliderArrows/partial';
 
 import SliderDots from './sliderDots/index';
 import SliderTrailer from './slideTrailer/index';
@@ -22,224 +22,233 @@ import DragEvent from "./dragEvent/index";
 class SliderCore {
 
 
-    constructor(config) {
-        this.setConfig(config);
-        this.initialize();
-    };
+	constructor(config) {
+		this.setConfig(config);
+		this.initialize();
+	};
 
-    setConfig = config => { this.config = config };
-    getConfig = () => this.config;
+	setConfig = config => { this.config = config };
+	getConfig = () => this.config;
 
-    setSlider = slider => { this.slider = slider };
-    getSlider = () => this.slider;
+	setSlider = slider => { this.slider = slider };
+	getSlider = () => this.slider;
 
-    setPosX1 = posX1 => { this.posX1 = posX1 };
-    getPosX1 = () => this.posX1;
+	setPosX1 = posX1 => { this.posX1 = posX1 };
+	getPosX1 = () => this.posX1;
 
-    setPosX2 = posX2 => { this.posX2 = posX2 };
-    getPosX2 = () => this.posX2;
-  
-    setPerSlide = perSlide => { this.perSlide = perSlide };
-    getPerSlide = () => this.perSlide;
+	setPosX2 = posX2 => { this.posX2 = posX2 };
+	getPosX2 = () => this.posX2;
 
-
-    setSliderItems = sliderItems => { this.sliderItems = sliderItems };
-    getSliderItems = () => this.sliderItems;
-
-    setPosInitial = posInitial => { this.posInitial = posInitial };
-    getPosInitial = () => this.posInitial;
-
-    setPosFinal = posFinal => { this.posFinal = posFinal };
-    getPosFinal = () => this.posFinal;
-
-    setSlidesLength = slidesLength => { this.slidesLength = slidesLength };
-    getSlidesLength = () => this.slidesLength;
-
-    setSliderMainWidth = sliderMainWidth => { this.sliderMainWidth = sliderMainWidth };
-    getSliderMainWidth = () => this.sliderMainWidth;
+	setPerSlide = perSlide => { this.perSlide = perSlide };
+	getPerSlide = () => this.perSlide;
 
 
-    setOrginSlider = orginSlider => { this.orginSlider = orginSlider };
-    getOrginSlider = () => this.orginSlider;
+	setSliderItems = sliderItems => { this.sliderItems = sliderItems };
+	getSliderItems = () => this.sliderItems;
 
-    setSlideSize = slideSize => { this.slideSize = slideSize };
-    getSlideSize = () => this.slideSize;
+	setPosInitial = posInitial => { this.posInitial = posInitial };
+	getPosInitial = () => this.posInitial;
 
-    setSliderItemWidth = sliderItemWidth => { this.sliderItemWidth = sliderItemWidth };
-    getSliderItemWidth = () => this.sliderItemWidth;
+	setPosFinal = posFinal => { this.posFinal = posFinal };
+	getPosFinal = () => this.posFinal;
 
-    setIndex = index => { this.index = index };
-    getIndex = () => this.index;
+	setSlidesLength = slidesLength => { this.slidesLength = slidesLength };
+	getSlidesLength = () => this.slidesLength;
 
-    setAllowShift = allowShift => { this.allowShift = allowShift };
-    getAllowShift = () => this.allowShift;
+	setSliderMainWidth = sliderMainWidth => { this.sliderMainWidth = sliderMainWidth };
+	getSliderMainWidth = () => this.sliderMainWidth;
 
-    updateLog = () => {
-      console.log(this.index)
-    }
 
-    initialize = () => {
-        const {
-            slider,
-            infinite,
-            responsive,
-            nav,
-            dots,
-            autoPlay
-        } = this.getConfig();
+	setOrginSlider = orginSlider => { this.orginSlider = orginSlider };
+	getOrginSlider = () => this.orginSlider;
 
-        removeAllChildren({
-          wrapper:slider,
-          className:'clone'
-        });
-        //----------- start init variables  -----
-        this.setSlider(slider);
+	setSlideSize = slideSize => { this.slideSize = slideSize };
+	getSlideSize = () => this.slideSize;
 
-        const sliderClienWidth = this.getSlider().clientWidth;
-        this.setSliderMainWidth(sliderClienWidth);
-        
-        let sliderSlidesSelector = childFider({
-          wrapper:slider,
-          className:'.slides'
-        });
-        this.setSliderItems(sliderSlidesSelector);
+	setSliderItemWidth = sliderItemWidth => { this.sliderItemWidth = sliderItemWidth };
+	getSliderItemWidth = () => this.sliderItemWidth;
 
-        const sliderChildWidth = calcSliderChildWidth({
-            responsiveItemCount: responsiveItemCount(responsive),
-            slider:this.getSlider()
-        });
-        this.setSlideSize(sliderChildWidth);
+	setIndex = index => { this.index = index };
+	getIndex = () => this.index;
 
-        const sliderItemWidth = calcSliderChildWidth({
-            responsiveItemCount: responsiveItemCount(responsive),
-            slider:this.getSlider()
-        });
-        this.setSliderItemWidth(sliderItemWidth);
+	setAllowShift = allowShift => { this.allowShift = allowShift };
+	getAllowShift = () => this.allowShift;
 
-        // init slider for start
-        const slides = vdomArrayConvertor(this.getSliderItems().children);
-        this.setSlidesLength(slides.length);
+	updateLog = () => {
+		console.log(this.index)
+	}
 
-        // change name to perSlide
-        const perSlide = switchInfiniteResponsiveCount(
-            truncResponsiveItemCount(responsive),
-            infinite
-    );
-    this.setPerSlide(perSlide);
-    this.setIndex(perSlide);
+	initialize = () => {
+		const {
+			slider,
+			infinite,
+			responsive,
+			nav,
+			dots,
+			autoPlay
+		} = this.getConfig();
 
-		if(nav){
-			elementCreator({tag:'Span',wrapper:slider,className:'control next'});
-			elementCreator({tag:'Span',wrapper:slider,className:'control prev'});
-      this.sliderArrows = new SliderArrows({core: this});
-      const index = this.getIndex();
-      if (!infinite && index === 0) {
-        prevNone(slider);
-      }
-    }
-    
-		if(dots){
-			elementCreator({tag:'Ul',wrapper:slider,className:'dots'});
-      this.sliderDots = new SliderDots({core: this});
-    }
+		removeAllChildren({
+			wrapper: slider,
+			className: 'clone'
+		});
+		//----------- start init variables  -----
+		this.setSlider(slider);
 
-    if(autoPlay){
-      setInterval(()=>this.next(),3000);
-    }
-    
-    this.sliderTrailer = new SliderTrailer({core: this});
-    this.dragEvent = new DragEvent({core: this});
-    
-    sliderSlidesSelector.addEventListener("transitionend", this.transitionendWatcherCall);
-    this.windowResizeWatcher();
-    }
-      
-    next(){
-      const {
-        sliderItems,
-        index,
-        perSlide,
-        slideSize,
-        slidesLength,
-        sliderMainWidth,
-        config:{
-          infinite,
-          slider,
-          responsive
-        }
-      } = this;
-      const classItemParams = {
-        item:childFider({
-          wrapper:slider,
-          className:".slides"
-        }),
-        className:'shifting',
-      };
-      addClassToElement(classItemParams);
+		const sliderClienWidth = this.getSlider().clientWidth;
+		this.setSliderMainWidth(sliderClienWidth);
 
-      this.setIndex(shiftSlideIsDir({
-        sliderItems,
-        index,
-        perSlide,
-        slideSize,
-        slidesLength,
-        sliderMainWidth,
-        responsiveItem:responsiveItemCount(responsive),
-        infinite,
-        slider,
-      }))
-    };
+		let sliderSlidesSelector = childFider({
+			wrapper: slider,
+			className: '.slides'
+		});
+		this.setSliderItems(sliderSlidesSelector);
 
-    transitionendWatcherCall = () => {
-      const {
-        config: {
-          slider,
-          infinite,
-          responsive,
-          dots,
-          nav
-        },
-        index,
-        setIndex,
-        dragAction,
-        setPosInitial,
-        setPosX1,
-        setAllowShift,
-        sliderItems,
-        slideSize,
-        sliderMainWidth,
-        slidesLength,
-        sliderItemWidth
-      } = this;
-      transitionendWatcher({
-        slider,
-        infinite,
-        responsive,
-        dots,
-        nav,
-        sliderItems,
-        dragAction,
-        setPosInitial,
-        setPosX1,
-        setAllowShift,
-        index,
-        slideSize,
-        sliderMainWidth,
-        slidesLength,
-        sliderItemWidth,
-        setIndex
-      });
-    };
+		const sliderChildWidth = calcSliderChildWidth({
+			responsiveItemCount: responsiveItemCount(responsive),
+			slider: this.getSlider()
+		});
+		this.setSlideSize(sliderChildWidth);
 
-    windowResizeWatcher = () => {
-      let resizeTimer;
-      window.onresize = () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-          this.initialize();
-        }, 250);
-      };
-    };
+		const sliderItemWidth = calcSliderChildWidth({
+			responsiveItemCount: responsiveItemCount(responsive),
+			slider: this.getSlider()
+		});
+		this.setSliderItemWidth(sliderItemWidth);
+
+		// init slider for start
+		const slides = vdomArrayConvertor(this.getSliderItems().children);
+		this.setSlidesLength(slides.length);
+
+
+		const perSlide = switchInfiniteResponsiveCount(
+			truncResponsiveItemCount(responsive),
+			infinite
+		);
+
+		this.setPerSlide(perSlide);
+
+		// set init index
+		if(infinite){
+			this.setIndex(perSlide + 1)
+		}else{
+			this.setIndex(0);
+		}
+
+		if (nav) {
+			elementCreator({ tag: 'Span', wrapper: slider, className: 'control next' });
+			elementCreator({ tag: 'Span', wrapper: slider, className: 'control prev' });
+			this.sliderArrows = new SliderArrows({ core: this });
+			const index = this.getIndex();
+			if (!infinite && index === 0) {
+				prevNone(slider);
+			}
+		}
+
+		if (dots) {
+			elementCreator({ tag: 'Ul', wrapper: slider, className: 'dots' });
+			this.sliderDots = new SliderDots({ core: this });
+		}
+
+		if (autoPlay) {
+			setInterval(() => this.next(), 3000);
+		}
+
+		this.sliderTrailer = new SliderTrailer({ core: this });
+		this.dragEvent = new DragEvent({ core: this });
+
+		sliderSlidesSelector.addEventListener("transitionend", this.transitionendWatcherCall);
+		this.windowResizeWatcher();
+	}
+
+	next() {
+		const {
+			sliderItems,
+			index,
+			perSlide,
+			slideSize,
+			slidesLength,
+			sliderMainWidth,
+			config: {
+				infinite,
+				slider,
+				responsive
+			}
+		} = this;
+		const classItemParams = {
+			item: childFider({
+				wrapper: slider,
+				className: ".slides"
+			}),
+			className: 'shifting',
+		};
+		addClassToElement(classItemParams);
+
+		this.setIndex(shiftSlideIsDir({
+			sliderItems,
+			index,
+			perSlide,
+			slideSize,
+			slidesLength,
+			sliderMainWidth,
+			responsiveItem: responsiveItemCount(responsive),
+			infinite,
+			slider,
+		}))
+	};
+
+	transitionendWatcherCall = () => {
+		const {
+			config: {
+				slider,
+				infinite,
+				responsive,
+				dots,
+				nav
+			},
+			index,
+			getIndex,
+			setIndex,
+			dragAction,
+			setPosInitial,
+			setPosX1,
+			setAllowShift,
+			sliderItems,
+			slideSize,
+			sliderMainWidth,
+			slidesLength,
+			sliderItemWidth
+		} = this;
+		transitionendWatcher({
+			slider,
+			infinite,
+			responsive,
+			dots,
+			nav,
+			sliderItems,
+			dragAction,
+			setPosInitial,
+			setPosX1,
+			setAllowShift,
+			index,
+			slideSize,
+			sliderMainWidth,
+			slidesLength,
+			sliderItemWidth,
+			setIndex,
+			getIndex
+		});
+	};
+
+	windowResizeWatcher = () => {
+		let resizeTimer;
+		window.onresize = () => {
+			clearTimeout(resizeTimer);
+			resizeTimer = setTimeout(() => {
+				this.initialize();
+			}, 250);
+		};
+	};
 
 };
 

@@ -31,29 +31,39 @@ export const shiftSlideIsDir = params => {
 	};
 	const newIndex = index + perSlide;
 
-	if (!infinite && newIndex >= newSlidesLength && responsiveItem !== 1) {
+	console.log('==============newSlidesLength======================');
+	console.log({
+		newIndex,
+		newSlidesLength
+	});
+	console.log('====================================');
+
+	if (!infinite && newIndex + perSlide - 1 >= newSlidesLength && responsiveItem !== 1) {
 		sliderItems.style["transform"] = setTranslate3d(
 			calcFinalItemPosition(calcFinalItemPositionParams)
 		);
+
 		nextNone(slider);
 		prevBlock(slider);
 
 		return newIndex;
 	}
 
-	if (!infinite && newIndex * perSlide >= slidesLength) {
-		sliderItems.style["transform"] = setTranslate3d(
-			calcFinalItemPosition(calcFinalItemPositionParams)
-		);
-		nextNone(slider);
-		prevBlock(slider);
-	}
+	// if (!infinite && newIndex * perSlide >= slidesLength) {
+	// 	sliderItems.style["transform"] = setTranslate3d(
+	// 		calcFinalItemPosition(calcFinalItemPositionParams)
+	// 	);
+	// 	nextNone(slider);
+	// 	prevBlock(slider);
+	// }
+
+	// when perSlide === 1
 	if (!infinite && newIndex === newSlidesLength) {
 		nextNone(slider);
 		prevBlock(slider);
 	}
 
-	sliderItems.style["transform"] = setTranslate3d(-newIndex * slideSize);
+	sliderItems.style["transform"] = setTranslate3d(newIndex * -slideSize);
 	return newIndex;
 };
 

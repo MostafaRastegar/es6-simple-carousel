@@ -17,7 +17,7 @@ export const addCloneClass = item => {
 };
 
 export const cloneNodeGenerator = params => {
-	const { perSlide, sliderItems,wrapper } = params;
+	const { perSlide, sliderItems } = params;
 	const sliderItemsChildren = vdomArrayConvertor(sliderItems.children);
 	const deepCloneSliderItemsChildren = [...sliderItemsChildren];
 	const cloneNodeParams = {

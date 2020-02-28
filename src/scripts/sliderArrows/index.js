@@ -25,6 +25,37 @@ export default class SliderArrows {
 		return this.core;
 	}
 
+	initialize() {
+		const {
+			config: {
+				slider,
+			},
+			getSliderItems,
+			setAllowShift
+		} = this.core;
+		const prevSelector = childFider({
+			wrapper: slider,
+			className: '.prev'
+		});
+		const nextSelector = childFider({
+			wrapper: slider,
+			className: '.next'
+		});
+
+		// Click events
+		prevSelector.addEventListener("click", () => this.shiftSlide(-1));
+		nextSelector.addEventListener("click", () => this.shiftSlide(1));
+
+		//remove shifting class and allowSHift permission
+		const itemClassParams = {
+			item: getSliderItems(),
+			className: 'shifting'
+		};
+		removeClassFromElement(itemClassParams);
+		setAllowShift(true);
+	}
+
+
 	shiftSlide(dir, action) {
 		const {
 			config: {
@@ -70,38 +101,11 @@ export default class SliderArrows {
 		};
 
 		const itemClassParams = {
-			item:getSliderItems(),
-			className:'shifting'
+			item: getSliderItems(),
+			className: 'shifting'
 		};
 		addClassToElement(itemClassParams);
 		setAllowShift(false);
 	};
 
-	initialize() {
-		const {
-			config: {
-				slider,
-			},
-			getSliderItems,
-			setAllowShift	
-		} = this.core;
-		const prevSelector = childFider({
-			wrapper:slider,
-			className:'.prev'
-		  });
-		const nextSelector = childFider({
-			wrapper:slider,
-			className:'.next'
-		  });
-
-		// Click events
-		prevSelector.addEventListener("click", () => this.shiftSlide(-1));
-		nextSelector.addEventListener("click", () => this.shiftSlide(1));
-		const itemClassParams = {
-			item:getSliderItems(),
-			className:'shifting'
-		};
-		removeClassFromElement(itemClassParams);
-		setAllowShift(true);
-	}
 }
