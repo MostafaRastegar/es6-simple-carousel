@@ -31,13 +31,6 @@ export const shiftSlideIsDir = params => {
 	};
 	const newIndex = index + perSlide;
 
-	console.log('==============newSlidesLength======================');
-	console.log({
-		newIndex,
-		newSlidesLength
-	});
-	console.log('====================================');
-
 	if (!infinite && newIndex + perSlide - 1 >= newSlidesLength && responsiveItem !== 1) {
 		sliderItems.style["transform"] = setTranslate3d(
 			calcFinalItemPosition(calcFinalItemPositionParams)
