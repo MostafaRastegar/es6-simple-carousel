@@ -1,7 +1,7 @@
 .slides {
   display: flex;
   position: relative;
-  width: 100000000px;
+  width: 5000000px;
 }
 
 .slides.shifting {
@@ -10,6 +10,9 @@
 
 .slider{
   position: relative;
+}
+.slider .wrapper{
+	overflow: hidden;
 }
 
 .slide {
@@ -31,7 +34,15 @@
   border-radius: 50px;
   margin-top: -20px;
   box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.3);
-  z-index: 2;
+	z-index: 2;
+	align-items: center;
+	justify-content: center;
+	display:flex;
+	direction: ltr;
+}
+.control:after{
+	display: block;
+	font-size: 36px;
 }
 
 .prev,
@@ -43,13 +54,17 @@
 }
 
 .prev {
-  background-image: url(https://cdn0.iconfinder.com/data/icons/navigation-set-arrows-part-one/32/ChevronLeft-512.png);
   left: -20px;
+}
+.prev:after {
+	content: "\2039";
 }
 
 .next {
-  background-image: url(https://cdn0.iconfinder.com/data/icons/navigation-set-arrows-part-one/32/ChevronRight-512.png);
   right: -20px;
+}
+.next:after {
+	content: "\203A";
 }
 
 .prev:active,
@@ -58,7 +73,8 @@
 }
 
 .dots {
-  padding: 0;
+	padding: 0;
+	text-align:center;
 }
 
 .dots li {
@@ -72,5 +88,5 @@
 }
 
 .dots li.active {
-  background-color: #fff;
+  background-color: #efefef;
 }
