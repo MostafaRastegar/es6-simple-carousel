@@ -204,7 +204,8 @@ class SliderCore {
 				infinite,
 				responsive,
 				dots,
-				nav
+				nav,
+				rtl
 			},
 			index,
 			getIndex,
@@ -225,6 +226,7 @@ class SliderCore {
 			responsive,
 			dots,
 			nav,
+			rtl,
 			sliderItems,
 			dragAction,
 			setPosInitial,
