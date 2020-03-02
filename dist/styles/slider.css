@@ -90,7 +90,3 @@
 .dots li.active {
   background-color: #efefef;
 }
-
-.slider-rtl{
-	direction: rtl;
-}
