@@ -7,7 +7,7 @@ const slideConfig = {
   slider:  document.querySelector(`#slider`),
   threshold: 50,
   infinite: true,
-  rtl:true,
+  rtl:false,
   nav: true,
   dots: true,
   autoPlay:false,
