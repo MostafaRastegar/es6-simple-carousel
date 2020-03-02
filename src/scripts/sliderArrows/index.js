@@ -61,6 +61,7 @@ export default class SliderArrows {
 			config: {
 				infinite,
 				responsive,
+				rtl
 			},
 			getSliderItems,
 			getPosInitial,
@@ -92,6 +93,7 @@ export default class SliderArrows {
 				perSlide,
 				dir,
 				infinite,
+				rtl
 			};
 			if (dir == 1) {
 				setIndex(shiftSlideIsDir(shiftSlideParams));

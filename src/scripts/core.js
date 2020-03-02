@@ -85,7 +85,7 @@ class SliderCore {
 			responsive,
 			nav,
 			dots,
-			autoPlay
+      autoPlay,
 		} = this.getConfig();
 
 		removeAllChildren({

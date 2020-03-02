@@ -5,7 +5,8 @@ import {
 	prevBlock,
 	nextBlock,
 	prevNone,
-	calcFirstItemPosition
+	calcFirstItemPosition,
+	directionSetter
 } from '../utils';
 
 export const shiftSlideIsDir = params => {
@@ -19,6 +20,7 @@ export const shiftSlideIsDir = params => {
 		responsiveItem,
 		infinite,
 		slider,
+		rtl
 	} = params;
 	const newSlidesLength = infinite ? slidesLength : slidesLength - 1;
 
@@ -32,9 +34,12 @@ export const shiftSlideIsDir = params => {
 	const newIndex = index + perSlide;
 
 	if (!infinite && newIndex + perSlide - 1 >= newSlidesLength && responsiveItem !== 1) {
-		sliderItems.style["transform"] = setTranslate3d(
-			calcFinalItemPosition(calcFinalItemPositionParams)
-		);
+		const result = directionSetter({
+			rtl,
+			input: calcFinalItemPosition(calcFinalItemPositionParams)
+
+		});
+		sliderItems.style["transform"] = setTranslate3d(result);
 
 		nextNone(slider);
 		prevBlock(slider);
@@ -56,7 +61,12 @@ export const shiftSlideIsDir = params => {
 		prevBlock(slider);
 	}
 
-	sliderItems.style["transform"] = setTranslate3d(newIndex * -slideSize);
+	const result = directionSetter({
+		rtl,
+		input: newIndex * -slideSize
+	});
+
+	sliderItems.style["transform"] = setTranslate3d(result);
 	return newIndex;
 };
 
@@ -68,36 +78,47 @@ export const shiftSlideNonDir = params => {
 		perSlide,
 		infinite,
 		slider,
+		rtl
 	} = params;
 	const newIndex = index - perSlide;
 	const infinitperSlide = infinite ? perSlide : 0;
 
 	if (!infinite && index - infinitperSlide <= perSlide && index !== -1) {
 		const calcFirstItemPositionParams = { slideSize, perSlide, infinite };
-		sliderItems.style["transform"] = setTranslate3d(
-			calcFirstItemPosition(calcFirstItemPositionParams)
-		);
+		const result = directionSetter({
+			rtl,
+			input: calcFirstItemPosition(calcFirstItemPositionParams)
+		});
+		sliderItems.style["transform"] = setTranslate3d(result);
 		nextBlock(slider);
 		prevNone(slider);
 		return newIndex;
 	}
 
-	sliderItems.style["transform"] = setTranslate3d(-newIndex * slideSize);
+	const result = directionSetter({
+		rtl,
+		input: -newIndex * slideSize
+	});
+	sliderItems.style["transform"] = setTranslate3d(result);
 	return newIndex;
 };
 
-export const shiftFirstToEnd = params => {
-	const { sliderItems, slidesLength, slideSize, newIndex } = params;
-	sliderItems.style["transform"] = setTranslate3d(
-		-((slidesLength + newIndex) * slideSize)
-	);
-	return slidesLength + newIndex;
-};
+// export const shiftFirstToEnd = params => {
+// 	const { sliderItems, slidesLength, slideSize, newIndex,rtl } = params;
+// 	const result = directionSetter({
+// 		rtl,
+// 		input: -((slidesLength + newIndex) * slideSize)
+// 	});
+// 	sliderItems.style["transform"] = setTranslate3d(result);
+// 	return slidesLength + newIndex;
+// };
 
-export const shiftEndToFirst = params => {
-	const { sliderItems, slideSize, newIndex, slidesLength } = params;
-	sliderItems.style["transform"] = setTranslate3d(
-		-(newIndex - slidesLength) * slideSize
-	);
-	return newIndex - slidesLength;
-};
+// export const shiftEndToFirst = params => {
+// 	const { sliderItems, slideSize, newIndex, slidesLength,rtl } = params;
+// 	const result = directionSetter({
+// 		rtl,
+// 		input: -(newIndex - slidesLength) * slideSize
+// 	});
+// 	sliderItems.style["transform"] = setTranslate3d(result);
+// 	return newIndex - slidesLength;
+// };

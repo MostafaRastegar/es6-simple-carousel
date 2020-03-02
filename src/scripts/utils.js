@@ -123,7 +123,7 @@ export const calcSliderChildWidth = params => {
   // }
 
 	// return mainWidthTruncItem - decriseWithForEachItems;
-	return sliderClientWidth(slider) / responsiveItemCount
+	return sliderClientWidth(slider) / responsiveItemCount;
 };
 
 export const setSliderItemsChildWidth = params => {
@@ -139,9 +139,21 @@ export const setSliderItemsChildWidth = params => {
 };
 
 export const setSliderItemsPosition = params => {
-  const { indexItem, sliderItemWidth, sliderItems } = params;
-	sliderItems.style["transform"] = setTranslate3d(indexItem * -sliderItemWidth);
+  const { indexItem, sliderItemWidth, sliderItems,rtl } = params;
+  const result = directionSetter({
+    rtl,
+    input: indexItem * -sliderItemWidth
+  });
+	sliderItems.style["transform"] = setTranslate3d(result);
   return indexItem;
+};
+
+export const directionSetter = (params) => {
+  const {rtl,input} = params;
+  if(rtl){
+    return -input;
+  }
+  return input;
 };
 
 export const setTranslate3d = getValue => `translate3d(${getValue}px,0px,0px)`;
@@ -213,6 +225,7 @@ export const transitionendWatcher = (params) => {
     responsive,
     infinite,
     slider,
+    rtl,
     index,
     sliderItems,
     dotsSelector,
@@ -235,7 +248,8 @@ export const transitionendWatcher = (params) => {
     setIndex(setSliderItemsPosition({
       indexItem: index - slidesLength,
       sliderItemWidth,
-      sliderItems
+      sliderItems,
+      rtl
     }));
   }
   // shift to end from start item
@@ -246,7 +260,8 @@ export const transitionendWatcher = (params) => {
     setIndex(setSliderItemsPosition({
       indexItem: slidesLength + index,
       sliderItemWidth,
-      sliderItems
+      sliderItems,
+      rtl
     }));
   }
 
