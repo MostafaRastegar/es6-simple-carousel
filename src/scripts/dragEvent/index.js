@@ -101,6 +101,8 @@ export default class DragEvent {
 				setPosX1,
 				dragEndCall: dragEndCall,
 				dragActionCall: (e) => dragActionCall(e),
+				sliderMainWidth: getSliderMainWidth(),
+				rtl
 			};
 			dragStart(dragStartParams);
 		};

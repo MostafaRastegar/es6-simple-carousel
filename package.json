@@ -1,6 +1,6 @@
 {
   "name": "es6-simple-carousel",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "description": "A light and simple pure javascript carousel.It is usable in the javascript base projects (like reactjs,vuejs,angular)",
   "main": "dist/index.es.js",
   "module": "dist/index.es.js",

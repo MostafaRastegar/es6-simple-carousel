@@ -103,25 +103,8 @@ export const calcSliderGroupCount = params => {
   return Math.ceil(slidesLength / truncResponsiveItemCount(responsive));
 };
 
-// export const calcTruncSlideItemSize = items => {
-//   // const itemsCeil = Math.ceil(items);
-//   // const mainWidthTruncItem = sliderClientWidth(slider) / itemsCeil;
-//   // // return (mainWidthTruncItem / 2);
-//   return calcSliderChildWidth(responsiveItemCount(config.responsive));
-// };
-
 export const calcSliderChildWidth = params => {
   const { responsiveItemCount, slider } = params;
-  // const itemsTrunc = Math.trunc(responsiveItemCount);
-  // if (responsiveItemCount - itemsTrunc === 0) {
-  //   return sliderClientWidth(slider) / itemsTrunc;
-  // }
-  // const mainWidthTruncItem = sliderClientWidth(slider) / itemsTrunc;
-  // let decriseWithForEachItems = mainWidthTruncItem / itemsTrunc / itemsTrunc;
-  // if (responsiveItemCount > 1 && responsiveItemCount < 2) {
-  //   decriseWithForEachItems = (sliderClientWidth(slider) / itemsTrunc) * 0.25;
-  // }
-
 	// return mainWidthTruncItem - decriseWithForEachItems;
 	return sliderClientWidth(slider) / responsiveItemCount;
 };
@@ -241,7 +224,6 @@ export const transitionendWatcher = (params) => {
 	} = params;
 
   const perSlide = truncResponsiveItemCount(responsive);
-
   if (infinite && index > perSlide + slidesLength &&
     Math.abs(getTranslate3d(sliderItems)) >= (perSlide + 1 + slidesLength) * sliderItemWidth
   ) {
