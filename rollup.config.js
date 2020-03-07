@@ -21,6 +21,13 @@ const config = {
       globals: { 'styled-components': 'styled' },
       sourcemap: true,
     },
+    {
+      file: pkg.main,
+      format: 'cjs',
+      exports: 'named',
+      globals: { 'styled-components': 'styled' },
+      sourcemap: true,
+    },
   ],
   external: [
     'react',
