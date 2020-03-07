@@ -1788,8 +1788,3 @@ function () {
 
 export { SliderCore as Slider };
 //# sourceMappingURL=index.es.js.map
-e;
-}();
-
-exports.Slider = SliderCore;
-//# sourceMappingURL=index.es.js.map
