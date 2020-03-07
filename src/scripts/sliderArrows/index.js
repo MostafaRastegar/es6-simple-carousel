@@ -93,7 +93,7 @@ export default class SliderArrows {
 				perSlide,
 				dir,
 				infinite,
-				rtl
+				rtl,
 			};
 			if (dir == 1) {
 				setIndex(shiftSlideIsDir(shiftSlideParams));

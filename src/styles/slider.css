@@ -94,3 +94,18 @@
 .slider-rtl{
 	direction: rtl;
 }
+.slider-rtl .control{
+  transform: rotateY(180deg);
+}
+.slider-rtl .control:after{
+  position: relative;
+  top:-2px;
+}
+.slider-rtl .next{
+  right:auto;
+  left:-20px;
+}
+.slider-rtl .prev{
+  left:auto;
+  right:-20px;
+}

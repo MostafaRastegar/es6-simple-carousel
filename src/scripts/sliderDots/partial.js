@@ -8,7 +8,7 @@ import {
 	nextBlock,
 	prevNone,
 	addClassToElement,
-	directionSetter
+	directionSetter,
 } from '../utils';
 
 export const dotsItemsGenerator = params => {
@@ -32,7 +32,8 @@ export const dotsItemsClick = params => {
 		slider,
 		getSliderItems,
 		nav,
-		rtl
+		rtl,
+		item
 	} = params;
 
 	setSliderItemsPositionAfterDotClick({
@@ -47,14 +48,20 @@ export const dotsItemsClick = params => {
 		nav,
 		rtl
 	});
-	const itemClassParams = {
-		item:getSliderItems(),
-		className:'shifting'
-	};
-	addClassToElement(itemClassParams);
+	
+	const isActive = item.classList.contains('active');
+	let allowShift = true;
+	if(!isActive){
+		const itemClassParams = {
+			item:getSliderItems(),
+			className:'shifting'
+		};
+		addClassToElement(itemClassParams);
+		allowShift = false;
+	}
 	return {
 		index: infinite ? (indexItem + perSlide + 1)  : indexItem,
-		allowShift: false,
+		allowShift: allowShift,
 		posInitial: getTranslate3d(sliderItems)
 	};
 };

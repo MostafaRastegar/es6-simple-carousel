@@ -80,7 +80,8 @@ export default class SliderDots {
 					responsive,
 					getSliderItems,
 					nav,
-					rtl
+					rtl,
+					item
 				};
 				const {
 					index,

@@ -234,6 +234,17 @@ export const transitionendWatcher = (params) => {
       rtl
     }));
   }
+  
+  // if page-index === 1 && clone === true
+  if (infinite && index === perSlide + 1 + slidesLength ) {
+    setIndex(setSliderItemsPosition({
+      indexItem: perSlide + 1,
+      sliderItemWidth,
+      sliderItems,
+      rtl
+    }));
+  }
+
   // shift to end from start item
   if (infinite && (
     Math.abs(getTranslate3d(sliderItems)) <= 1 ||
