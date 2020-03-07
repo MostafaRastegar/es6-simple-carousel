@@ -24,7 +24,8 @@ export default class DragEvent {
 			config: {
 				infinite,
 				responsive,
-				threshold
+				threshold,
+				rtl
 			},
 			getSliderItems,
 			setPosInitial,
@@ -57,6 +58,7 @@ export default class DragEvent {
 				threshold,
 				responsive,
 				infinite,
+				rtl,
 				setIndex,
 				setPosFinal,
 				transitionendWatcherCall,
@@ -78,6 +80,7 @@ export default class DragEvent {
 				setPosInitial,
 				getSliderItems,
 				threshold,
+				rtl,
 				getPosX2,
 				getSlidesLength,
 				getPerSlide,
@@ -98,6 +101,8 @@ export default class DragEvent {
 				setPosX1,
 				dragEndCall: dragEndCall,
 				dragActionCall: (e) => dragActionCall(e),
+				sliderMainWidth: getSliderMainWidth(),
+				rtl
 			};
 			dragStart(dragStartParams);
 		};

@@ -31,6 +31,7 @@ export default class SliderTrailer {
 				infinite,
 				responsive,
 				slider,
+				rtl
 			},
 			getSliderItems,
 			getSliderItemWidth,
@@ -59,7 +60,8 @@ export default class SliderTrailer {
 		setIndex(setSliderItemsPosition({
 			indexItem: index,
 			sliderItemWidth,
-			sliderItems
+			sliderItems,
+			rtl
 		}));
 		
 		setPageNumberOnChild({ sliderItems, responsive });

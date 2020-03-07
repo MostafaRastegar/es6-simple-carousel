@@ -31,7 +31,8 @@ export default class SliderDots {
 				slider,
 				infinite,
 				responsive,
-				nav
+				nav,
+				rtl
 			},
 			getSlidesLength,
 			getSliderItemWidth,
@@ -78,7 +79,9 @@ export default class SliderDots {
 					dotIndex,
 					responsive,
 					getSliderItems,
-					nav
+					nav,
+					rtl,
+					item
 				};
 				const {
 					index,

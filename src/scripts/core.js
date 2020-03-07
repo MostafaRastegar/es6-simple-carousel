@@ -85,7 +85,8 @@ class SliderCore {
 			responsive,
 			nav,
 			dots,
-			autoPlay
+			autoPlay,
+			rtl
 		} = this.getConfig();
 
 		removeAllChildren({
@@ -135,6 +136,14 @@ class SliderCore {
 			this.setIndex(0);
 		}
 
+		if(rtl){
+			const classItemParams = {
+				item:slider,
+				className:'slider-rtl',
+			};
+			addClassToElement(classItemParams);
+		}
+
 		if (nav) {
 			elementCreator({ tag: 'Span', wrapper: slider, className: 'control next' });
 			elementCreator({ tag: 'Span', wrapper: slider, className: 'control prev' });
@@ -172,7 +181,8 @@ class SliderCore {
 			config: {
 				infinite,
 				slider,
-				responsive
+				responsive,
+				rtl
 			}
 		} = this;
 		const classItemParams = {
@@ -194,6 +204,7 @@ class SliderCore {
 			responsiveItem: responsiveItemCount(responsive),
 			infinite,
 			slider,
+			rtl
 		}))
 	};
 
@@ -204,7 +215,8 @@ class SliderCore {
 				infinite,
 				responsive,
 				dots,
-				nav
+				nav,
+				rtl
 			},
 			index,
 			getIndex,
@@ -225,6 +237,7 @@ class SliderCore {
 			responsive,
 			dots,
 			nav,
+			rtl,
 			sliderItems,
 			dragAction,
 			setPosInitial,

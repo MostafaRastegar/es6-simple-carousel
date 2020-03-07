@@ -61,9 +61,9 @@ export default class SliderArrows {
 			config: {
 				infinite,
 				responsive,
+				rtl
 			},
 			getSliderItems,
-			getPosInitial,
 			setPosInitial,
 			getSlideSize,
 			setIndex,
@@ -82,7 +82,6 @@ export default class SliderArrows {
 			}
 			let shiftSlideParams = {
 				sliderItems: getSliderItems(),
-				posInitial: getPosInitial(),
 				slideSize: getSlideSize(),
 				slidesLength: getSlidesLength(),
 				slider: getSlider(),
@@ -92,6 +91,7 @@ export default class SliderArrows {
 				perSlide,
 				dir,
 				infinite,
+				rtl,
 			};
 			if (dir == 1) {
 				setIndex(shiftSlideIsDir(shiftSlideParams));

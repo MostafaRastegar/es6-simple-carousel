@@ -103,27 +103,10 @@ export const calcSliderGroupCount = params => {
   return Math.ceil(slidesLength / truncResponsiveItemCount(responsive));
 };
 
-// export const calcTruncSlideItemSize = items => {
-//   // const itemsCeil = Math.ceil(items);
-//   // const mainWidthTruncItem = sliderClientWidth(slider) / itemsCeil;
-//   // // return (mainWidthTruncItem / 2);
-//   return calcSliderChildWidth(responsiveItemCount(config.responsive));
-// };
-
 export const calcSliderChildWidth = params => {
   const { responsiveItemCount, slider } = params;
-  // const itemsTrunc = Math.trunc(responsiveItemCount);
-  // if (responsiveItemCount - itemsTrunc === 0) {
-  //   return sliderClientWidth(slider) / itemsTrunc;
-  // }
-  // const mainWidthTruncItem = sliderClientWidth(slider) / itemsTrunc;
-  // let decriseWithForEachItems = mainWidthTruncItem / itemsTrunc / itemsTrunc;
-  // if (responsiveItemCount > 1 && responsiveItemCount < 2) {
-  //   decriseWithForEachItems = (sliderClientWidth(slider) / itemsTrunc) * 0.25;
-  // }
-
 	// return mainWidthTruncItem - decriseWithForEachItems;
-	return sliderClientWidth(slider) / responsiveItemCount
+	return sliderClientWidth(slider) / responsiveItemCount;
 };
 
 export const setSliderItemsChildWidth = params => {
@@ -139,9 +122,21 @@ export const setSliderItemsChildWidth = params => {
 };
 
 export const setSliderItemsPosition = params => {
-  const { indexItem, sliderItemWidth, sliderItems } = params;
-	sliderItems.style["transform"] = setTranslate3d(indexItem * -sliderItemWidth);
+  const { indexItem, sliderItemWidth, sliderItems,rtl } = params;
+  const result = directionSetter({
+    rtl,
+    input: indexItem * -sliderItemWidth
+  });
+	sliderItems.style["transform"] = setTranslate3d(result);
   return indexItem;
+};
+
+export const directionSetter = (params) => {
+  const {rtl,input} = params;
+  if(rtl){
+    return -input;
+  }
+  return input;
 };
 
 export const setTranslate3d = getValue => `translate3d(${getValue}px,0px,0px)`;
@@ -213,6 +208,7 @@ export const transitionendWatcher = (params) => {
     responsive,
     infinite,
     slider,
+    rtl,
     index,
     sliderItems,
     dotsSelector,
@@ -228,16 +224,27 @@ export const transitionendWatcher = (params) => {
 	} = params;
 
   const perSlide = truncResponsiveItemCount(responsive);
-
   if (infinite && index > perSlide + slidesLength &&
     Math.abs(getTranslate3d(sliderItems)) >= (perSlide + 1 + slidesLength) * sliderItemWidth
   ) {
     setIndex(setSliderItemsPosition({
       indexItem: index - slidesLength,
       sliderItemWidth,
-      sliderItems
+      sliderItems,
+      rtl
     }));
   }
+  
+  // if page-index === 1 && clone === true
+  if (infinite && index === perSlide + 1 + slidesLength ) {
+    setIndex(setSliderItemsPosition({
+      indexItem: perSlide + 1,
+      sliderItemWidth,
+      sliderItems,
+      rtl
+    }));
+  }
+
   // shift to end from start item
   if (infinite && (
     Math.abs(getTranslate3d(sliderItems)) <= 1 ||
@@ -246,7 +253,8 @@ export const transitionendWatcher = (params) => {
     setIndex(setSliderItemsPosition({
       indexItem: slidesLength + index,
       sliderItemWidth,
-      sliderItems
+      sliderItems,
+      rtl
     }));
   }
 

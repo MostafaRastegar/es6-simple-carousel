@@ -1,6 +1,5 @@
 import {
 	calcSliderGroupCount,
-	truncResponsiveItemCount,
 	getTranslate3d,
 	calcFinalItemPosition,
 	setTranslate3d,
@@ -9,6 +8,7 @@ import {
 	nextBlock,
 	prevNone,
 	addClassToElement,
+	directionSetter,
 } from '../utils';
 
 export const dotsItemsGenerator = params => {
@@ -31,7 +31,9 @@ export const dotsItemsClick = params => {
 		infinite,
 		slider,
 		getSliderItems,
-		nav
+		nav,
+		rtl,
+		item
 	} = params;
 
 	setSliderItemsPositionAfterDotClick({
@@ -43,16 +45,23 @@ export const dotsItemsClick = params => {
 		perSlide,
 		infinite,
 		slider,
-		nav
+		nav,
+		rtl
 	});
-	const itemClassParams = {
-		item:getSliderItems(),
-		className:'shifting'
-	};
-	addClassToElement(itemClassParams);
+	
+	const isActive = item.classList.contains('active');
+	let allowShift = true;
+	if(!isActive){
+		const itemClassParams = {
+			item:getSliderItems(),
+			className:'shifting'
+		};
+		addClassToElement(itemClassParams);
+		allowShift = false;
+	}
 	return {
 		index: infinite ? (indexItem + perSlide + 1)  : indexItem,
-		allowShift: false,
+		allowShift: allowShift,
 		posInitial: getTranslate3d(sliderItems)
 	};
 };
@@ -67,7 +76,8 @@ export const setSliderItemsPositionAfterDotClick = params => {
 		slidesLength,
 		infinite,
 		slider,
-		nav
+		nav,
+		rtl
 	} = params;
 
 	if (!infinite && indexItem + perSlide >= slidesLength) {
@@ -78,10 +88,11 @@ export const setSliderItemsPositionAfterDotClick = params => {
 			perSlide,
 			infinite
 		};
-
-		sliderItems.style["transform"] = setTranslate3d(
-			calcFinalItemPosition(calcFinalItemPositionParams)
-		);
+		const result = directionSetter({
+			rtl,
+			input: calcFinalItemPosition(calcFinalItemPositionParams)
+		});
+		sliderItems.style["transform"] = setTranslate3d(result);
 		if(nav){
 			nextNone(slider);
 			prevBlock(slider);
@@ -101,5 +112,9 @@ export const setSliderItemsPositionAfterDotClick = params => {
 	}
 
 	const newItemIndex = infinite ? indexItem + perSlide + 1 : indexItem;
-	sliderItems.style["transform"] = setTranslate3d( newItemIndex * -slideSize);
+	const result = directionSetter({
+		rtl,
+		input:newItemIndex * -slideSize
+	});
+	sliderItems.style["transform"] = setTranslate3d(result);
 };
