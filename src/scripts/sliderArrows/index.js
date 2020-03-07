@@ -64,7 +64,6 @@ export default class SliderArrows {
 				rtl
 			},
 			getSliderItems,
-			getPosInitial,
 			setPosInitial,
 			getSlideSize,
 			setIndex,
@@ -83,7 +82,6 @@ export default class SliderArrows {
 			}
 			let shiftSlideParams = {
 				sliderItems: getSliderItems(),
-				posInitial: getPosInitial(),
 				slideSize: getSlideSize(),
 				slidesLength: getSlidesLength(),
 				slider: getSlider(),
