@@ -29,11 +29,11 @@ export default class SliderDots {
 		const {
 			config: {
 				slider,
-				infinite,
 				responsive,
 				nav,
 				rtl
 			},
+			getInfinite,
 			getSlidesLength,
 			getSliderItemWidth,
 			getSliderMainWidth,
@@ -75,7 +75,7 @@ export default class SliderDots {
 					slideSize: getSlideSize(),
 					slidesLength: getSlidesLength(),
 					perSlide: truncResponsiveItemCount(responsive),
-					infinite,
+					infinite:getInfinite(),
 					dotIndex,
 					responsive,
 					getSliderItems,

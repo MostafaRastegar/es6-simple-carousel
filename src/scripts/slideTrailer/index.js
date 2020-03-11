@@ -28,11 +28,11 @@ export default class SliderTrailer {
 	initialize() {
 		const {
 			config: {
-				infinite,
 				responsive,
 				slider,
 				rtl
 			},
+			getInfinite,
 			getSliderItems,
 			getSliderItemWidth,
 			getPerSlide,
@@ -42,6 +42,7 @@ export default class SliderTrailer {
 			setIndex,
 		} = this.core;
 
+		const infinite = getInfinite();
 		const sliderItems = getSliderItems();
 		const slideSize = getSlideSize();
 		const sliderItemWidth = getSliderItemWidth();
@@ -67,7 +68,7 @@ export default class SliderTrailer {
 		setPageNumberOnChild({ sliderItems, responsive });
 
 
-		// Clone group of slide from infinit carousel
+		// Clone group of slide from infinite carousel
 		if (infinite) {
 			const cloneNodeGeneratorParams = {
 				perSlide,

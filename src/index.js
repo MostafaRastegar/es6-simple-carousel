@@ -11,6 +11,7 @@ const slideConfig = {
   nav: true,
   dots: true,
   autoPlay:false,
+  drag: true,
   responsive: {
     0: {
       items: 1.5

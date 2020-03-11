@@ -239,8 +239,14 @@ export const dragEnd = (params) => {
 		slider,
 		setPosFinal,
 		getPosFinal,
+		drag,
 		rtl
 	} = params;
+
+	if(!drag){
+		mouseEventNull();
+		return false;
+	}
 
 	const perSlide = truncResponsiveItemCount(responsive);
 
@@ -269,6 +275,7 @@ export const dragEnd = (params) => {
 		sliderMainWidth
 	});
 	setIndex(calcIndex);
+
 
 	if (!infinite && calcIndex > slidesLength && calcIndex < slidesLength + perSlide ||
 		infinite && calcIndex + perSlide === perSlide

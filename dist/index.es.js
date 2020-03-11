@@ -420,6 +420,28 @@ var vdomArrayConvertor = function vdomArrayConvertor(items) {
   if (isArrayCheck) return items;
   return Object.values(items);
 };
+var infiniteChecker = function infiniteChecker(params) {
+  var infinite = params.infinite,
+      sliderLength = params.sliderLength,
+      perSlide = params.perSlide;
+
+  if (infinite && sliderLength === perSlide) {
+    return false;
+  }
+
+  return infinite;
+};
+var dragChecker = function dragChecker(params) {
+  var drag = params.drag,
+      sliderLength = params.sliderLength,
+      perSlide = params.perSlide;
+
+  if (drag && sliderLength === perSlide) {
+    return false;
+  }
+
+  return drag;
+};
 
 var shiftSlideIsDir = function shiftSlideIsDir(params) {
   var sliderItems = params.sliderItems,
@@ -677,10 +699,10 @@ function () {
       var _this$core = this.core,
           _this$core$config = _this$core.config,
           slider = _this$core$config.slider,
-          infinite = _this$core$config.infinite,
           responsive = _this$core$config.responsive,
           nav = _this$core$config.nav,
           rtl = _this$core$config.rtl,
+          getInfinite = _this$core.getInfinite,
           getSlidesLength = _this$core.getSlidesLength,
           getSliderItemWidth = _this$core.getSliderItemWidth,
           getSliderMainWidth = _this$core.getSliderMainWidth,
@@ -718,7 +740,7 @@ function () {
             slideSize: getSlideSize(),
             slidesLength: getSlidesLength(),
             perSlide: truncResponsiveItemCount(responsive),
-            infinite: infinite,
+            infinite: getInfinite(),
             dotIndex: dotIndex,
             responsive: responsive,
             getSliderItems: getSliderItems,
@@ -819,10 +841,10 @@ function () {
     value: function initialize() {
       var _this$core = this.core,
           _this$core$config = _this$core.config,
-          infinite = _this$core$config.infinite,
           responsive = _this$core$config.responsive,
           slider = _this$core$config.slider,
           rtl = _this$core$config.rtl,
+          getInfinite = _this$core.getInfinite,
           getSliderItems = _this$core.getSliderItems,
           getSliderItemWidth = _this$core.getSliderItemWidth,
           getPerSlide = _this$core.getPerSlide,
@@ -830,6 +852,7 @@ function () {
           getSliderMainWidth = _this$core.getSliderMainWidth,
           getIndex = _this$core.getIndex,
           setIndex = _this$core.setIndex;
+      var infinite = getInfinite();
       var sliderItems = getSliderItems();
       var slideSize = getSlideSize();
       var sliderItemWidth = getSliderItemWidth();
@@ -852,7 +875,7 @@ function () {
       setPageNumberOnChild({
         sliderItems: sliderItems,
         responsive: responsive
-      }); // Clone group of slide from infinit carousel
+      }); // Clone group of slide from infinite carousel
 
       if (infinite) {
         var cloneNodeGeneratorParams = {
@@ -941,9 +964,9 @@ function () {
     value: function shiftSlide(dir, action) {
       var _this$core2 = this.core,
           _this$core2$config = _this$core2.config,
-          infinite = _this$core2$config.infinite,
           responsive = _this$core2$config.responsive,
           rtl = _this$core2$config.rtl,
+          getInfinite = _this$core2.getInfinite,
           getSliderItems = _this$core2.getSliderItems,
           setPosInitial = _this$core2.setPosInitial,
           getSlideSize = _this$core2.getSlideSize,
@@ -971,7 +994,7 @@ function () {
           responsiveItem: responsiveItemCount(responsive),
           perSlide: perSlide,
           dir: dir,
-          infinite: infinite,
+          infinite: getInfinite(),
           rtl: rtl
         };
 
@@ -1256,7 +1279,14 @@ var dragEnd = function dragEnd(params) {
       slider = params.slider,
       setPosFinal = params.setPosFinal,
       getPosFinal = params.getPosFinal,
+      drag = params.drag,
       rtl = params.rtl;
+
+  if (!drag) {
+    mouseEventNull();
+    return false;
+  }
+
   var perSlide = truncResponsiveItemCount(responsive);
 
   var thresholdNew = function thresholdNew() {
@@ -1345,10 +1375,11 @@ function () {
     value: function initialize() {
       var _this$core = this.core,
           _this$core$config = _this$core.config,
-          infinite = _this$core$config.infinite,
           responsive = _this$core$config.responsive,
           threshold = _this$core$config.threshold,
           rtl = _this$core$config.rtl,
+          getDrag = _this$core.getDrag,
+          getInfinite = _this$core.getInfinite,
           getSliderItems = _this$core.getSliderItems,
           setPosInitial = _this$core.setPosInitial,
           setPosX1 = _this$core.setPosX1,
@@ -1366,6 +1397,9 @@ function () {
           getPosFinal = _this$core.getPosFinal,
           setAllowShift = _this$core.setAllowShift,
           transitionendWatcherCall = _this$core.transitionendWatcherCall;
+      var infinite = getInfinite();
+      var sliderItems = getSliderItems();
+      var drag = getDrag();
 
       var dragEndCall = function dragEndCall() {
         var dragStartParams = {
@@ -1383,6 +1417,7 @@ function () {
           setPosFinal: setPosFinal,
           transitionendWatcherCall: transitionendWatcherCall,
           dragAction: dragAction,
+          drag: drag,
           setPosInitial: setPosInitial,
           setPosX1: setPosX1,
           setAllowShift: setAllowShift,
@@ -1416,7 +1451,7 @@ function () {
       var dragStartCall = function dragStartCall(e) {
         var dragStartParams = {
           e: e,
-          sliderItems: getSliderItems(),
+          sliderItems: sliderItems,
           setPosInitial: setPosInitial,
           setPosX1: setPosX1,
           dragEndCall: dragEndCall,
@@ -1430,11 +1465,11 @@ function () {
       }; // Mouse events
 
 
-      getSliderItems().onmousedown = dragStartCall; // Touch events
+      sliderItems.addEventListener("mousedown", dragStartCall); // Touch events
 
-      getSliderItems().addEventListener("touchstart", dragStartCall);
-      getSliderItems().addEventListener("touchend", dragEndCall);
-      getSliderItems().addEventListener("touchmove", _dragActionCall);
+      sliderItems.addEventListener("touchstart", dragStartCall);
+      sliderItems.addEventListener("touchend", dragEndCall);
+      sliderItems.addEventListener("touchmove", _dragActionCall);
     }
   }]);
 
@@ -1471,6 +1506,22 @@ function () {
 
     _defineProperty(this, "getPosX1", function () {
       return _this.posX1;
+    });
+
+    _defineProperty(this, "setInfinite", function (infinite) {
+      _this.infinite = infinite;
+    });
+
+    _defineProperty(this, "getInfinite", function () {
+      return _this.infinite;
+    });
+
+    _defineProperty(this, "setDrag", function (drag) {
+      _this.drag = drag;
+    });
+
+    _defineProperty(this, "getDrag", function () {
+      return _this.drag;
     });
 
     _defineProperty(this, "setPosX2", function (posX2) {
@@ -1581,7 +1632,14 @@ function () {
           nav = _this$getConfig.nav,
           dots = _this$getConfig.dots,
           autoPlay = _this$getConfig.autoPlay,
-          rtl = _this$getConfig.rtl;
+          rtl = _this$getConfig.rtl,
+          drag = _this$getConfig.drag; // reset Slider
+
+
+      var mainSlider = slider,
+          mainSliderClone = mainSlider.cloneNode(true);
+
+      _this.setSlider(mainSliderClone);
 
       removeAllChildren({
         wrapper: slider,
@@ -1616,16 +1674,33 @@ function () {
       _this.setSliderItemWidth(sliderItemWidth); // init slider for start
 
 
-      var slides = vdomArrayConvertor(_this.getSliderItems().children);
+      var slides = vdomArrayConvertor(sliderSlidesSelector.children);
+      var sliderLength = slides.length;
 
-      _this.setSlidesLength(slides.length);
+      _this.setSlidesLength(sliderLength);
 
       var perSlide = switchInfiniteResponsiveCount(truncResponsiveItemCount(responsive), infinite);
 
-      _this.setPerSlide(perSlide); // set init index
+      _this.setPerSlide(perSlide);
+
+      var infCheck = infiniteChecker({
+        infinite: infinite,
+        perSlide: perSlide,
+        sliderLength: sliderLength
+      });
+
+      _this.setInfinite(infCheck);
+
+      var dragCheck = dragChecker({
+        drag: drag,
+        perSlide: perSlide,
+        sliderLength: sliderLength
+      });
+
+      _this.setDrag(dragCheck); // set init index
 
 
-      if (infinite) {
+      if (infCheck) {
         _this.setIndex(perSlide + 1);
       } else {
         _this.setIndex(0);
@@ -1656,8 +1731,15 @@ function () {
 
         var index = _this.getIndex();
 
-        if (!infinite && index === 0) {
+        if (perSlide === sliderLength) {
           prevNone(slider);
+          nextNone(slider);
+        }
+
+        if (!infCheck) {
+          if (index === 0) {
+            prevNone(slider);
+          }
         }
       }
 
@@ -1680,7 +1762,8 @@ function () {
 
       _this.sliderTrailer = new SliderTrailer({
         core: _this
-      });
+      }); // action drag event
+
       _this.dragEvent = new DragEvent({
         core: _this
       });
@@ -1692,11 +1775,11 @@ function () {
     _defineProperty(this, "transitionendWatcherCall", function () {
       var _this$config = _this.config,
           slider = _this$config.slider,
-          infinite = _this$config.infinite,
           responsive = _this$config.responsive,
           dots = _this$config.dots,
           nav = _this$config.nav,
           rtl = _this$config.rtl,
+          getInfinite = _this.getInfinite,
           index = _this.index,
           getIndex = _this.getIndex,
           setIndex = _this.setIndex,
@@ -1711,7 +1794,7 @@ function () {
           sliderItemWidth = _this.sliderItemWidth;
       transitionendWatcher({
         slider: slider,
-        infinite: infinite,
+        infinite: getInfinite(),
         responsive: responsive,
         dots: dots,
         nav: nav,
@@ -1755,8 +1838,8 @@ function () {
           slideSize = this.slideSize,
           slidesLength = this.slidesLength,
           sliderMainWidth = this.sliderMainWidth,
+          getInfinite = this.getInfinite,
           _this$config2 = this.config,
-          infinite = _this$config2.infinite,
           slider = _this$config2.slider,
           responsive = _this$config2.responsive,
           rtl = _this$config2.rtl;
@@ -1776,7 +1859,7 @@ function () {
         slidesLength: slidesLength,
         sliderMainWidth: sliderMainWidth,
         responsiveItem: responsiveItemCount(responsive),
-        infinite: infinite,
+        infinite: getInfinite(),
         slider: slider,
         rtl: rtl
       }));

@@ -1,7 +1,7 @@
 import {
 	dragAction,
 	dragEnd,
-	dragStart
+	dragStart,
 } from './partial';
 
 export default class DragEvent {
@@ -22,11 +22,12 @@ export default class DragEvent {
 	initialize() {
 		const {
 			config: {
-				infinite,
 				responsive,
 				threshold,
 				rtl
 			},
+			getDrag,
+			getInfinite,
 			getSliderItems,
 			setPosInitial,
 			setPosX1,
@@ -46,6 +47,9 @@ export default class DragEvent {
 			transitionendWatcherCall
 		} = this.core;
 
+		const infinite = getInfinite();
+		const sliderItems = getSliderItems();
+		const drag = getDrag();
 
 		const dragEndCall = () => {
 			let dragStartParams = {
@@ -63,6 +67,7 @@ export default class DragEvent {
 				setPosFinal,
 				transitionendWatcherCall,
 				dragAction,
+				drag,
 				setPosInitial,
 				setPosX1,
 				setAllowShift,
@@ -70,7 +75,7 @@ export default class DragEvent {
 			};
 			dragEnd(dragStartParams);
 		};
-
+		
 		const dragActionCall = (e) => {
 			let dragActionParams = {
 				e,
@@ -96,7 +101,7 @@ export default class DragEvent {
 		const dragStartCall = (e) => {
 			let dragStartParams = {
 				e,
-				sliderItems: getSliderItems(),
+				sliderItems,
 				setPosInitial,
 				setPosX1,
 				dragEndCall: dragEndCall,
@@ -108,10 +113,11 @@ export default class DragEvent {
 		};
 
 		// Mouse events
-		getSliderItems().onmousedown = dragStartCall;
+		sliderItems.addEventListener("mousedown", dragStartCall);
 		// Touch events
-		getSliderItems().addEventListener("touchstart", dragStartCall);
-		getSliderItems().addEventListener("touchend", dragEndCall);
-		getSliderItems().addEventListener("touchmove", dragActionCall);
+		sliderItems.addEventListener("touchstart", dragStartCall);
+		sliderItems.addEventListener("touchend", dragEndCall);
+		sliderItems.addEventListener("touchmove", dragActionCall);
+
 	}
 }

@@ -7,9 +7,12 @@ import {
 	elementCreator,
 	childFider,
 	prevNone,
+	nextNone,
 	addClassToElement,
 	vdomArrayConvertor,
-	removeAllChildren
+	removeAllChildren,
+	infiniteChecker,
+	dragChecker
 } from "./utils";
 
 import { shiftSlideIsDir } from './sliderArrows/partial';
@@ -35,6 +38,12 @@ class SliderCore {
 
 	setPosX1 = posX1 => { this.posX1 = posX1 };
 	getPosX1 = () => this.posX1;
+
+	setInfinite = infinite => { this.infinite = infinite };
+	getInfinite = () => this.infinite;
+
+	setDrag = drag => { this.drag = drag };
+	getDrag = () => this.drag;
 
 	setPosX2 = posX2 => { this.posX2 = posX2 };
 	getPosX2 = () => this.posX2;
@@ -86,25 +95,31 @@ class SliderCore {
 			nav,
 			dots,
 			autoPlay,
-			rtl
+			rtl,
+			drag
 		} = this.getConfig();
 
+		// reset Slider
+		const mainSlider = slider,
+		mainSliderClone = mainSlider.cloneNode(true);
+		this.setSlider(mainSliderClone)
 		removeAllChildren({
 			wrapper: slider,
 			className: 'clone'
 		});
+	
 		//----------- start init variables  -----
 		this.setSlider(slider);
-
+		
 		const sliderClienWidth = this.getSlider().clientWidth;
 		this.setSliderMainWidth(sliderClienWidth);
-
+		
 		let sliderSlidesSelector = childFider({
 			wrapper: slider,
 			className: '.slides'
 		});
 		this.setSliderItems(sliderSlidesSelector);
-
+		
 		const sliderChildWidth = calcSliderChildWidth({
 			responsiveItemCount: responsiveItemCount(responsive),
 			slider: this.getSlider()
@@ -118,19 +133,34 @@ class SliderCore {
 		this.setSliderItemWidth(sliderItemWidth);
 
 		// init slider for start
-		const slides = vdomArrayConvertor(this.getSliderItems().children);
-		this.setSlidesLength(slides.length);
-
-
+		const slides = vdomArrayConvertor(sliderSlidesSelector.children);
+		const sliderLength = slides.length;
+		this.setSlidesLength(sliderLength);
+		
 		const perSlide = switchInfiniteResponsiveCount(
 			truncResponsiveItemCount(responsive),
 			infinite
-		);
-
+			);
+			
 		this.setPerSlide(perSlide);
+			
+		const infCheck = infiniteChecker({
+			infinite,
+			perSlide,
+			sliderLength
+		});
+		this.setInfinite(infCheck);
 
+		const dragCheck = dragChecker({
+			drag,
+			perSlide,
+			sliderLength
+		});
+
+		this.setDrag(dragCheck);
+				
 		// set init index
-		if(infinite){
+		if(infCheck){
 			this.setIndex(perSlide + 1)
 		}else{
 			this.setIndex(0);
@@ -149,8 +179,14 @@ class SliderCore {
 			elementCreator({ tag: 'Span', wrapper: slider, className: 'control prev' });
 			this.sliderArrows = new SliderArrows({ core: this });
 			const index = this.getIndex();
-			if (!infinite && index === 0) {
+			if(perSlide === sliderLength){
 				prevNone(slider);
+				nextNone(slider);
+			}
+			if (!infCheck) {
+				if( index === 0){
+					prevNone(slider);
+				}
 			}
 		}
 
@@ -164,8 +200,10 @@ class SliderCore {
 		}
 
 		this.sliderTrailer = new SliderTrailer({ core: this });
+		
+		// action drag event
 		this.dragEvent = new DragEvent({ core: this });
-
+		
 		sliderSlidesSelector.addEventListener("transitionend", this.transitionendWatcherCall);
 		this.windowResizeWatcher();
 	}
@@ -178,8 +216,8 @@ class SliderCore {
 			slideSize,
 			slidesLength,
 			sliderMainWidth,
+			getInfinite,
 			config: {
-				infinite,
 				slider,
 				responsive,
 				rtl
@@ -202,7 +240,7 @@ class SliderCore {
 			slidesLength,
 			sliderMainWidth,
 			responsiveItem: responsiveItemCount(responsive),
-			infinite,
+			infinite:getInfinite(),
 			slider,
 			rtl
 		}))
@@ -212,12 +250,12 @@ class SliderCore {
 		const {
 			config: {
 				slider,
-				infinite,
 				responsive,
 				dots,
 				nav,
 				rtl
 			},
+			getInfinite,
 			index,
 			getIndex,
 			setIndex,
@@ -233,7 +271,7 @@ class SliderCore {
 		} = this;
 		transitionendWatcher({
 			slider,
-			infinite,
+			infinite:getInfinite(),
 			responsive,
 			dots,
 			nav,
