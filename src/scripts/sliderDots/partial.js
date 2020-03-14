@@ -11,6 +11,12 @@ import {
 	directionSetter,
 } from '../utils';
 
+/**
+ * @name dotsItemsGenerator
+ * @description generates dots to navigate through the pages of the slider
+ * @param params
+ * @return {*}
+ */
 export const dotsItemsGenerator = params => {
 	const { slidesLength, dotsSelector, responsive } = params;
 	for (let i = 0; i < calcSliderGroupCount({ responsive, slidesLength }); i++) {
@@ -20,6 +26,12 @@ export const dotsItemsGenerator = params => {
 	return dotsSelector;
 };
 
+/**
+ * @name dotsItemsClick
+ * @description calculates the position of the page that is related to the clicked dot, to go to that page
+ * @param params
+ * @return {{allowShift: boolean, index: *, posInitial: number}}
+ */
 export const dotsItemsClick = params => {
 	const {
 		indexItem,
@@ -66,6 +78,15 @@ export const dotsItemsClick = params => {
 	};
 };
 
+/**
+ * @name setSliderItemsPositionAfterDotClick
+ * @description
+ * make slider trailer move to the calculated position,
+ * actives the related dot item, and also makes the next or previous arrow buttons hidden,
+ * if trailer reaches to the void areas
+ * @param params
+ * @return {boolean}
+ */
 export const setSliderItemsPositionAfterDotClick = params => {
 	const {
 		indexItem,
@@ -80,6 +101,10 @@ export const setSliderItemsPositionAfterDotClick = params => {
 		rtl
 	} = params;
 
+	/**
+	 * for limited sliders that are passing the permitted range and reaching to the ending borders
+	 * calculates the position based on direction, and hides the next arrow button
+	 */
 	if (!infinite && indexItem + perSlide >= slidesLength) {
 		const calcFinalItemPositionParams = {
 			slideSize,
@@ -106,6 +131,9 @@ export const setSliderItemsPositionAfterDotClick = params => {
 		prevBlock(slider);
 	}
 
+	/**
+	 * for limited sliders that are reaching to the starting border, hides the previous arrow button
+	 */
 	if (!infinite && nav && indexItem === 0) {
 		nextBlock(slider);
 		prevNone(slider);

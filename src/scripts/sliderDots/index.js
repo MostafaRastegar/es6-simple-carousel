@@ -10,21 +10,52 @@ import {
 } from './partial';
 
 export default class SliderDots {
+	/**
+	 * @name constructor
+	 * @description
+	 * sets the core to access to the core instance methods without inheritanceو
+	 * initializes the arrow handler and events
+	 * @param params
+	 */
 	constructor(params) {
 		const { core } = params;
 		this.setCore(core);
 		this.initialize();
 	}
 
+
+	/**
+	 * @name setCore
+	 * @param core
+	 */
 	setCore(core) {
 		this.core = core;
 	}
+
+	/**
+	 * @name getCore
+	 * @return {object}
+	 */
 	getCore() {
 		return this.core;
 	}
 
+	/**
+	 * @name setDotsSelector
+	 * @param dotsSelector
+	 */
 	setDotsSelector(dotsSelector) { this.dotsSelector = dotsSelector; };
+
+	/**
+	 * @name getDotsSelector
+	 * @return {*}
+	 */
 	getDotsSelector() { return this.dotsSelector; };
+
+	/**
+	 * @name initialize
+	 * @description generates dot items and attaches an event to make the slider trailer go to the related page to each dot
+	 */
 	initialize() {
 		const {
 			config: {

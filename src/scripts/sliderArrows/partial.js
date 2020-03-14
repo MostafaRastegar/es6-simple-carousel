@@ -9,6 +9,13 @@ import {
 	directionSetter
 } from '../utils';
 
+/**
+ * @name shiftSlideIsDir
+ * @description handles the navigation of the slider to go to the next slide, if the slider trailer is not passing the permitted range
+ * @param params
+ * @return {number}
+ */
+//@todo: function name is not clear, shiftSlider or goToNextSlide
 export const shiftSlideIsDir = params => {
 	let {
 		sliderItems,
@@ -33,6 +40,11 @@ export const shiftSlideIsDir = params => {
 	};
 	const newIndex = index + perSlide;
 
+
+	/**
+	 * for limited responsive sliders, if the next index is passing the permitted range
+	 * the next arrow button should be hidden
+	 */
 	if (!infinite && newIndex + perSlide - 1 >= newSlidesLength && responsiveItem !== 1) {
 		const result = directionSetter({
 			rtl,
@@ -47,6 +59,17 @@ export const shiftSlideIsDir = params => {
 		return newIndex;
 	}
 
+	// if (!infinite && newIndex * perSlide >= slidesLength) {
+	//   sliderItems.style.transform = setTranslate3d(
+	//     calcFinalItemPosition(calcFinalItemPositionParams),
+	//   );
+	//   nextNone(slider);
+	//   prevBlock(slider);
+	// }
+
+	/**
+	 * for limited sliders, if slider reaches to the last item, the next button should be hidden
+	 */
 	// when perSlide === 1
 	if (!infinite && newIndex === newSlidesLength) {
 		nextNone(slider);
@@ -62,8 +85,14 @@ export const shiftSlideIsDir = params => {
 	return newIndex;
 };
 
+/**
+ * @name shiftSlideNonDir
+ * @description handles the navigation of the slider to go to the previous slide, if the slider trailer is not passing the permitted range
+ * @param params
+ * @return {number}
+ */
 export const shiftSlideNonDir = params => {
-	let {
+	const {
 		sliderItems,
 		slideSize,
 		index,
@@ -73,9 +102,13 @@ export const shiftSlideNonDir = params => {
 		rtl
 	} = params;
 	const newIndex = index - perSlide;
-	const infinitperSlide = infinite ? perSlide : 0;
+	const infinitePerSlide = infinite ? perSlide : 0;
 
-	if (!infinite && index - infinitperSlide <= perSlide && index !== -1) {
+	/**
+	 * for limited sliders, if the prev index is passing the permitted range
+	 * the prev arrow button should be hidden
+	 */
+	if (!infinite && index - infinitePerSlide <= perSlide && index !== -1) {
 		const calcFirstItemPositionParams = { slideSize, perSlide, infinite };
 		const result = directionSetter({
 			rtl,
