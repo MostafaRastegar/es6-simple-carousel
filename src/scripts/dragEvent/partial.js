@@ -43,7 +43,7 @@ export const directionTouchClientX = (params) => {
  * @param params
  * @returns {number}
  */
-export const caroueslTouchStart = (params) => directionTouchClientX(params);
+export const carouselTouchStart = (params) => directionTouchClientX(params);
 
 /**
  * @name carouselDragAction
@@ -51,7 +51,7 @@ export const caroueslTouchStart = (params) => directionTouchClientX(params);
  * @param params
  * @returns {number}
  */
-export const caroueslDragAction = params => {
+export const carouselDragAction = params => {
   const { e, dragEndCall, dragActionCall,sliderMainWidth,rtl } = params;
   document.onmouseup = dragEndCall;
 	document.onmousemove = dragActionCall;
@@ -318,7 +318,7 @@ export const dragStart = (params) => {
 	const posInitial = getTranslate3d(sliderItems);
 	if (e.type == "touchstart") {
 		setPosInitial(posInitial);
-		setPosX1(caroueslTouchStart({
+		setPosX1(carouselTouchStart({
 			e,
 			rtl,
 			sliderMainWidth
@@ -332,7 +332,7 @@ export const dragStart = (params) => {
 			sliderMainWidth,
 		};
 		setPosInitial(posInitial);
-		setPosX1(caroueslDragAction(dragActionParams));
+		setPosX1(carouselDragAction(dragActionParams));
 	}
 };
 
