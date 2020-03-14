@@ -376,9 +376,10 @@ export const infiniteChecker = (params) => {
 };
 
 export const dragChecker = (params) => {
-  const {drag,sliderLength,perSlide} = params;
-  if(drag && sliderLength === perSlide){
+	const {drag,sliderLength,perSlide} = params;
+	if(drag === false || sliderLength <= perSlide
+		){
     return false;
-  }
+	}
   return drag;
 };

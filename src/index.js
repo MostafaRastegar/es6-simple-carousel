@@ -15,7 +15,7 @@ const slideConfig = {
 	nextSpeed: 5000,
   responsive: {
     0: {
-      items: 2.5
+      items: 3
     },
   }
 };
