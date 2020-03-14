@@ -88,7 +88,6 @@ export const dragActionCalcPosition = params => {
 		const firstTolastDrag = getTranslate3d(sliderItems) - posX2New() > (sliderItemWidthNew() * perSlide) + thresholdNew();
 		// stop drag when lastItem go to fistItem on drag
 		const lastToFirstDrag = getTranslate3d(sliderItems) - posX2New() <= calcFinalItemPositionNew - thresholdNew();
-		
 		if(firstTolastDrag || lastToFirstDrag){
 			return false;
 		}
@@ -240,6 +239,7 @@ export const dragEnd = (params) => {
 		setPosFinal,
 		getPosFinal,
 		drag,
+		nav,
 		rtl
 	} = params;
 
@@ -283,7 +283,7 @@ export const dragEnd = (params) => {
 		sliderItems.style["transform"] = setTranslate3d(calcFinalItemPositionNew);
 	}
 
-	if (!infinite) {
+	if (!infinite && nav) {
 		prevBlock(slider);
 		nextBlock(slider);
 	}
@@ -301,20 +301,26 @@ export const dragEnd = (params) => {
 		(rtl && getTranslate3d(sliderItems) <= 0)
 	) {
 		sliderItems.style["transform"] = setTranslate3d(0);
-		prevNone(slider);
-		nextBlock(slider);
+		if(nav){
+			prevNone(slider);
+			nextBlock(slider);
+		}
 	}
 
 	if (!infinite && !rtl && getTranslate3d(sliderItems) <= calcFinalItemPositionNew) {
 		sliderItems.style["transform"] = setTranslate3d(calcFinalItemPositionNew);
-		nextNone(slider);
-		prevBlock(slider);
+		if(nav){
+			nextNone(slider);
+			prevBlock(slider);
+		}
 	}
 
 	if (!infinite && rtl && getTranslate3d(sliderItems) >= calcFinalItemPositionNew) {
 		sliderItems.style["transform"] = setTranslate3d(calcFinalItemPositionNew);
-		nextNone(slider);
-		prevBlock(slider);
+		if(nav){
+			nextNone(slider);
+			prevBlock(slider);
+		}
 	}
 
 	mouseEventNull();

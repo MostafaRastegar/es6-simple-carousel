@@ -47,14 +47,6 @@ export const shiftSlideIsDir = params => {
 		return newIndex;
 	}
 
-	// if (!infinite && newIndex * perSlide >= slidesLength) {
-	// 	sliderItems.style["transform"] = setTranslate3d(
-	// 		calcFinalItemPosition(calcFinalItemPositionParams)
-	// 	);
-	// 	nextNone(slider);
-	// 	prevBlock(slider);
-	// }
-
 	// when perSlide === 1
 	if (!infinite && newIndex === newSlidesLength) {
 		nextNone(slider);

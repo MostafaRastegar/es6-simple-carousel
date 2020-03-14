@@ -6,23 +6,18 @@ import {Slider} from "../src/scripts/index";
 const slideConfig = {
   slider:  document.querySelector(`#slider`),
   threshold: 50,
-  infinite: true,
+  infinite: false,
   rtl:true,
   nav: true,
   dots: true,
   autoPlay:false,
-  drag: true,
+	drag: true,
+	nextSpeed: 5000,
   responsive: {
     0: {
-      items: 1.5
-    },
-    560: {
-      items: 3
-    },
-    760: {
       items: 2.5
-    }
+    },
   }
 };
 
-new Slider(slideConfig);
+const newSlider = new Slider(slideConfig);

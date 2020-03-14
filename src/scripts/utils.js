@@ -258,9 +258,14 @@ export const transitionendWatcher = (params) => {
     }));
   }
 
-  if (!infinite && nav && index === 0) {
-    prevNone(slider);
-    nextBlock(slider);
+  if (!infinite && nav) {
+		if(index === 0){
+			prevNone(slider);
+			nextBlock(slider);
+		}
+		if(index !== 0){
+			prevBlock(slider);
+		}
   }
 
   // run for set active class
