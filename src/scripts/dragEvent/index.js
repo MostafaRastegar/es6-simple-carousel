@@ -24,7 +24,8 @@ export default class DragEvent {
 			config: {
 				responsive,
 				threshold,
-				rtl
+				rtl,
+				nav,
 			},
 			getDrag,
 			getInfinite,
@@ -46,7 +47,7 @@ export default class DragEvent {
 			setAllowShift,
 			transitionendWatcherCall
 		} = this.core;
-
+		
 		const infinite = getInfinite();
 		const sliderItems = getSliderItems();
 		const drag = getDrag();
@@ -63,6 +64,7 @@ export default class DragEvent {
 				responsive,
 				infinite,
 				rtl,
+				nav,
 				setIndex,
 				setPosFinal,
 				transitionendWatcherCall,

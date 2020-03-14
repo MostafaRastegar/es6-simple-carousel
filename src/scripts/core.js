@@ -12,7 +12,8 @@ import {
 	vdomArrayConvertor,
 	removeAllChildren,
 	infiniteChecker,
-	dragChecker
+	dragChecker,
+	setSliderItemsPosition
 } from "./utils";
 
 import { shiftSlideIsDir } from './sliderArrows/partial';
@@ -30,7 +31,36 @@ class SliderCore {
 		this.initialize();
 	};
 
-	setConfig = config => { this.config = config };
+	setConfig = config => {
+		const {
+			slider,
+			infinite = false,
+			responsive = {
+				0: {
+					items: 1
+				}
+			},
+			nav = false,
+			dots = false,
+			autoPlay = false,
+			rtl = false,
+			drag = true,
+			nextSpeed = 2000,
+			threshold = 50
+		} = config;
+		this.config = {
+			slider,
+			infinite,
+			responsive,
+			nav,
+			dots,
+			autoPlay,
+			rtl,
+			drag,
+			nextSpeed,
+			threshold	
+		} 
+	};
 	getConfig = () => this.config;
 
 	setSlider = slider => { this.slider = slider };
@@ -96,7 +126,8 @@ class SliderCore {
 			dots,
 			autoPlay,
 			rtl,
-			drag
+			drag,
+			nextSpeed
 		} = this.getConfig();
 
 		// reset Slider
@@ -196,7 +227,8 @@ class SliderCore {
 		}
 
 		if (autoPlay) {
-			setInterval(() => this.next(), 3000);
+			const time = nextSpeed || 2000;
+			setInterval(() => this.next(), time);
 		}
 
 		this.sliderTrailer = new SliderTrailer({ core: this });
@@ -206,6 +238,25 @@ class SliderCore {
 		
 		sliderSlidesSelector.addEventListener("transitionend", this.transitionendWatcherCall);
 		this.windowResizeWatcher();
+	}
+
+	goTo(newPosition){
+		const {
+			sliderItems,
+			setIndex,
+			getSliderItemWidth,
+			config: {
+				rtl
+			}
+		} = this;
+		// goTo slide position
+		setIndex(setSliderItemsPosition({
+			indexItem: newPosition,
+			sliderItemWidth:getSliderItemWidth(),
+			sliderItems,
+			rtl
+		}));
+		this.transitionendWatcherCall();
 	}
 
 	next() {
