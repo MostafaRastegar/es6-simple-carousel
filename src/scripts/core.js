@@ -184,8 +184,8 @@ class SliderCore {
 
 		const dragCheck = dragChecker({
 			drag,
-			perSlide,
-			sliderLength
+			perSlide: truncResponsiveItemCount(responsive),
+			sliderLength,
 		});
 
 		this.setDrag(dragCheck);
@@ -210,7 +210,7 @@ class SliderCore {
 			elementCreator({ tag: 'Span', wrapper: slider, className: 'control prev' });
 			this.sliderArrows = new SliderArrows({ core: this });
 			const index = this.getIndex();
-			if(perSlide === sliderLength){
+			if(sliderLength <= truncResponsiveItemCount(responsive)){
 				prevNone(slider);
 				nextNone(slider);
 			}
