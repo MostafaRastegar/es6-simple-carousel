@@ -317,9 +317,15 @@ var transitionendWatcher = function transitionendWatcher(params) {
     }));
   }
 
-  if (!infinite && nav && index === 0) {
-    prevNone(slider);
-    nextBlock(slider);
+  if (!infinite && nav) {
+    if (index === 0) {
+      prevNone(slider);
+      nextBlock(slider);
+    }
+
+    if (index !== 0) {
+      prevBlock(slider);
+    }
   } // run for set active class
 
 
@@ -436,7 +442,7 @@ var dragChecker = function dragChecker(params) {
       sliderLength = params.sliderLength,
       perSlide = params.perSlide;
 
-  if (drag && sliderLength === perSlide) {
+  if (drag === false || sliderLength <= perSlide) {
     return false;
   }
 
@@ -462,7 +468,13 @@ var shiftSlideIsDir = function shiftSlideIsDir(params) {
     perSlide: perSlide,
     infinite: infinite
   };
-  var newIndex = index + perSlide;
+  var newIndex = index + perSlide; // when slidesLength <= perSlide arrow is disable
+
+  if (slidesLength <= perSlide) {
+    nextNone(slider);
+    prevBlock(slider);
+    return index;
+  }
 
   if (!infinite && newIndex + perSlide - 1 >= newSlidesLength && responsiveItem !== 1) {
     var _result = directionSetter({
@@ -474,14 +486,7 @@ var shiftSlideIsDir = function shiftSlideIsDir(params) {
     nextNone(slider);
     prevBlock(slider);
     return newIndex;
-  } // if (!infinite && newIndex * perSlide >= slidesLength) {
-  // 	sliderItems.style["transform"] = setTranslate3d(
-  // 		calcFinalItemPosition(calcFinalItemPositionParams)
-  // 	);
-  // 	nextNone(slider);
-  // 	prevBlock(slider);
-  // }
-  // when perSlide === 1
+  } // when perSlide === 1
 
 
   if (!infinite && newIndex === newSlidesLength) {
@@ -617,7 +622,11 @@ var setSliderItemsPositionAfterDotClick = function setSliderItemsPositionAfterDo
       infinite = params.infinite,
       slider = params.slider,
       nav = params.nav,
-      rtl = params.rtl;
+      rtl = params.rtl; // when slidesLength <= perSlide dots is disable
+
+  if (slidesLength <= perSlide) {
+    return false;
+  }
 
   if (!infinite && indexItem + perSlide >= slidesLength) {
     var calcFinalItemPositionParams = {
@@ -1118,7 +1127,11 @@ var dragActionCalcPosition = function dragActionCalcPosition(params) {
       perSlide: perSlide,
       infinite: infinite
     })
-  });
+  }); // when slidesLength <= perSlide dragEvent is disable
+
+  if (slidesLength <= perSlide) {
+    return false;
+  }
 
   if (!infinite && !rtl) {
     // stop drag when firstItem go to lastItem on drag
@@ -1280,14 +1293,14 @@ var dragEnd = function dragEnd(params) {
       setPosFinal = params.setPosFinal,
       getPosFinal = params.getPosFinal,
       drag = params.drag,
+      nav = params.nav,
       rtl = params.rtl;
+  var perSlide = truncResponsiveItemCount(responsive); // when drag false or slidesLength <= perSlide dragEvent is disable
 
-  if (!drag) {
+  if (!drag || slidesLength <= perSlide) {
     mouseEventNull();
     return false;
   }
-
-  var perSlide = truncResponsiveItemCount(responsive);
 
   var thresholdNew = function thresholdNew() {
     if (rtl) return -threshold;
@@ -1318,7 +1331,7 @@ var dragEnd = function dragEnd(params) {
     sliderItems.style["transform"] = setTranslate3d(calcFinalItemPositionNew);
   }
 
-  if (!infinite) {
+  if (!infinite && nav) {
     prevBlock(slider);
     nextBlock(slider);
   }
@@ -1329,20 +1342,29 @@ var dragEnd = function dragEnd(params) {
 
   if (!infinite && getTranslate3d(sliderItems) <= thresholdNew() && getTranslate3d(sliderItems) >= 0 || rtl && getTranslate3d(sliderItems) <= 0) {
     sliderItems.style["transform"] = setTranslate3d(0);
-    prevNone(slider);
-    nextBlock(slider);
+
+    if (nav) {
+      prevNone(slider);
+      nextBlock(slider);
+    }
   }
 
   if (!infinite && !rtl && getTranslate3d(sliderItems) <= calcFinalItemPositionNew) {
     sliderItems.style["transform"] = setTranslate3d(calcFinalItemPositionNew);
-    nextNone(slider);
-    prevBlock(slider);
+
+    if (nav) {
+      nextNone(slider);
+      prevBlock(slider);
+    }
   }
 
   if (!infinite && rtl && getTranslate3d(sliderItems) >= calcFinalItemPositionNew) {
     sliderItems.style["transform"] = setTranslate3d(calcFinalItemPositionNew);
-    nextNone(slider);
-    prevBlock(slider);
+
+    if (nav) {
+      nextNone(slider);
+      prevBlock(slider);
+    }
   }
 
   mouseEventNull();
@@ -1378,6 +1400,7 @@ function () {
           responsive = _this$core$config.responsive,
           threshold = _this$core$config.threshold,
           rtl = _this$core$config.rtl,
+          nav = _this$core$config.nav,
           getDrag = _this$core.getDrag,
           getInfinite = _this$core.getInfinite,
           getSliderItems = _this$core.getSliderItems,
@@ -1413,6 +1436,7 @@ function () {
           responsive: responsive,
           infinite: infinite,
           rtl: rtl,
+          nav: nav,
           setIndex: setIndex,
           setPosFinal: setPosFinal,
           transitionendWatcherCall: transitionendWatcherCall,
@@ -1485,7 +1509,41 @@ function () {
     _classCallCheck(this, SliderCore);
 
     _defineProperty(this, "setConfig", function (config) {
-      _this.config = config;
+      var slider = config.slider,
+          _config$infinite = config.infinite,
+          infinite = _config$infinite === void 0 ? false : _config$infinite,
+          _config$responsive = config.responsive,
+          responsive = _config$responsive === void 0 ? {
+        0: {
+          items: 1
+        }
+      } : _config$responsive,
+          _config$nav = config.nav,
+          nav = _config$nav === void 0 ? false : _config$nav,
+          _config$dots = config.dots,
+          dots = _config$dots === void 0 ? false : _config$dots,
+          _config$autoPlay = config.autoPlay,
+          autoPlay = _config$autoPlay === void 0 ? false : _config$autoPlay,
+          _config$rtl = config.rtl,
+          rtl = _config$rtl === void 0 ? false : _config$rtl,
+          _config$drag = config.drag,
+          drag = _config$drag === void 0 ? true : _config$drag,
+          _config$nextSpeed = config.nextSpeed,
+          nextSpeed = _config$nextSpeed === void 0 ? 2000 : _config$nextSpeed,
+          _config$threshold = config.threshold,
+          threshold = _config$threshold === void 0 ? 50 : _config$threshold;
+      _this.config = {
+        slider: slider,
+        infinite: infinite,
+        responsive: responsive,
+        nav: nav,
+        dots: dots,
+        autoPlay: autoPlay,
+        rtl: rtl,
+        drag: drag,
+        nextSpeed: nextSpeed,
+        threshold: threshold
+      };
     });
 
     _defineProperty(this, "getConfig", function () {
@@ -1633,7 +1691,8 @@ function () {
           dots = _this$getConfig.dots,
           autoPlay = _this$getConfig.autoPlay,
           rtl = _this$getConfig.rtl,
-          drag = _this$getConfig.drag; // reset Slider
+          drag = _this$getConfig.drag,
+          nextSpeed = _this$getConfig.nextSpeed; // reset Slider
 
 
       var mainSlider = slider,
@@ -1693,7 +1752,7 @@ function () {
 
       var dragCheck = dragChecker({
         drag: drag,
-        perSlide: perSlide,
+        perSlide: truncResponsiveItemCount(responsive),
         sliderLength: sliderLength
       });
 
@@ -1731,7 +1790,7 @@ function () {
 
         var index = _this.getIndex();
 
-        if (perSlide === sliderLength) {
+        if (sliderLength <= truncResponsiveItemCount(responsive)) {
           prevNone(slider);
           nextNone(slider);
         }
@@ -1755,9 +1814,10 @@ function () {
       }
 
       if (autoPlay) {
+        var time = nextSpeed || 2000;
         setInterval(function () {
           return _this.next();
-        }, 3000);
+        }, time);
       }
 
       _this.sliderTrailer = new SliderTrailer({
@@ -1830,6 +1890,22 @@ function () {
   }
 
   _createClass(SliderCore, [{
+    key: "goTo",
+    value: function goTo(newPosition) {
+      var sliderItems = this.sliderItems,
+          setIndex = this.setIndex,
+          getSliderItemWidth = this.getSliderItemWidth,
+          rtl = this.config.rtl; // goTo slide position
+
+      setIndex(setSliderItemsPosition({
+        indexItem: newPosition,
+        sliderItemWidth: getSliderItemWidth(),
+        sliderItems: sliderItems,
+        rtl: rtl
+      }));
+      this.transitionendWatcherCall();
+    }
+  }, {
     key: "next",
     value: function next() {
       var sliderItems = this.sliderItems,
