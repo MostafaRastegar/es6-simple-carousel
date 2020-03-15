@@ -259,6 +259,21 @@ export const transitionendWatcher = (params) => {
   }
 
   if (!infinite && nav) {
+    const finalPos = {
+      slideSize,
+      sliderMainWidth,
+      perSlide,
+      slidesLength,
+      infinite };
+    const finalConst = Math.abs(Math.trunc(calcFinalItemPosition(finalPos)));
+    const translate3dCosnt = Math.abs(Math.trunc(getTranslate3d(sliderItems)));
+    if(finalConst === translate3dCosnt){
+      prevBlock(slider);
+			nextNone(slider);
+    }
+    if(index >= 0 && finalConst > translate3dCosnt){
+			nextBlock(slider); 
+    }
 		if(index === 0){
 			prevNone(slider);
 			nextBlock(slider);

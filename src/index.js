@@ -15,9 +15,10 @@ const slideConfig = {
 	nextSpeed: 5000,
   responsive: {
     0: {
-      items: 3
+      items: 3.5
     },
   }
 };
 
 const newSlider = new Slider(slideConfig);
+newSlider.refresh(false)
