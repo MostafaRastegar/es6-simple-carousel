@@ -1,363 +1,529 @@
 import {
-	calcSliderChildWidth,
-	responsiveItemCount,
-	truncResponsiveItemCount,
-	switchInfiniteResponsiveCount,
-	transitionendWatcher,
-	elementCreator,
-	childFider,
-	prevNone,
-	nextNone,
-	addClassToElement,
-	vdomArrayConvertor,
-	removeAllChildren,
-	infiniteChecker,
-	dragChecker,
-	setSliderItemsPosition
+  calcSliderChildWidth,
+  responsiveItemCount,
+  truncResponsiveItemCount,
+  switchInfiniteResponsiveCount,
+  transitionendWatcher,
+  elementCreator,
+  childFider,
+  prevNone,
+  nextNone,
+  addClassToElement,
+  vdomArrayConvertor,
+  removeAllChildren,
+  infiniteChecker,
+  dragChecker,
+  calcAutoWidthAllSliderItems,
+  setTranslate3d,
+  directionSetter,
+  calcFinalItemPosition,
 } from "./utils";
 
-import { shiftSlideIsDir } from './sliderArrows/partial';
-
-import SliderDots from './sliderDots/index';
-import SliderTrailer from './slideTrailer/index';
-import SliderArrows from './sliderArrows/index';
+import { shiftSlideIsDir } from "./sliderArrows/partial";
+import SliderDots from "./sliderDots/index";
+import SliderTrailer from "./slideTrailer/index";
+import SliderArrows from "./sliderArrows/index";
 import DragEvent from "./dragEvent/index";
 
 class SliderCore {
+  constructor(config) {
+    this.setConfig(config);
+    this.initialize();
+  }
 
+  setConfig = (customConfig) => {
+    const {
+      slider,
+      infinite = false,
+      horizontal = "default",
+      responsive = {
+        0: {
+          items: 1,
+        },
+      },
+      prevArrow = null,
+      nextArrow = null,
+      customArrow = false,
+      nav = false,
+      dots = false,
+      autoPlay = false,
+      rtl = false,
+      drag = true,
+      autoWidth = false,
+      nextSpeed = 2000,
+      threshold = 50,
+      freeScroll = false,
+      paginationWrapper = null,
+      callBack = () => {},
+      beforeChange = () => {},
+    } = customConfig;
+    this.config = {
+      slider,
+      infinite,
+      responsive,
+      prevArrow,
+      nextArrow,
+      customArrow,
+      nav,
+      dots,
+      autoPlay,
+      rtl,
+      drag,
+      autoWidth,
+      nextSpeed,
+      threshold,
+      horizontal,
+      freeScroll,
+      callBack,
+      paginationWrapper,
+      beforeChange,
+    };
+  };
 
-	constructor(config) {
-		this.setConfig(config);
-		this.initialize();
-	};
+  getConfig = () => this.config;
 
-	setConfig = config => {
-		const {
-			slider,
-			infinite = false,
-			responsive = {
-				0: {
-					items: 1
-				}
-			},
-			nav = false,
-			dots = false,
-			autoPlay = false,
-			rtl = false,
-			drag = true,
-			nextSpeed = 2000,
-			threshold = 50
-		} = config;
-		this.config = {
-			slider,
-			infinite,
-			responsive,
-			nav,
-			dots,
-			autoPlay,
-			rtl,
-			drag,
-			nextSpeed,
-			threshold	
-		} 
-	};
-	getConfig = () => this.config;
+  setSlider = (slider) => {
+    this.slider = slider;
+  };
 
-	setSlider = slider => { this.slider = slider };
-	getSlider = () => this.slider;
+  getSlider = () => this.slider;
 
-	setPosX1 = posX1 => { this.posX1 = posX1 };
-	getPosX1 = () => this.posX1;
+  setPosX1 = (posX1) => {
+    this.posX1 = posX1;
+  };
 
-	setInfinite = infinite => { this.infinite = infinite };
-	getInfinite = () => this.infinite;
+  getPosX1 = () => this.posX1;
 
-	setDrag = drag => { this.drag = drag };
-	getDrag = () => this.drag;
+  setIntervalId = (intervalId) => {
+    this.intervalId = intervalId;
+  };
 
-	setPosX2 = posX2 => { this.posX2 = posX2 };
-	getPosX2 = () => this.posX2;
+  getIntervalId = () => this.intervalId;
 
-	setPerSlide = perSlide => { this.perSlide = perSlide };
-	getPerSlide = () => this.perSlide;
+  setInfinite = (infinite) => {
+    this.infinite = infinite;
+  };
 
+  getInfinite = () => this.infinite;
 
-	setSliderItems = sliderItems => { this.sliderItems = sliderItems };
-	getSliderItems = () => this.sliderItems;
+  setDrag = (drag) => {
+    this.drag = drag;
+  };
 
-	setPosInitial = posInitial => { this.posInitial = posInitial };
-	getPosInitial = () => this.posInitial;
+  getDrag = () => this.drag;
 
-	setPosFinal = posFinal => { this.posFinal = posFinal };
-	getPosFinal = () => this.posFinal;
+  setPosX2 = (posX2) => {
+    this.posX2 = posX2;
+  };
 
-	setSlidesLength = slidesLength => { this.slidesLength = slidesLength };
-	getSlidesLength = () => this.slidesLength;
+  getPosX2 = () => this.posX2;
 
-	setSliderMainWidth = sliderMainWidth => { this.sliderMainWidth = sliderMainWidth };
-	getSliderMainWidth = () => this.sliderMainWidth;
+  setPerSlide = (perSlide) => {
+    this.perSlide = perSlide;
+  };
 
+  getPerSlide = () => this.perSlide;
 
-	setOrginSlider = orginSlider => { this.orginSlider = orginSlider };
-	getOrginSlider = () => this.orginSlider;
+  setSliderItems = (sliderItems) => {
+    this.sliderItems = sliderItems;
+  };
 
-	setSlideSize = slideSize => { this.slideSize = slideSize };
-	getSlideSize = () => this.slideSize;
+  getSliderItems = () => this.sliderItems;
 
-	setSliderItemWidth = sliderItemWidth => { this.sliderItemWidth = sliderItemWidth };
-	getSliderItemWidth = () => this.sliderItemWidth;
+  setPosInitial = (posInitial) => {
+    this.posInitial = posInitial;
+  };
 
-	setIndex = index => { this.index = index };
-	getIndex = () => this.index;
+  getPosInitial = () => this.posInitial;
 
-	setAllowShift = allowShift => { this.allowShift = allowShift };
-	getAllowShift = () => this.allowShift;
+  setPosFinal = (posFinal) => {
+    this.posFinal = posFinal;
+  };
 
-	updateLog = () => {
-		console.log(this.index)
-	}
+  getPosFinal = () => this.posFinal;
 
-	initialize = () => {
-		const {
-			slider,
-			infinite,
-			responsive,
-			nav,
-			dots,
-			autoPlay,
-			rtl,
-			drag,
-			nextSpeed
-		} = this.getConfig();
+  setSlidesLength = (slidesLength) => {
+    this.slidesLength = slidesLength;
+  };
 
-		// reset Slider
-		const mainSlider = slider,
-		mainSliderClone = mainSlider.cloneNode(true);
-		this.setSlider(mainSliderClone)
-		removeAllChildren({
-			wrapper: slider,
-			className: 'clone'
-		});
-	
-		//----------- start init variables  -----
-		this.setSlider(slider);
-		
-		const sliderClienWidth = this.getSlider().clientWidth;
-		this.setSliderMainWidth(sliderClienWidth);
-		
-		let sliderSlidesSelector = childFider({
-			wrapper: slider,
-			className: '.slides'
-		});
-		this.setSliderItems(sliderSlidesSelector);
-		
-		const sliderChildWidth = calcSliderChildWidth({
-			responsiveItemCount: responsiveItemCount(responsive),
-			slider: this.getSlider()
-		});
-		this.setSlideSize(sliderChildWidth);
+  getSlidesLength = () => this.slidesLength;
 
-		const sliderItemWidth = calcSliderChildWidth({
-			responsiveItemCount: responsiveItemCount(responsive),
-			slider: this.getSlider()
-		});
-		this.setSliderItemWidth(sliderItemWidth);
+  setSliderMainWidth = (sliderMainWidth) => {
+    this.sliderMainWidth = sliderMainWidth;
+  };
 
-		// init slider for start
-		const slides = vdomArrayConvertor(sliderSlidesSelector.children);
-		const sliderLength = slides.length;
-		this.setSlidesLength(sliderLength);
-		
-		const perSlide = switchInfiniteResponsiveCount(
-			truncResponsiveItemCount(responsive),
-			infinite
-			);
-			
-		this.setPerSlide(perSlide);
-			
-		const infCheck = infiniteChecker({
-			infinite,
-			perSlide,
-			sliderLength
-		});
-		this.setInfinite(infCheck);
+  getSliderMainWidth = () => this.sliderMainWidth;
 
-		const dragCheck = dragChecker({
-			drag,
-			perSlide: truncResponsiveItemCount(responsive),
-			sliderLength,
-		});
+  setOrginSlider = (orginSlider) => {
+    this.orginSlider = orginSlider;
+  };
 
-		this.setDrag(dragCheck);
-				
-		// set init index
-		if(infCheck){
-			this.setIndex(perSlide + 1)
-		}else{
-			this.setIndex(0);
-		}
+  getOrginSlider = () => this.orginSlider;
 
-		if(rtl){
-			const classItemParams = {
-				item:slider,
-				className:'slider-rtl',
-			};
-			addClassToElement(classItemParams);
-		}
+  setSlideSize = (slideSize) => {
+    this.slideSize = slideSize;
+  };
 
-		if (nav) {
-			elementCreator({ tag: 'Span', wrapper: slider, className: 'control next' });
-			elementCreator({ tag: 'Span', wrapper: slider, className: 'control prev' });
-			this.sliderArrows = new SliderArrows({ core: this });
-			const index = this.getIndex();
-			if(sliderLength <= truncResponsiveItemCount(responsive)){
-				prevNone(slider);
-				nextNone(slider);
-			}
-			if (!infCheck) {
-				if( index === 0){
-					prevNone(slider);
-				}
-			}
-		}
+  getSlideSize = () => this.slideSize;
 
-		if (dots) {
-			elementCreator({ tag: 'Ul', wrapper: slider, className: 'dots' });
-			this.sliderDots = new SliderDots({ core: this });
-		}
+  setSliderItemWidth = (sliderItemWidth) => {
+    this.sliderItemWidth = sliderItemWidth;
+  };
 
-		if (autoPlay) {
-			const time = nextSpeed || 2000;
-			setInterval(() => this.next(), time);
-		}
+  getSliderItemWidth = () => this.sliderItemWidth;
 
-		this.sliderTrailer = new SliderTrailer({ core: this });
-		
-		// action drag event
-		this.dragEvent = new DragEvent({ core: this });
-		
-		sliderSlidesSelector.addEventListener("transitionend", this.transitionendWatcherCall);
-		this.windowResizeWatcher();
-	};
+  setIndex = (index) => {
+    this.index = index;
+  };
 
-	goTo(newPosition){
-		const {
-			sliderItems,
-			setIndex,
-			getSliderItemWidth,
-			config: {
-				rtl
-			}
-		} = this;
-		// goTo slide position
-		setIndex(setSliderItemsPosition({
-			indexItem: newPosition,
-			sliderItemWidth:getSliderItemWidth(),
-			sliderItems,
-			rtl
-		}));
-		this.transitionendWatcherCall();
-	};
+  getIndex = () => this.index;
 
-	refresh(flag){
-		if(flag){
-			this.initialize();
-		}
-	};
+  setAllowShift = (allowShift) => {
+    this.allowShift = allowShift;
+  };
 
-	next() {
-		const {
-			sliderItems,
-			index,
-			perSlide,
-			slideSize,
-			slidesLength,
-			sliderMainWidth,
-			getInfinite,
-			config: {
-				slider,
-				responsive,
-				rtl
-			}
-		} = this;
-		const classItemParams = {
-			item: childFider({
-				wrapper: slider,
-				className: ".slides"
-			}),
-			className: 'shifting',
-		};
-		addClassToElement(classItemParams);
+  getAllowShift = () => this.allowShift;
 
-		this.setIndex(shiftSlideIsDir({
-			sliderItems,
-			index,
-			perSlide,
-			slideSize,
-			slidesLength,
-			sliderMainWidth,
-			responsiveItem: responsiveItemCount(responsive),
-			infinite:getInfinite(),
-			slider,
-			rtl
-		}))
-	};
+  initialize = () => {
+    const {
+      slider,
+      infinite,
+      responsive,
+      nav,
+      dots,
+      autoPlay,
+      rtl,
+      drag,
+      nextSpeed,
+      customArrow,
+      autoWidth,
+      horizontal,
+      paginationWrapper,
+    } = this.getConfig();
 
-	transitionendWatcherCall = () => {
-		const {
-			config: {
-				slider,
-				responsive,
-				dots,
-				nav,
-				rtl
-			},
-			getInfinite,
-			index,
-			getIndex,
-			setIndex,
-			dragAction,
-			setPosInitial,
-			setPosX1,
-			setAllowShift,
-			sliderItems,
-			slideSize,
-			sliderMainWidth,
-			slidesLength,
-			sliderItemWidth
-		} = this;
-		transitionendWatcher({
-			slider,
-			infinite:getInfinite(),
-			responsive,
-			dots,
-			nav,
-			rtl,
-			sliderItems,
-			dragAction,
-			setPosInitial,
-			setPosX1,
-			setAllowShift,
-			index,
-			slideSize,
-			sliderMainWidth,
-			slidesLength,
-			sliderItemWidth,
-			setIndex,
-			getIndex
-		});
-	};
+    // reset Slider
+    const mainSlider = slider;
+    const mainSliderClone = mainSlider.cloneNode(true);
+    this.setSlider(mainSliderClone);
+    removeAllChildren({
+      wrapper: slider,
+      className: "clone",
+    });
 
-	windowResizeWatcher = () => {
-		let resizeTimer;
-		window.onresize = () => {
-			clearTimeout(resizeTimer);
-			resizeTimer = setTimeout(() => {
-				this.initialize();
-			}, 250);
-		};
-	};
+    // ----------- start init variables  -----
+    this.setSlider(slider);
 
-};
+    const sliderClienWidth = this.getSlider().getBoundingClientRect().width;
+    this.setSliderMainWidth(sliderClienWidth);
+
+    const sliderSlidesSelector = childFider({
+      wrapper: slider,
+      className: ".slides",
+    });
+    this.setSliderItems(sliderSlidesSelector);
+
+    const sliderChildWidth = calcSliderChildWidth({
+      responsiveItemCount: responsiveItemCount(responsive),
+      slider: this.getSlider(),
+    });
+    this.setSlideSize(sliderChildWidth);
+
+    const sliderItemWidth = calcSliderChildWidth({
+      responsiveItemCount: responsiveItemCount(responsive),
+      slider: this.getSlider(),
+    });
+    this.setSliderItemWidth(sliderItemWidth);
+
+    // init slider for start
+    const slides = vdomArrayConvertor(sliderSlidesSelector.children);
+    const sliderLength = slides.length;
+    this.setSlidesLength(sliderLength);
+
+    const perSlide = switchInfiniteResponsiveCount(
+      truncResponsiveItemCount(responsive),
+      infinite
+    );
+
+    this.setPerSlide(perSlide);
+
+    const infCheck = infiniteChecker({
+      infinite,
+      perSlide,
+      sliderLength,
+    });
+    this.setInfinite(infCheck);
+
+    const dragCheck = dragChecker({
+      drag,
+      perSlide: truncResponsiveItemCount(responsive),
+      sliderLength,
+    });
+
+    this.setDrag(dragCheck);
+
+    // set init index
+    if (infCheck) {
+      this.setIndex(perSlide + 1);
+    } else {
+      this.setIndex(0);
+    }
+
+    if (rtl) {
+      const classItemParams = {
+        item: slider,
+        className: "slider-rtl",
+      };
+      addClassToElement(classItemParams);
+    }
+
+    if (nav) {
+      if (!customArrow) {
+        elementCreator({
+          tag: "Span",
+          wrapper: slider,
+          className: "control next",
+        });
+        elementCreator({
+          tag: "Span",
+          wrapper: slider,
+          className: "control prev",
+        });
+      }
+      this.sliderArrows = new SliderArrows({ core: this });
+      const index = this.getIndex();
+      if (
+        sliderLength <= truncResponsiveItemCount(responsive) ||
+        (autoWidth &&
+          calcAutoWidthAllSliderItems(this.sliderItems) <= this.sliderMainWidth)
+      ) {
+        prevNone(slider);
+        nextNone(slider);
+      }
+      if (!infCheck) {
+        if (index === 0) {
+          prevNone(slider);
+        }
+      }
+    }
+
+    if (dots || (paginationWrapper && paginationWrapper.current)) {
+      if (dots) {
+        elementCreator({ tag: "Ul", wrapper: slider, className: "dots" });
+      }
+      this.sliderDots = new SliderDots({ core: this });
+    }
+
+    if (autoPlay) {
+      let isIntervalRunning = false;
+      const time = nextSpeed || 2000;
+      const intervalNext = () => {
+        isIntervalRunning = true;
+        this.next();
+      };
+      const intervalPlay = () => {
+        clearInterval(this.getIntervalId()); // Clearing interval if for some reason it has not been cleared yet
+        if (!isIntervalRunning) {
+          this.setIntervalId(setInterval(intervalNext, time));
+        }
+      };
+      const intervalPause = () => {
+        clearInterval(this.getIntervalId()); // Clearing interval on window blur
+        isIntervalRunning = false;
+      };
+      // toggle on mouseHover
+      slider.addEventListener("touchstart", intervalPause);
+      slider.addEventListener("touchmove", intervalPause);
+      slider.addEventListener("mouseover", intervalPause);
+      slider.addEventListener("mouseout", intervalPlay);
+      // toggle on blur and focus browser window tab
+      window.addEventListener("blur", intervalPause);
+      window.addEventListener("focus", intervalPlay);
+      if (!this.getIntervalId()) {
+        intervalPlay();
+      }
+    }
+
+    this.sliderTrailer = new SliderTrailer({ core: this });
+
+    // action drag event
+    this.dragEvent = new DragEvent({ core: this });
+
+    sliderSlidesSelector.addEventListener("transitionend", (e) => {
+      if (e.target !== sliderSlidesSelector) return;
+      this.transitionendWatcherCall();
+    });
+
+    // active center mode
+    if (
+      horizontal === "center" &&
+      sliderLength < truncResponsiveItemCount(responsive)
+    ) {
+      const freeItems = truncResponsiveItemCount(responsive) - sliderLength;
+      const freeSpace = directionSetter({
+        rtl,
+        input: (freeItems * sliderItemWidth) / 2,
+      });
+      this.sliderItems.style.transform = setTranslate3d(freeSpace);
+    }
+
+    this.windowResizeWatcher();
+  };
+
+  goToShowingSlide(newPosition) {
+    const {
+      config: { responsive, rtl, infinite, slider, nav, autoWidth },
+      getSliderItems,
+      transitionendWatcherCall,
+      getSliderItemWidth,
+      setIndex,
+      setPosInitial,
+      getSlidesLength,
+      slideSize,
+      sliderMainWidth,
+      perSlide,
+    } = this;
+
+    if (getSlidesLength() <= responsiveItemCount(responsive)) {
+      return false;
+    }
+    const sliderItems = getSliderItems();
+    const newIndex = infinite
+      ? newPosition + responsiveItemCount(responsive) + 1
+      : newPosition;
+    const result = directionSetter({
+      rtl,
+      input: -getSliderItemWidth() * newIndex,
+    });
+
+    const finalItemPosition = calcFinalItemPosition({
+      indexItem: newIndex,
+      slideSize,
+      sliderItems,
+      sliderMainWidth,
+      perSlide,
+      slidesLength: getSlidesLength(),
+      infinite,
+      slider,
+      nav,
+      rtl,
+      autoWidth,
+    });
+
+    if (Math.abs(result) < Math.abs(finalItemPosition)) {
+      sliderItems.style.transform = setTranslate3d(result);
+      setIndex(newIndex);
+      setPosInitial(result);
+
+      setTimeout(() => {
+        transitionendWatcherCall();
+      }, 0);
+      return newIndex;
+    }
+    sliderItems.style.transform = setTranslate3d(-finalItemPosition);
+    setIndex(newIndex);
+    setPosInitial(-finalItemPosition);
+    setTimeout(() => {
+      transitionendWatcherCall();
+    }, 0);
+    return newIndex;
+  }
+
+  refresh(flag) {
+    if (flag) {
+      this.initialize();
+    }
+  }
+
+  next() {
+    const {
+      sliderItems,
+      index,
+      perSlide,
+      slideSize,
+      slidesLength,
+      sliderMainWidth,
+      getInfinite,
+      config: { slider, responsive, rtl, autoWidth },
+    } = this;
+    const classItemParams = {
+      item: childFider({
+        wrapper: slider,
+        className: ".slides",
+      }),
+      className: "shifting",
+    };
+    addClassToElement(classItemParams);
+    this.setIndex(
+      shiftSlideIsDir({
+        sliderItems,
+        index,
+        perSlide,
+        slideSize,
+        slidesLength,
+        sliderMainWidth,
+        responsiveItem: responsiveItemCount(responsive),
+        infinite: getInfinite(),
+        slider,
+        rtl,
+        autoWidth,
+      })
+    );
+  }
+
+  transitionendWatcherCall = () => {
+    const {
+      config: {
+        slider,
+        responsive,
+        dots,
+        nav,
+        rtl,
+        autoWidth,
+        infinite,
+        freeScroll,
+        callBack,
+        beforeChange,
+      },
+      index,
+      sliderItems,
+      slideSize,
+      sliderMainWidth,
+      slidesLength,
+      sliderItemWidth,
+      setIndex,
+      setAllowShift,
+    } = this;
+    transitionendWatcher({
+      responsive,
+      infinite,
+      slider,
+      rtl,
+      index,
+      sliderItems,
+      slideSize,
+      sliderMainWidth,
+      dots,
+      slidesLength,
+      sliderItemWidth,
+      nav,
+      autoWidth,
+      freeScroll,
+      setAllowShift,
+      setIndex,
+      callBack,
+      beforeChange,
+    });
+  };
+
+  windowResizeWatcher = () => {
+    let resizeTimer;
+    window.onresize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        this.initialize();
+      }, 250);
+    };
+  };
+}
 
 export default SliderCore;
