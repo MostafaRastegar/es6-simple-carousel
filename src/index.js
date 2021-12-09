@@ -1,24 +1,24 @@
 import "./styles/slider.css";
 import "./styles/custom.css";
-import {Slider} from "../src/scripts/index";
+import { Slider } from "../src/scripts/index";
 // import {Slider} from "../src/scripts/index.es";
 
 const slideConfig = {
-  slider:  document.querySelector(`#slider`),
+  slider: document.querySelector(`#slider`),
   threshold: 50,
   infinite: false,
-  rtl:true,
+  rtl: true,
   nav: true,
   dots: true,
-  autoPlay:false,
-	drag: true,
-	nextSpeed: 5000,
+  autoPlay: false,
+  drag: true,
+  nextSpeed: 5000,
   responsive: {
     0: {
-      items: 3.5
+      items: 3.5,
     },
-  }
+  },
 };
 
 const newSlider = new Slider(slideConfig);
-newSlider.refresh(false)
+newSlider.refresh(false);
